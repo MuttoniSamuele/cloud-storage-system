@@ -4,7 +4,7 @@ use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().nest_service("/", ServeDir::new("public"));
+    let app = Router::new().nest_service("/", ServeDir::new("public/dist"));
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("Listening on http://{}", addr);
     axum::Server::bind(&addr)
