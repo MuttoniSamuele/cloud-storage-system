@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { RiCloseLine, RiEqualizerLine, RiSearchLine } from "svelte-remixicon";
-
   let value: string = "";
 </script>
 
@@ -10,7 +8,7 @@
   <button
     class="h-full px-2 rounded-l-md hover:bg-zinc-300 dark:hover:bg-zinc-600"
   >
-    <RiSearchLine class="w-5" size="" />
+    <i class="ri-search-line ri-lg" />
   </button>
   <input
     type="search"
@@ -23,12 +21,12 @@
       class="h-full px-1 hover:bg-zinc-300 dark:hover:bg-zinc-600"
       on:click={() => (value = "")}
     >
-      <RiCloseLine class="w-5" size="" />
+      <i class="ri-close-line ri-lg" />
     </button>
   {/if}
   <button
     class="h-full px-2 rounded-r-md hover:bg-zinc-300 dark:hover:bg-zinc-600"
   >
-    <RiEqualizerLine class="w-5" size="" />
+    <i class="ri-equalizer-line ri-lg" />
   </button>
 </div>
