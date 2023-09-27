@@ -1,4 +1,6 @@
 <script lang="ts">
+  import IconButton from "./IconButton.svelte";
+  import DarkModeButton from "./DarkModeButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
   import SearchBar from "./SearchBar.svelte";
 </script>
@@ -11,11 +13,8 @@
   </a>
   <SearchBar />
   <div class="flex items-center">
-    <button class="h-min mr-3">
-      <i
-        class="ri-settings-3-line ri-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      />
-    </button>
+    <DarkModeButton />
+    <IconButton icon="ri-settings-3-line" />
     <ProfilePicture />
   </div>
 </header>
