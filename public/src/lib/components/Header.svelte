@@ -3,6 +3,8 @@
   import DarkModeButton from "./DarkModeButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
   import SearchBar from "./SearchBar.svelte";
+  import TextButton from "./TextButton.svelte";
+  import { account } from "../stores/account";
 </script>
 
 <header
@@ -15,6 +17,10 @@
   <div class="flex items-center">
     <DarkModeButton />
     <IconButton icon="ri-settings-3-line" />
-    <ProfilePicture />
+    {#if $account === null}
+      <TextButton text="Log in" on:click={account.login} />
+    {:else}
+      <ProfilePicture />
+    {/if}
   </div>
 </header>
