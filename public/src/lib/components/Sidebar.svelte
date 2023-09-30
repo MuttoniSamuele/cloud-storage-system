@@ -1,8 +1,14 @@
 <script lang="ts">
+  import FolderAccordion from "./FolderAccordion.svelte";
 </script>
 
 <aside
-  class="h-full bg-zinc-50 text-zinc-500 dark:bg-zinc-850 dark:text-zinc-400"
+  class="w-72 h-full overflow-x-hidden overflow-y-auto bg-zinc-50 dark:bg-zinc-850"
 >
-  <nav>sidebar</nav>
+  <nav>
+    <FolderAccordion name="My Cloud" icon="ri-hard-drive-2-fill" />
+    <FolderAccordion name="Shared with me" icon="ri-group-fill" />
+    <FolderAccordion name="Recent" icon="ri-history-fill" droppable={false} />
+    <FolderAccordion name="Trash" icon="ri-delete-bin-fill" droppable={false} />
+  </nav>
 </aside>
