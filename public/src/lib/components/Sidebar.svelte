@@ -2,9 +2,7 @@
   import FolderAccordion from "./FolderAccordion.svelte";
 </script>
 
-<aside
-  class="w-72 h-full overflow-x-hidden overflow-y-auto bg-zinc-50 dark:bg-zinc-850"
->
+<aside class="w-72 h-full overflow-x-hidden overflow-y-auto">
   <nav>
     <FolderAccordion name="My Cloud" icon="ri-hard-drive-2-fill" />
     <FolderAccordion name="Shared with me" icon="ri-group-fill" />

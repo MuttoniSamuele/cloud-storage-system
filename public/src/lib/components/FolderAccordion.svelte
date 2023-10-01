@@ -25,13 +25,14 @@
       style="--level: {level};"
       on:click={() => (collapsed = !collapsed)}
     >
-      <i class="ri-arrow-drop-right-fill ri-xl" />
+      <!-- TODO: transition-transform -->
+      <div class={collapsed ? "rotate-0" : "rotate-90"}>
+        <i class="ri-arrow-drop-right-fill ri-xl" />
+      </div>
     </button>
   {/if}
 </div>
-{#if !collapsed}
-  <FolderTree level={level + 1} />
-{/if}
+<FolderTree level={level + 1} {collapsed} />
 
 <style>
   .offset-folder-by-level {
