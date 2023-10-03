@@ -2,7 +2,8 @@
   import FolderTree from "./FolderTree.svelte";
 
   export let icon: string | null = null;
-  export let name: string;
+  export let displayName: string;
+  export let path: string | undefined = undefined;
   export let droppable = true;
   export let level = 0;
 
@@ -16,7 +17,7 @@
   <button class="absolute top-1/2 -translate-y-1/2 w-full h-full text-start">
     <span class="offset-folder-by-level" style="--level: {level};">
       <i class="{icon === null ? '' : icon} ri-lg" />
-      {name}
+      {displayName}
     </span>
   </button>
   {#if droppable}
@@ -32,7 +33,9 @@
     </button>
   {/if}
 </div>
-<FolderTree level={level + 1} {collapsed} />
+{#if droppable && path !== undefined}
+  <FolderTree level={level + 1} {collapsed} {path} />
+{/if}
 
 <style>
   .offset-folder-by-level {

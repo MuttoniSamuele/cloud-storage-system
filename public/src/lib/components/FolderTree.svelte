@@ -1,6 +1,7 @@
 <script lang="ts">
   import FolderAccordion from "./FolderAccordion.svelte";
 
+  export let path: string;
   export let level: number;
   export let collapsed = true;
 
@@ -64,8 +65,12 @@
   //   };
   // }
 
-  async function fetchSubfolders(): Promise<string[]> {
-    return ["Sub folder", "Test"];
+  async function fetchSubfolders(): Promise<
+    { name: string; empty: boolean }[]
+  > {
+    const res = await fetch(`/dummy/folders?path=${path}`);
+    const json = await res.json();
+    return json.folders;
   }
 </script>
 
@@ -73,7 +78,13 @@
   {#await fetchSubfolders() then folders}
     <div>
       {#each folders as folder}
-        <FolderAccordion name={folder} icon="ri-folder-3-fill" {level} />
+        <FolderAccordion
+          displayName={folder.name}
+          icon="ri-folder-3-fill"
+          {level}
+          droppable={!folder.empty}
+          path={`${path}/${folder.name}`}
+        />
       {/each}
     </div>
   {/await}
