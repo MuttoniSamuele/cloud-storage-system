@@ -1,8 +1,11 @@
 <script lang="ts">
   import FolderAccordion from "./FolderAccordion.svelte";
+  import StoragePreview from "./StoragePreview.svelte";
 </script>
 
-<aside class="w-72 h-full overflow-x-hidden overflow-y-auto">
+<aside
+  class="flex flex-col justify-between w-72 h-full overflow-x-hidden overflow-y-auto"
+>
   <nav>
     <FolderAccordion
       displayName="My Cloud"
@@ -25,4 +28,7 @@
       droppable={false}
     />
   </nav>
+  <div class="mb-8">
+    <StoragePreview usedSpace={5.3} totalSpace={15} />
+  </div>
 </aside>

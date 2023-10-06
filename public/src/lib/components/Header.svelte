@@ -14,7 +14,7 @@
   <SearchBar />
   <div class="flex items-center">
     <DarkModeButton />
-    <IconButton icon="ri-settings-3-line" />
+    <IconButton icon="ri-settings-3-line" margin />
     {#if $account === null}
       <TextButton text="Log in" on:click={account.login} />
     {:else}

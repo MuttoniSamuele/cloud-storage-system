@@ -5,5 +5,6 @@
 
 <IconButton
   icon={$theme === "dark" ? "ri-moon-line" : "ri-sun-line"}
+  margin
   on:click={theme.toggle}
 />

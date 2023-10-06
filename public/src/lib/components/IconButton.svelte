@@ -1,9 +1,12 @@
 <script lang="ts">
   export let icon: string;
+  export let small = false;
+  export let margin = false;
 </script>
 
-<button class="mx-2" on:click>
+<button class={margin ? "mx-2" : ""} on:click>
   <i
-    class="{icon} ri-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+    class="{icon} {small ? 'ri-lg' : 'ri-xl'}
+      text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
   />
 </button>
