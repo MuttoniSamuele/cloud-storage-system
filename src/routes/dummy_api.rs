@@ -1,5 +1,17 @@
-use axum::{extract::Query, http::StatusCode, response::IntoResponse, routing::get, Json, Router};
+use axum::{
+    extract::Query,
+    http::StatusCode,
+    response::IntoResponse,
+    routing::{get, post},
+    Json, Router,
+};
 use serde::{Deserialize, Serialize};
+
+#[derive(Deserialize)]
+struct LoginData {
+    username: String,
+    password: String,
+}
 
 #[derive(Deserialize)]
 struct FoldersParams {
@@ -20,7 +32,17 @@ struct Folders {
 }
 
 pub fn dummy_api() -> Router {
-    Router::new().route("/dummy/folders", get(folders))
+    Router::new()
+        .route("/dummy/folders", get(folders))
+        .route("/dummy/login", post(login))
+}
+
+async fn login(Json(data): Json<LoginData>) -> impl IntoResponse {
+    if data.username == "User" && data.password == "password" {
+        StatusCode::OK
+    } else {
+        StatusCode::UNAUTHORIZED
+    }
 }
 
 async fn folders(Query(params): Query<FoldersParams>) -> impl IntoResponse {

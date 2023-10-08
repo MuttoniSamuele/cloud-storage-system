@@ -5,7 +5,7 @@ function initAccount() {
 
   return {
     subscribe,
-    login: (): void => set("User"),
+    login: (username: string): void => set(username),
   };
 }
 

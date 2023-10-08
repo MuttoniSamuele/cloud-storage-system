@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { account } from "../stores/account";
   import FolderAccordion from "./FolderAccordion.svelte";
   import StoragePreview from "./StoragePreview.svelte";
+
+  $: isLoggedIn = $account !== null;
 </script>
 
 <aside
@@ -11,11 +14,13 @@
       displayName="My Cloud"
       icon="ri-hard-drive-2-fill"
       path="/MyCloud"
+      droppable={isLoggedIn}
     />
     <FolderAccordion
       displayName="Shared with me"
       icon="ri-group-fill"
       path="/MyCloud"
+      droppable={isLoggedIn}
     />
     <FolderAccordion
       displayName="Recent"
@@ -29,6 +34,6 @@
     />
   </nav>
   <div class="mb-8">
-    <StoragePreview usedSpace={5.3} totalSpace={15} />
+    <StoragePreview usedSpace={isLoggedIn ? 5.3 : 0} totalSpace={15} />
   </div>
 </aside>
