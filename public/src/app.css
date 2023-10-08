@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  *:focus {
+    @apply outline-none;
+  }
+
+  *:focus-visible {
+    @apply outline-2 outline-indigo-600 -outline-offset-1;
+  }
+
   html, body, #app {
     @apply h-full;
   }

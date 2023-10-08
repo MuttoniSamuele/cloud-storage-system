@@ -4,7 +4,7 @@
 </script>
 
 <button
-  class="mx-2 px-2 py-1 rounded bg-indigo-600 text-zinc-100 hover:bg-indigo-700"
+  class="mx-2 px-2 py-1 rounded bg-indigo-600 text-zinc-100 hover:bg-indigo-700 focus-visible:outline-zinc-100"
   on:click
 >
   <i class="{icon === null ? '' : icon} ri-lg" />
