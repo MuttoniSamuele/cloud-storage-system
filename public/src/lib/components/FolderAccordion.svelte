@@ -1,20 +1,41 @@
 <script lang="ts">
+  import { account } from "../stores/account";
+  import { workingFolder } from "../stores/workingFolder";
   import FolderTree from "./FolderTree.svelte";
 
   export let icon: string | null = null;
   export let displayName: string;
-  export let path: string | undefined = undefined;
+  export let path: string;
   export let droppable = true;
   export let level = 0;
 
+  $: isSelected = $workingFolder === path;
+
   let collapsed = true;
+  $: if (isSelected) {
+    collapsed = false;
+  }
+
+  function handleSelect(): void {
+    if ($account !== null) {
+      workingFolder.change(path);
+      collapsed = false;
+    }
+  }
 </script>
 
 <div
-  class="h-8 relative whitespace-nowrap select-none text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700
+  class="h-8 relative rounded-lg whitespace-nowrap select-none text-zinc-700 dark:text-zinc-300
+    {isSelected
+    ? 'bg-indigo-600 bg-opacity-80'
+    : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}
     {level === 0 ? 'mt-3' : ''}"
 >
-  <button class="absolute top-1/2 -translate-y-1/2 w-full h-full text-start">
+  <button
+    class="absolute top-1/2 -translate-y-1/2 w-full h-full text-start
+      {isSelected ? 'contrast-focus' : ''}"
+    on:click={handleSelect}
+  >
     <span class="offset-folder-by-level" style="--level: {level};">
       <i class="{icon === null ? '' : icon} ri-lg" />
       {displayName}
@@ -22,7 +43,8 @@
   </button>
   {#if droppable}
     <button
-      class="absolute top-1/2 -translate-y-1/2 offset-arrow-by-level"
+      class="absolute top-1/2 -translate-y-1/2 offset-arrow-by-level
+        {isSelected ? 'contrast-focus' : ''}"
       style="--level: {level};"
       on:click={() => (collapsed = !collapsed)}
     >
@@ -33,7 +55,7 @@
     </button>
   {/if}
 </div>
-{#if droppable && path !== undefined}
+{#if droppable}
   <FolderTree level={level + 1} {collapsed} {path} />
 {/if}
 

@@ -5,6 +5,7 @@
   import SearchBar from "./SearchBar.svelte";
   import TextButton from "./TextButton.svelte";
   import { account } from "../stores/account";
+  import { workingFolder } from "../stores/workingFolder";
 
   async function login(username: string, password: string): Promise<void> {
     const options = {
@@ -15,6 +16,7 @@
     const res = await fetch("/dummy/login", options);
     if (res.ok) {
       account.login(username);
+      workingFolder.change("/MyCloud");
     }
   }
 </script>

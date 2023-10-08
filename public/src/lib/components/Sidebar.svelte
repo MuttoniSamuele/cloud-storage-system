@@ -19,17 +19,19 @@
     <FolderAccordion
       displayName="Shared with me"
       icon="ri-group-fill"
-      path="/MyCloud"
+      path="/Shared"
       droppable={isLoggedIn}
     />
     <FolderAccordion
       displayName="Recent"
       icon="ri-history-fill"
+      path="/Recent"
       droppable={false}
     />
     <FolderAccordion
       displayName="Trash"
       icon="ri-delete-bin-fill"
+      path="/Trash"
       droppable={false}
     />
   </nav>

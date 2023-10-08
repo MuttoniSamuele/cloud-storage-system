@@ -118,6 +118,16 @@ async fn folders(Query(params): Query<FoldersParams>) -> impl IntoResponse {
             }),
         )
             .into_response(),
+        "/Shared" => (
+            StatusCode::OK,
+            Json(Folders {
+                folders: vec![Folder {
+                    name: "Homework".to_string(),
+                    empty: true,
+                }],
+            }),
+        )
+            .into_response(),
         _ => StatusCode::NOT_FOUND.into_response(),
     }
 }

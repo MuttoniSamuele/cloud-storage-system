@@ -19,7 +19,13 @@
   input[type="search"]::-webkit-search-cancel-button,
   input[type="search"]::-webkit-search-results-button,
   input[type="search"]::-webkit-search-results-decoration {
-    -webkit-appearance:none;
+    -webkit-appearance: none;
+  }
+}
+
+@layer components {
+  .contrast-focus {
+    @apply focus-visible:outline-zinc-800 dark:focus-visible:outline-zinc-100
   }
 }
 
