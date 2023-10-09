@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Path from "../logic/Path";
   import { account } from "../stores/account";
   import FolderAccordion from "./FolderAccordion.svelte";
   import StoragePreview from "./StoragePreview.svelte";
@@ -13,25 +14,25 @@
     <FolderAccordion
       displayName="My Cloud"
       icon="ri-hard-drive-2-fill"
-      path="/MyCloud"
+      path={new Path("MyCloud")}
       droppable={isLoggedIn}
     />
     <FolderAccordion
       displayName="Shared with me"
       icon="ri-group-fill"
-      path="/Shared"
+      path={new Path("Shared")}
       droppable={isLoggedIn}
     />
     <FolderAccordion
       displayName="Recent"
       icon="ri-history-fill"
-      path="/Recent"
+      path={new Path("Recent")}
       droppable={false}
     />
     <FolderAccordion
       displayName="Trash"
       icon="ri-delete-bin-fill"
-      path="/Trash"
+      path={new Path("Trash")}
       droppable={false}
     />
   </nav>

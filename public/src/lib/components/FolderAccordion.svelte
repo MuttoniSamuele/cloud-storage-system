@@ -1,25 +1,27 @@
 <script lang="ts">
+  import type Path from "../logic/Path";
   import { account } from "../stores/account";
   import { workingFolder } from "../stores/workingFolder";
   import FolderTree from "./FolderTree.svelte";
 
   export let icon: string | null = null;
   export let displayName: string;
-  export let path: string;
+  export let path: Path;
   export let droppable = true;
   export let level = 0;
 
-  $: isSelected = $workingFolder === path;
-
   let collapsed = true;
-  $: if (isSelected) {
-    collapsed = false;
-  }
+
+  $: isSelected = $workingFolder === null ? false : $workingFolder.cmp(path);
+  // Check if it contains the selected folder and it isn't directly visible
+  $: containsSelected =
+    isSelected || !collapsed || $workingFolder === null
+      ? false
+      : $workingFolder.contains(path);
 
   function handleSelect(): void {
     if ($account !== null) {
-      workingFolder.change(path);
-      collapsed = false;
+      workingFolder.change(path.clone());
     }
   }
 </script>
@@ -27,7 +29,9 @@
 <div
   class="h-8 relative rounded-lg whitespace-nowrap select-none text-zinc-700 dark:text-zinc-300
     {isSelected
-    ? 'bg-indigo-600 bg-opacity-80'
+    ? 'bg-indigo-600 bg-opacity-70'
+    : containsSelected
+    ? 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-600 dark:hover:bg-zinc-500'
     : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}
     {level === 0 ? 'mt-3' : ''}"
 >
@@ -56,7 +60,7 @@
   {/if}
 </div>
 {#if droppable}
-  <FolderTree level={level + 1} {collapsed} {path} />
+  <FolderTree level={level + 1} {collapsed} path={path.clone()} />
 {/if}
 
 <style>

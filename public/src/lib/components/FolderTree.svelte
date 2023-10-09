@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type Path from "../logic/Path";
   import FolderAccordion from "./FolderAccordion.svelte";
 
-  export let path: string;
+  export let path: Path;
   export let level: number;
   export let collapsed = true;
 
@@ -68,7 +69,7 @@
   async function fetchSubfolders(): Promise<
     { name: string; empty: boolean }[]
   > {
-    const res = await fetch(`/dummy/folders?path=${path}`);
+    const res = await fetch(`/dummy/folders?path=${path.toString()}`);
     const json = await res.json();
     return json.folders;
   }
@@ -83,7 +84,12 @@
           icon="ri-folder-3-fill"
           {level}
           droppable={!folder.empty}
-          path={`${path}/${folder.name}`}
+          path={(() => {
+            // This is an IIFE that clones the path, adds a subfolder and returns it
+            const p = path.clone();
+            p.addSubFolder(folder.name);
+            return p;
+          })()}
         />
       {/each}
     </div>
