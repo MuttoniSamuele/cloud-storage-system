@@ -4,10 +4,10 @@
   import Sidebar from "./lib/components/Sidebar.svelte";
 </script>
 
-<main class="flex flex-col w-full h-full bg-zinc-50 dark:bg-zinc-850">
+<div class="flex flex-col w-full h-full bg-zinc-50 dark:bg-zinc-850">
   <Header />
   <div class="flex flex-1">
     <Sidebar />
     <Content />
   </div>
-</main>
+</div>

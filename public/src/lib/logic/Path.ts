@@ -16,6 +16,10 @@ export default class Path {
     }
   }
 
+  public get rawPath(): string[] {
+    return [...this.path];
+  }
+
   public addSubFolder(folder: string): void {
     this.path.push(folder);
   }
