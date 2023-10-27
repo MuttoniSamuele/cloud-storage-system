@@ -27,7 +27,7 @@
 </script>
 
 <div
-  class="h-8 relative rounded-lg whitespace-nowrap select-none text-zinc-700 dark:text-zinc-300
+  class="h-8 relative rounded-r-xl whitespace-nowrap select-none text-zinc-700 dark:text-zinc-300
     {isSelected
     ? 'bg-indigo-600 bg-opacity-70'
     : containsSelected

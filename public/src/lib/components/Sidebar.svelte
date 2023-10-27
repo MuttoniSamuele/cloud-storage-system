@@ -8,7 +8,7 @@
 </script>
 
 <aside
-  class="flex flex-col justify-between w-72 h-full overflow-x-hidden overflow-y-auto"
+  class="flex flex-col justify-between w-72 h-full overflow-x-hidden overflow-y-auto pr-3"
 >
   <nav>
     <FolderAccordion
