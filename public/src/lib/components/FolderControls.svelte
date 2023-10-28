@@ -6,16 +6,16 @@
   import TextButton from "./TextButton.svelte";
 </script>
 
-<section class="flex justify-between">
-  <div class="flex items-center">
+<div class="flex">
+  <div class="flex items-center whitespace-nowrap flex-1">
     <Navigation />
     <IconButton icon="ri-restart-line ml-1 mr-2" small />
     <Breadcrumb />
   </div>
-  <div class="flex items-center">
+  <div class="flex items-center whitespace-nowrap">
     <FilesLayoutToggle />
     <IconButton icon="ri-filter-line" margin />
     <TextButton icon="ri-upload-line" text="Upload" />
     <TextButton icon="ri-folder-add-line" text="New folder" />
   </div>
-</section>
+</div>

@@ -5,9 +5,7 @@
   import FolderControls from "./FolderControls.svelte";
 </script>
 
-<main
-  class="flex flex-col w-full h-full rounded-tl-lg bg-transparent text-zinc-700 dark:text-zinc-300"
->
+<main class="flex flex-col w-full h-full rounded-tl-lg bg-transparent">
   <ContentSection top>
     <FolderControls />
   </ContentSection>
@@ -16,7 +14,7 @@
       <FolderContent />
     {:else}
       <!-- TODO: -->
-      <span>Please login</span>
+      <span class="text-zinc-700 dark:text-zinc-300">Please login</span>
     {/if}
   </ContentSection>
 </main>

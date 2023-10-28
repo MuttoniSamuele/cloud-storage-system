@@ -7,7 +7,7 @@
     {#each $workingFolder.rawPath as folder, i}
       <a
         href="/"
-        class="px-2 py-1 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-700"
+        class="px-2 py-1 rounded-md text-zinc-700 hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-700"
       >
         {folder}
       </a>
