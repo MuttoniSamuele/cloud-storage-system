@@ -5,7 +5,6 @@
   let innerWidth: number | null = null;
   let fits: boolean = true;
   $: if (containerWidth && innerWidth) {
-    console.log(innerWidth, containerWidth);
     fits = innerWidth < containerWidth;
   }
 </script>
