@@ -7,9 +7,9 @@
 </script>
 
 <div class="flex">
-  <div class="flex items-center whitespace-nowrap flex-1">
+  <div class="flex items-center whitespace-nowrap flex-1 mr-2">
     <Navigation />
-    <IconButton icon="ri-restart-line ml-1 mr-2" small />
+    <IconButton icon="ri-restart-line" small margin />
     <Breadcrumb />
   </div>
   <div class="flex items-center whitespace-nowrap">
