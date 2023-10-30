@@ -15,7 +15,7 @@
   <div class="flex items-center whitespace-nowrap">
     <FilesLayoutToggle />
     <IconButton icon="ri-filter-line" margin />
-    <TextButton icon="ri-upload-line" text="Upload" />
-    <TextButton icon="ri-folder-add-line" text="New folder" />
+    <TextButton icon="ri-upload-line" text="Upload" marginX />
+    <TextButton icon="ri-folder-add-line" text="New folder" marginX />
   </div>
 </div>

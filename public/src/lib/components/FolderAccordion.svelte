@@ -36,7 +36,7 @@
     {level === 0 ? 'mt-3' : ''}"
 >
   <button
-    class="absolute top-1/2 -translate-y-1/2 w-full h-full text-start
+    class="absolute top-1/2 -translate-y-1/2 w-full h-full text-start overflow-hidden
       {isSelected ? 'contrast-focus' : ''}"
     on:click={handleSelect}
   >

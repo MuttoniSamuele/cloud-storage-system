@@ -3,6 +3,7 @@
   import ContentSection from "./ContentSection.svelte";
   import FolderContent from "./FolderContent.svelte";
   import FolderControls from "./FolderControls.svelte";
+  import NotLoggedIn from "./NotLoggedIn.svelte";
 </script>
 
 <main class="flex flex-col w-full h-full rounded-tl-lg bg-transparent">
@@ -13,8 +14,7 @@
     {#if $workingFolder !== null}
       <FolderContent />
     {:else}
-      <!-- TODO: -->
-      <span class="text-zinc-700 dark:text-zinc-300">Please login</span>
+      <NotLoggedIn />
     {/if}
   </ContentSection>
 </main>

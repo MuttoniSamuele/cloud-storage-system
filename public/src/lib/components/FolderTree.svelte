@@ -1,5 +1,6 @@
 <script lang="ts">
   import type Path from "../logic/Path";
+  import * as API from "../logic/api";
   import FolderAccordion from "./FolderAccordion.svelte";
 
   export let path: Path;
@@ -65,18 +66,10 @@
   //     },
   //   };
   // }
-
-  async function fetchSubfolders(): Promise<
-    { name: string; empty: boolean }[]
-  > {
-    const res = await fetch(`/dummy/folders?path=${path.toString()}`);
-    const json = await res.json();
-    return json.folders;
-  }
 </script>
 
 {#if !collapsed}
-  {#await fetchSubfolders() then folders}
+  {#await API.fetchSubfolders(path) then folders}
     <div>
       {#each folders as folder}
         <FolderAccordion
