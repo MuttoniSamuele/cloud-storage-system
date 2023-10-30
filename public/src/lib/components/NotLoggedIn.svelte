@@ -1,6 +1,6 @@
 <script lang="ts">
   import TextButton from "./TextButton.svelte";
-  import * as API from "../logic/api";
+  import API from "../logic/api";
 </script>
 
 <div class="flex justify-center items-center w-full h-full">

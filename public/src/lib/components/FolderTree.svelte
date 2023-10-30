@@ -1,6 +1,6 @@
 <script lang="ts">
   import type Path from "../logic/Path";
-  import * as API from "../logic/api";
+  import API from "../logic/api";
   import FolderAccordion from "./FolderAccordion.svelte";
 
   export let path: Path;

@@ -5,7 +5,7 @@
   import SearchBar from "./SearchBar.svelte";
   import TextButton from "./TextButton.svelte";
   import { account } from "../stores/account";
-  import * as API from "../logic/api";
+  import API from "../logic/api";
 </script>
 
 <header class="flex justify-between items-center w-full h-16 px-3">

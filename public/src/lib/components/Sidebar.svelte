@@ -8,9 +8,9 @@
 </script>
 
 <aside
-  class="flex flex-col justify-between w-72 h-full overflow-x-hidden overflow-y-auto pr-3"
+  class="flex flex-col justify-between w-72 h-full overflow-x-hidden overflow-y-auto"
 >
-  <nav>
+  <nav class="pr-3">
     <FolderAccordion
       displayName="My Cloud"
       icon="ri-hard-drive-2-fill"
