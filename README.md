@@ -43,4 +43,4 @@ In more detail (*system requirements*):
 
 ### Use case diagram
 
-![Use case diagram](./uml/use-case-diagram.jpg "Use case diagram")
+![Use case diagram](https://yuml.me/diagram/plain/usecase/[Visitor]%20-%20(Sign%20in),[Visitor]%20-%20(Log%20in),[Authenticated%20user]%20-%20(View%20files/folders),(View%20files/folders)%20%3C%20(Download),(View%20files/folders)%20%3C%20(Upload),(View%20files/folders)%20%3C%20(Share),(View%20files/folders)%20%3C%20(Delete),(View%20files/folders)%20%3C%20(Move),(Move)%20%3E%20(Owner%20permission),(Delete)%20%3E%20(Owner%20permission),[Authenticated%20user]%20-%20(View%20profile),(View%20profile)%20%3C%20(Manage%20profile),[Authenticated%20user]%20-%20(Edit%20settings),[Authenticated%20user]%20-%20(View%20storage%20information),(View%20storage%20information)%20%3C%20(Buy%20additional%20storage) "Use case diagram")

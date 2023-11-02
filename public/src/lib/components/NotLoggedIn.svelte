@@ -16,7 +16,7 @@
       on:click={() => API.login("User", "password")}
     />
     <TextButton
-      text="Sign in"
+      text="Sign up"
       marginY
       wide
       on:click={() => API.login("User", "password")}
