@@ -1,9 +1,11 @@
 <script lang="ts">
+  export let small = false;
 </script>
 
 <button class="mx-2">
   <img
-    class="w-8 h-8 rounded-full object-cover"
+    class="rounded-full object-cover
+      {small ? 'w-5 h-5' : 'w-8 h-8'}"
     src="default-pfp.png"
     alt="Profile"
   />
