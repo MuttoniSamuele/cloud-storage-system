@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { preferences } from "../stores/preferences";
   import IconButton from "./IconButton.svelte";
-  let isGrid = false;
 </script>
 
 <IconButton
-  icon={isGrid ? "ri-layout-row-line" : "ri-layout-grid-line"}
+  icon={$preferences.filesLayout === "grid"
+    ? "ri-layout-row-line"
+    : "ri-layout-grid-line"}
   margin
-  on:click={() => (isGrid = !isGrid)}
+  on:click={() => preferences.toggleFilesLayout()}
 />

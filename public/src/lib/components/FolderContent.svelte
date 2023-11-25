@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import FilesGrid from "./FilesGrid.svelte";
   import FilesRows from "./FilesRows.svelte";
+  import { preferences } from "../stores/preferences";
 
   let availableHeight: number | null = null;
 
@@ -21,7 +22,10 @@
 
 <div class="h-full overflow-y-auto" bind:offsetHeight={availableHeight}>
   <div style="height: {availableHeight !== null ? availableHeight : 0}px;">
-    <!-- <FilesGrid /> -->
-    <FilesRows showOwners />
+    {#if $preferences.filesLayout === "grid"}
+      <FilesGrid />
+    {:else}
+      <FilesRows showOwners />
+    {/if}
   </div>
 </div>
