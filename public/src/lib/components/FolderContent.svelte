@@ -22,6 +22,6 @@
 <div class="h-full overflow-y-auto" bind:offsetHeight={availableHeight}>
   <div style="height: {availableHeight !== null ? availableHeight : 0}px;">
     <!-- <FilesGrid /> -->
-    <FilesRows />
+    <FilesRows showOwners />
   </div>
 </div>

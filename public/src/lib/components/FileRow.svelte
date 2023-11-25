@@ -1,7 +1,6 @@
 <script lang="ts">
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
-  import ProfilePicture from "./ProfilePicture.svelte";
 
   export let name: string;
   export let lastModified: Date | null = null;
@@ -10,7 +9,7 @@
 </script>
 
 <li
-  class="flex items-center px-5 py-2 select-none border-b dark:border-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+  class="flex items-center px-5 py-2 select-none border-b border-zinc-300 dark:border-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-700"
 >
   <i
     class="{isFolder
