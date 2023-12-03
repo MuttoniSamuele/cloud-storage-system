@@ -1,7 +1,15 @@
 # Cloud Storage System
 
-A cloud-based system that allows users to store their files on the cloud.
-This project is only meant as an assignment.
+> ### ***Store, share and protect your files from anywhere, at any time.***
+
+This cloud-based system will give you all the tools you need to manage your files efficiently, with a user-friendly interface designed for seamless navigation and organization. From uploading and organizing to sharing and collaborating, you will be able to handle your files effortlessly, maximising your workflow and productivity.
+
+The key benefits of the service are:
+- **Unlimited Storage**: Store an unlimited amount of data without worrying about running out of space, allowing you to scale your storage needs without any limit.
+- **Data Protection**: Your files are safe with advanced security measures guaranteeing the safety, privacy, and accessibility of your data.
+- **Ease Of Use**: Satisfy all your needs with just a few clicks thanks to a user-friendly interface designed with usability and accessibility in mind.
+
+***Note:** This project is only meant as an assignment.*
 
 
 ## The problem
