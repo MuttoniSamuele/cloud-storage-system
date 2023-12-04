@@ -1,8 +1,17 @@
 import { account } from "../stores/account";
 import { workingFolder } from "../stores/workingFolder";
 import Path from "./Path";
+import File from "./File"
+import type { FileObject, FileType } from "./FileObject";
 
 namespace API {
+  export class ApiError extends Error {
+    constructor(msg: string) {
+      super(msg);
+      this.name = "ApiError";
+    }
+  }
+
   export async function login(username: string, password: string): Promise<void> {
     const options = {
       method: "POST",
@@ -16,12 +25,30 @@ namespace API {
     }
   }
 
-  export async function fetchSubfolders(path: Path): Promise<
-    { name: string; empty: boolean }[]
-  > {
-    const res = await fetch(`/dummy/folders?path=${path.toString()}`);
+  export async function getFiles(path: Path, { foldersOnly, filter }: { foldersOnly?: boolean, filter?: FileType }): Promise<File[]> {
+    const url = new URL("/dummy/files", window.location.origin);
+    url.searchParams.set("path", path.toString());
+    url.searchParams.set("folders-only", (foldersOnly || false).toString());
+    if (filter !== undefined) {
+      url.searchParams.set("types", filter);
+    }
+    const res = await fetch(url.href);
+    if (!res.ok) {
+      throw new ApiError(`Failed to fetch the files: code ${res.status}`);
+    }
     const json = await res.json();
-    return json.folders;
+    // TODO: Add controls for object properties
+    if (!Array.isArray(json.files)) {
+      throw new ApiError(`Failed to parse fetched files`);
+    }
+    const files: FileObject[] = json.files;
+    return files.map((f) => new File(
+      f.name,
+      f.isFolder,
+      f.fileType,
+      f.owner,
+      f.lastModified
+    ));
   }
 }
 
