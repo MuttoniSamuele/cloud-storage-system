@@ -1,10 +1,12 @@
 <script lang="ts">
+  import type { FileType } from "../logic/FileObject";
   import IconButton from "./IconButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
 
   export let name: string;
   export let isFolder = false;
-  export let showOwner = false;
+  export let fileType: FileType;
+  export let owner: string | null = null;
 </script>
 
 <div
@@ -28,11 +30,11 @@
   <div class="absolute right-2">
     <IconButton icon="ri-more-line" />
   </div>
-  {#if showOwner}
+  {#if owner !== null}
     <div
       class="absolute {isFolder ? 'right-5 bottom-11' : 'right-6 bottom-10'} "
     >
-      <ProfilePicture small />
+      <ProfilePicture username={owner} small />
     </div>
   {/if}
 </div>

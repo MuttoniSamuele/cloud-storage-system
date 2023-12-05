@@ -6,5 +6,5 @@ export interface FileObject {
   readonly isFolder: boolean;
   readonly fileType: FileType;
   readonly owner: string;
-  readonly lastModified: Date;
+  readonly lastModified: string;
 }

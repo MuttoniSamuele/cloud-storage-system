@@ -1,11 +1,13 @@
 <script lang="ts">
+  import type { FileType } from "../logic/FileObject";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
 
   export let name: string;
-  export let lastModified: Date | null = null;
   export let isFolder = false;
+  export let fileType: FileType;
   export let owner: string | null = null;
+  export let lastModified: string | null;
 </script>
 
 <li
@@ -21,13 +23,7 @@
     {name}
   </FileRowField>
   <FileRowField size="small" secondary>
-    {lastModified !== null
-      ? lastModified.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        })
-      : "--"}
+    {lastModified !== null ? lastModified : "--"}
   </FileRowField>
   {#if owner !== null}
     <FileRowField size="medium" secondary>

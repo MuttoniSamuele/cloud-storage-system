@@ -63,8 +63,6 @@ async fn login(Json(data): Json<LoginData>) -> impl IntoResponse {
 }
 
 async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
-    println!("Filter: {:?}", params.filter);
-    println!("FoldersOnly: {:?}", params.folders_only);
     let all_files = vec![
         File {
             name: "Homework".to_string(),

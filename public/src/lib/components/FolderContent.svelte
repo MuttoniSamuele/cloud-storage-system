@@ -3,6 +3,8 @@
   import FilesGrid from "./FilesGrid.svelte";
   import FilesRows from "./FilesRows.svelte";
   import { preferences } from "../stores/preferences";
+  import { workingFolder } from "../stores/workingFolder";
+  import API from "../logic/api";
 
   let availableHeight: number | null = null;
 
@@ -18,14 +20,16 @@
   });
 </script>
 
-<!-- TODO: add file icons for images and text files -->
-
 <div class="h-full overflow-y-auto" bind:offsetHeight={availableHeight}>
   <div style="height: {availableHeight !== null ? availableHeight : 0}px;">
-    {#if $preferences.filesLayout === "grid"}
-      <FilesGrid />
-    {:else}
-      <FilesRows showOwners />
+    {#if $workingFolder !== null}
+      {#await API.getFiles($workingFolder) then files}
+        {#if $preferences.filesLayout === "grid"}
+          <FilesGrid {files} showOwners />
+        {:else}
+          <FilesRows {files} showOwners />
+        {/if}
+      {/await}
     {/if}
   </div>
 </div>

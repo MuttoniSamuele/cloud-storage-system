@@ -6,7 +6,7 @@ export default class File implements FileObject {
     public readonly isFolder: boolean,
     public readonly fileType: FileType,
     public readonly owner: string,
-    public readonly lastModified: Date
+    public readonly lastModified: string
   ) { }
 
   get isFile() {

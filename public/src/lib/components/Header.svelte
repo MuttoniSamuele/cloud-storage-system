@@ -23,7 +23,7 @@
         on:click={() => API.login("User", "password")}
       />
     {:else}
-      <ProfilePicture />
+      <ProfilePicture username={$account} />
     {/if}
   </div>
 </header>

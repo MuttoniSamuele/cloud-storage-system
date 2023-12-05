@@ -25,7 +25,7 @@ namespace API {
     }
   }
 
-  export async function getFiles(path: Path, { foldersOnly, filter }: { foldersOnly?: boolean, filter?: FileType }): Promise<File[]> {
+  export async function getFiles(path: Path, { foldersOnly, filter }: { foldersOnly?: boolean, filter?: FileType } = {}): Promise<File[]> {
     const url = new URL("/dummy/files", window.location.origin);
     url.searchParams.set("path", path.toString());
     url.searchParams.set("folders-only", (foldersOnly || false).toString());
