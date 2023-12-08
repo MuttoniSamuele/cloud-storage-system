@@ -17,7 +17,7 @@ struct LoginData {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Copy)]
 enum FileType {
-    Unknown,
+    Unsupported,
     Text,
     Image,
     Empty,
@@ -81,7 +81,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
         File {
             name: "app.exe".to_string(),
             is_folder: false,
-            file_type: FileType::Unknown,
+            file_type: FileType::Unsupported,
             owner: "User".to_string(),
             last_modified: "2003/5/2".to_string(),
         },
@@ -95,7 +95,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
         File {
             name: "Book.pdf".to_string(),
             is_folder: false,
-            file_type: FileType::Unknown,
+            file_type: FileType::Unsupported,
             owner: "Another user".to_string(),
             last_modified: "2005/3/3".to_string(),
         },
@@ -130,7 +130,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
         File {
             name: "3d print.stl".to_string(),
             is_folder: false,
-            file_type: FileType::Unknown,
+            file_type: FileType::Unsupported,
             owner: "User".to_string(),
             last_modified: "2004/12/12".to_string(),
         },

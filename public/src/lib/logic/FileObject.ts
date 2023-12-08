@@ -1,4 +1,4 @@
-export type FileType = "Unknown" | "Text" | "Image" | "Empty" | "NotEmpty";
+export type FileType = "Unsupported" | "Text" | "Image" | "Empty" | "NotEmpty";
 
 
 export interface FileObject {
