@@ -1,4 +1,4 @@
-import type { FileType } from "./IFile";
+import type { FileType } from "./fileUtils";
 import type IFile from "./IFile";
 
 export default class File implements IFile {

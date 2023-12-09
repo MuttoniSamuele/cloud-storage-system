@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FileType } from "../logic/IFile";
+  import type { FileType } from "../logic/fileUtils";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
 

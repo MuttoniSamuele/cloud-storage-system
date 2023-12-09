@@ -1,6 +1,5 @@
 import type FileBase from "./FileBase";
-
-export type FileType = "Unsupported" | "Text" | "Image";
+import type { FileType } from "./fileUtils";
 
 export default interface IFile extends FileBase {
   readonly fileType: FileType,

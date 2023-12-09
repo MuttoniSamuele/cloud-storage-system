@@ -3,6 +3,7 @@
   import FileRowField from "./FileRowField.svelte";
   import File from "../logic/File";
   import type Folder from "../logic/Folder";
+  import { cmpFileNames } from "../logic/fileUtils";
 
   export let files: File[];
   export let folders: Folder[];
@@ -21,7 +22,7 @@
       <FileRowField size="medium" secondary isHeader>Owner</FileRowField>
     {/if}
   </div>
-  {#each folders as folder}
+  {#each folders.sort(cmpFileNames) as folder}
     <FileRow
       name={folder.name}
       owner={showOwners ? folder.owner : null}
@@ -29,7 +30,7 @@
       isFolder
     />
   {/each}
-  {#each files as file}
+  {#each files.sort(cmpFileNames) as file}
     <FileRow
       name={file.name}
       fileType={file.fileType}

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type Path from "../logic/Path";
   import API from "../logic/api";
+  import { cmpFileNames } from "../logic/fileUtils";
   import FolderAccordion from "./FolderAccordion.svelte";
 
   export let path: Path;
@@ -13,7 +14,7 @@
 {#if !collapsed}
   {#await API.getFiles(path, { foldersOnly: true }) then { folders }}
     <div>
-      {#each folders as folder}
+      {#each folders.sort(cmpFileNames) as folder}
         <FolderAccordion
           displayName={folder.name}
           icon="ri-folder-3-fill"

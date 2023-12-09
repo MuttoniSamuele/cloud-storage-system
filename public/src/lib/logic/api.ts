@@ -1,7 +1,7 @@
 import { account } from "../stores/account";
 import { workingFolder } from "../stores/workingFolder";
 import Path from "./Path";
-import type { FileType } from "./IFile";
+import type { FileType } from "./fileUtils";
 import type IFile from "./IFile";
 import File from "./File"
 import type IFolder from "./IFolder";
