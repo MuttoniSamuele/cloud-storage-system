@@ -23,11 +23,11 @@
 <div class="h-full overflow-y-auto" bind:offsetHeight={availableHeight}>
   <div style="height: {availableHeight !== null ? availableHeight : 0}px;">
     {#if $workingFolder !== null}
-      {#await API.getFiles($workingFolder) then files}
+      {#await API.getFiles($workingFolder) then { files, folders }}
         {#if $preferences.filesLayout === "grid"}
-          <FilesGrid {files} showOwners />
+          <FilesGrid {files} {folders} showOwners />
         {:else}
-          <FilesRows {files} showOwners />
+          <FilesRows {files} {folders} showOwners />
         {/if}
       {/await}
     {/if}

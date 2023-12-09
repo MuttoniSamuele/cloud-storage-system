@@ -2,8 +2,10 @@
   import FileRow from "./FileRow.svelte";
   import FileRowField from "./FileRowField.svelte";
   import File from "../logic/File";
+  import type Folder from "../logic/Folder";
 
   export let files: File[];
+  export let folders: Folder[];
   export let showOwners = false;
 </script>
 
@@ -19,10 +21,17 @@
       <FileRowField size="medium" secondary isHeader>Owner</FileRowField>
     {/if}
   </div>
+  {#each folders as folder}
+    <FileRow
+      name={folder.name}
+      owner={showOwners ? folder.owner : null}
+      lastModified={folder.lastModified}
+      isFolder
+    />
+  {/each}
   {#each files as file}
     <FileRow
       name={file.name}
-      isFolder={file.isFolder}
       fileType={file.fileType}
       owner={showOwners ? file.owner : null}
       lastModified={file.lastModified}

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { FileType } from "../logic/FileObject";
+  import type { FileType } from "../logic/IFile";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
 
   export let name: string;
   export let isFolder = false;
-  export let fileType: FileType;
+  export let fileType: FileType | null = null;
   export let owner: string | null = null;
   export let lastModified: string | null;
 </script>

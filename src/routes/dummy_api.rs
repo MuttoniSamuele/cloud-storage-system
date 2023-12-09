@@ -15,13 +15,11 @@ struct LoginData {
     password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Copy)]
+#[derive(Serialize, Deserialize, PartialEq, Clone, Copy)]
 enum FileType {
     Unsupported,
     Text,
     Image,
-    Empty,
-    NotEmpty,
 }
 
 #[derive(Deserialize)]
@@ -32,20 +30,36 @@ struct FilesParams {
     filter: Option<FileType>,
 }
 
+// TODO: Implement "new" method for child structs of FileBase
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct File {
+struct FileBase {
     name: String,
-    is_folder: bool,
-    file_type: FileType,
     owner: String,
     last_modified: String,
 }
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
+struct File {
+    #[serde(flatten)]
+    base: FileBase,
+    file_type: FileType,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Folder {
+    #[serde(flatten)]
+    base: FileBase,
+    is_empty: bool,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Files {
     files: Vec<File>,
+    folders: Vec<Folder>,
 }
 
 pub fn dummy_api() -> Router {
@@ -65,86 +79,104 @@ async fn login(Json(data): Json<LoginData>) -> impl IntoResponse {
 async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
     let all_files = vec![
         File {
-            name: "Homework".to_string(),
-            is_folder: true,
-            file_type: FileType::NotEmpty,
-            owner: "User".to_string(),
-            last_modified: "2003/1/2".to_string(),
-        },
-        File {
-            name: "games".to_string(),
-            is_folder: true,
-            file_type: FileType::NotEmpty,
-            owner: "Another user".to_string(),
-            last_modified: "2003/1/2".to_string(),
-        },
-        File {
-            name: "app.exe".to_string(),
-            is_folder: false,
+            base: FileBase {
+                name: "app.exe".to_string(),
+                owner: "User".to_string(),
+                last_modified: "2003/5/2".to_string(),
+            },
             file_type: FileType::Unsupported,
-            owner: "User".to_string(),
-            last_modified: "2003/5/2".to_string(),
         },
         File {
-            name: "my essay.txt".to_string(),
-            is_folder: false,
+            base: FileBase {
+                name: "my essay.txt".to_string(),
+                owner: "User".to_string(),
+                last_modified: "2003/1/8".to_string(),
+            },
             file_type: FileType::Text,
-            owner: "User".to_string(),
-            last_modified: "2003/1/8".to_string(),
         },
         File {
-            name: "Book.pdf".to_string(),
-            is_folder: false,
+            base: FileBase {
+                name: "Book.pdf".to_string(),
+                owner: "Another user".to_string(),
+                last_modified: "2005/3/3".to_string(),
+            },
             file_type: FileType::Unsupported,
-            owner: "Another user".to_string(),
-            last_modified: "2005/3/3".to_string(),
         },
         File {
-            name: "New folder".to_string(),
-            is_folder: true,
-            file_type: FileType::Empty,
-            owner: "User".to_string(),
-            last_modified: "12005/2/1".to_string(),
-        },
-        File {
-            name: "mountains.png".to_string(),
-            is_folder: false,
+            base: FileBase {
+                name: "mountains.png".to_string(),
+                owner: "Another user".to_string(),
+                last_modified: "2005/5/5".to_string(),
+            },
             file_type: FileType::Image,
-            owner: "Another user".to_string(),
-            last_modified: "2005/5/5".to_string(),
         },
         File {
-            name: "cat.jpg".to_string(),
-            is_folder: false,
+            base: FileBase {
+                name: "cat.jpg".to_string(),
+                owner: "User".to_string(),
+                last_modified: "2005/9/8".to_string(),
+            },
             file_type: FileType::Image,
-            owner: "User".to_string(),
-            last_modified: "2005/9/8".to_string(),
         },
         File {
-            name: "todo.txt".to_string(),
-            is_folder: false,
+            base: FileBase {
+                name: "todo.txt".to_string(),
+                owner: "User".to_string(),
+                last_modified: "2005/9/8".to_string(),
+            },
             file_type: FileType::Text,
-            owner: "User".to_string(),
-            last_modified: "2005/9/8".to_string(),
         },
         File {
-            name: "3d print.stl".to_string(),
-            is_folder: false,
+            base: FileBase {
+                name: "3d print.stl".to_string(),
+                owner: "User".to_string(),
+                last_modified: "2004/12/12".to_string(),
+            },
             file_type: FileType::Unsupported,
-            owner: "User".to_string(),
-            last_modified: "2004/12/12".to_string(),
         },
     ];
-    let files: Vec<File> = all_files
-        .into_iter()
-        .filter(|f| {
-            let folders_only = params.folders_only.unwrap_or(false);
-            let folders_condition = !folders_only || f.is_folder;
-            let filter_condition = params
-                .filter
-                .map_or(true, |file_type| f.file_type == file_type);
-            folders_condition && filter_condition
-        })
-        .collect();
-    (StatusCode::OK, Json(Files { files }))
+    let all_folders = vec![
+        Folder {
+            base: FileBase {
+                name: "Homework".to_string(),
+                owner: "User".to_string(),
+                last_modified: "2003/1/2".to_string(),
+            },
+            is_empty: false,
+        },
+        Folder {
+            base: FileBase {
+                name: "games".to_string(),
+                owner: "Another user".to_string(),
+                last_modified: "2003/1/2".to_string(),
+            },
+            is_empty: false,
+        },
+        Folder {
+            base: FileBase {
+                name: "New folder".to_string(),
+                owner: "User".to_string(),
+                last_modified: "12005/2/1".to_string(),
+            },
+            is_empty: true,
+        },
+    ];
+    let files: Vec<File> = if params.folders_only.unwrap_or(false) {
+        Vec::new()
+    } else {
+        all_files
+            .into_iter()
+            .filter(|f| {
+                params
+                    .filter
+                    .map_or(true, |file_type| f.file_type == file_type)
+            })
+            .collect()
+    };
+    let folders: Vec<Folder> = if params.filter.is_none() {
+        all_folders
+    } else {
+        Vec::new()
+    };
+    (StatusCode::OK, Json(Files { files, folders }))
 }
