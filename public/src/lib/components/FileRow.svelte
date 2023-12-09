@@ -7,7 +7,17 @@
   export let isFolder = false;
   export let fileType: FileType | null = null;
   export let owner: string | null = null;
-  export let lastModified: string | null;
+  export let lastModified: number;
+
+  function formatLastModified(): string {
+    return new Intl.DateTimeFormat(navigator.language, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(lastModified * 1000));
+  }
 </script>
 
 <li
@@ -25,7 +35,7 @@
     {name}
   </FileRowField>
   <FileRowField size="small" secondary>
-    {lastModified !== null ? lastModified : "--"}
+    {formatLastModified()}
   </FileRowField>
   {#if owner !== null}
     <FileRowField size="medium" secondary>

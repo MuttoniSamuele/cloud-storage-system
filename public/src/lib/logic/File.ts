@@ -9,7 +9,7 @@ export default class File implements IFile {
     name: string,
     public readonly fileType: FileType,
     public readonly owner: string,
-    public readonly lastModified: string
+    public readonly lastModified: number
   ) {
     const fileNameArr = name.split(".");
     // Check if there was at least a "."

@@ -1,4 +1,7 @@
-use std::vec;
+use std::{
+    time::{SystemTime, UNIX_EPOCH},
+    vec,
+};
 
 use axum::{
     extract::Query,
@@ -36,7 +39,7 @@ struct FilesParams {
 struct FileBase {
     name: String,
     owner: String,
-    last_modified: String,
+    last_modified: u64,
 }
 
 #[derive(Serialize)]
@@ -82,7 +85,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "app.exe".to_string(),
                 owner: "User".to_string(),
-                last_modified: "2003/5/2".to_string(),
+                last_modified: get_time_now(),
             },
             file_type: FileType::Unsupported,
         },
@@ -90,7 +93,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "my essay.txt".to_string(),
                 owner: "User".to_string(),
-                last_modified: "2003/1/8".to_string(),
+                last_modified: get_time_now(),
             },
             file_type: FileType::Text,
         },
@@ -98,7 +101,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "Book.pdf".to_string(),
                 owner: "Another user".to_string(),
-                last_modified: "2005/3/3".to_string(),
+                last_modified: get_time_now(),
             },
             file_type: FileType::Unsupported,
         },
@@ -106,7 +109,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "mountains.png".to_string(),
                 owner: "Another user".to_string(),
-                last_modified: "2005/5/5".to_string(),
+                last_modified: get_time_now(),
             },
             file_type: FileType::Image,
         },
@@ -114,7 +117,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "cat.jpg".to_string(),
                 owner: "User".to_string(),
-                last_modified: "2005/9/8".to_string(),
+                last_modified: get_time_now(),
             },
             file_type: FileType::Image,
         },
@@ -122,7 +125,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "todo.txt".to_string(),
                 owner: "User".to_string(),
-                last_modified: "2005/9/8".to_string(),
+                last_modified: get_time_now(),
             },
             file_type: FileType::Text,
         },
@@ -130,7 +133,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "3d print.stl".to_string(),
                 owner: "User".to_string(),
-                last_modified: "2004/12/12".to_string(),
+                last_modified: get_time_now(),
             },
             file_type: FileType::Unsupported,
         },
@@ -140,7 +143,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "Homework".to_string(),
                 owner: "User".to_string(),
-                last_modified: "2003/1/2".to_string(),
+                last_modified: get_time_now(),
             },
             is_empty: false,
         },
@@ -148,7 +151,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "games".to_string(),
                 owner: "Another user".to_string(),
-                last_modified: "2003/1/2".to_string(),
+                last_modified: get_time_now(),
             },
             is_empty: false,
         },
@@ -156,7 +159,7 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
             base: FileBase {
                 name: "New folder".to_string(),
                 owner: "User".to_string(),
-                last_modified: "12005/2/1".to_string(),
+                last_modified: get_time_now(),
             },
             is_empty: true,
         },
@@ -179,4 +182,11 @@ async fn files(Query(params): Query<FilesParams>) -> impl IntoResponse {
         Vec::new()
     };
     (StatusCode::OK, Json(Files { files, folders }))
+}
+
+fn get_time_now() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
 }
