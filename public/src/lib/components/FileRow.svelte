@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { FileType } from "../logic/fileUtils";
+  import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
 
@@ -16,7 +16,9 @@
   <i
     class="{isFolder
       ? 'ri-folder-3-fill text-indigo-400'
-      : 'ri-file-2-fill text-zinc-400 dark:text-zinc-200'}
+      : `${fileTypeToIcon(
+          fileType || 'Unsupported',
+        )} text-zinc-400 dark:text-zinc-200`}
         ri-lg"
   />
   <FileRowField size="large">
