@@ -8,6 +8,8 @@
   }
 
   onMount(() => {
+    // Don't even ask me why, I don't know anymore
+    availableHeight = null;
     window.addEventListener("resize", handleWindowResize);
     return () => {
       window.removeEventListener("resize", handleWindowResize);
