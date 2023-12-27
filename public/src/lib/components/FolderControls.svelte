@@ -3,13 +3,14 @@
   import FilesLayoutToggle from "./FilesLayoutToggle.svelte";
   import IconButton from "./IconButton.svelte";
   import Navigation from "./Navigation.svelte";
+  import RefreshButton from "./RefreshButton.svelte";
   import TextButton from "./TextButton.svelte";
 </script>
 
 <div class="flex">
   <div class="flex items-center whitespace-nowrap flex-1 mr-2">
     <Navigation />
-    <IconButton icon="ri-restart-line" small margin />
+    <RefreshButton />
     <Breadcrumb />
   </div>
   <div class="flex items-center whitespace-nowrap">

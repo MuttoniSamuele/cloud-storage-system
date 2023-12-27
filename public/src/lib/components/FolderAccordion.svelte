@@ -1,7 +1,7 @@
 <script lang="ts">
   import type Path from "../logic/Path";
   import { account } from "../stores/account";
-  import { workingFolder } from "../stores/workingFolder";
+  import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
   import FolderTree from "./FolderTree.svelte";
 
   export let icon: string | null = null;
@@ -10,18 +10,19 @@
   export let droppable = true;
   export let level = 0;
 
+  $: currentPath = getCurrentPath($pathsHistory);
   let collapsed = true;
 
-  $: isSelected = $workingFolder === null ? false : $workingFolder.cmp(path);
+  $: isSelected = currentPath === null ? false : currentPath.cmp(path);
   // Check if it contains the selected folder and it isn't directly visible
   $: containsSelected =
-    isSelected || !collapsed || $workingFolder === null
+    isSelected || !collapsed || currentPath === null
       ? false
-      : $workingFolder.contains(path);
+      : currentPath.contains(path);
 
   function handleSelect(): void {
     if ($account !== null) {
-      workingFolder.change(path.clone());
+      pathsHistory.push(path);
     }
   }
 </script>
@@ -31,8 +32,8 @@
     {isSelected
     ? 'bg-indigo-600 bg-opacity-70'
     : containsSelected
-    ? 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-600 dark:hover:bg-zinc-500'
-    : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}
+      ? 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-600 dark:hover:bg-zinc-500'
+      : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}
     {level === 0 ? 'mt-3' : ''}"
 >
   <button

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { workingFolder } from "../stores/workingFolder";
+  import { account } from "../stores/account";
   import ContentSection from "./ContentSection.svelte";
   import FolderContent from "./FolderContent.svelte";
   import FolderControls from "./FolderControls.svelte";
@@ -11,10 +11,10 @@
     <FolderControls />
   </ContentSection>
   <ContentSection>
-    {#if $workingFolder !== null}
-      <FolderContent />
-    {:else}
+    {#if $account === null}
       <NotLoggedIn />
+    {:else}
+      <FolderContent />
     {/if}
   </ContentSection>
 </main>

@@ -1,11 +1,11 @@
 import { account } from "../stores/account";
-import { workingFolder } from "../stores/workingFolder";
 import Path from "./Path";
 import type { FileType } from "./fileUtils";
 import type IFile from "./IFile";
 import File from "./File"
 import type IFolder from "./IFolder";
 import Folder from "./Folder";
+import { pathsHistory } from "../stores/pathsHistory";
 
 namespace API {
   export class ApiError extends Error {
@@ -24,7 +24,7 @@ namespace API {
     const res = await fetch("/dummy/login", options);
     if (res.ok) {
       account.login(username);
-      workingFolder.change(new Path("MyCloud"));
+      pathsHistory.push(new Path("MyCloud"));
     }
   }
 

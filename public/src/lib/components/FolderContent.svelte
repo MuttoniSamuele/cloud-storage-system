@@ -2,23 +2,25 @@
   import FilesGrid from "./FilesGrid.svelte";
   import FilesRows from "./FilesRows.svelte";
   import { preferences } from "../stores/preferences";
-  import { workingFolder } from "../stores/workingFolder";
   import API from "../logic/api";
   import OverflowYAuto from "./OverflowYAuto.svelte";
   import type Folder from "../logic/Folder";
   import type File from "../logic/File";
+  import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
+
+  $: currentPath = getCurrentPath($pathsHistory);
 
   function handleFileSelect({ detail: file }: CustomEvent<File>): void {
     // TODO: Open file
   }
 
   function handleFolderSelect({ detail: folder }: CustomEvent<Folder>): void {
-    if (folder.isEmpty || $workingFolder === null) {
+    if (folder.isEmpty || currentPath === null) {
       return;
     }
-    const newPath = $workingFolder.clone();
+    const newPath = currentPath.clone();
     newPath.addSubFolder(folder.name);
-    workingFolder.change(newPath);
+    pathsHistory.push(newPath);
   }
 
   function handleMore(): void {
@@ -27,8 +29,10 @@
 </script>
 
 <OverflowYAuto>
-  {#if $workingFolder !== null}
-    {#await API.getFiles($workingFolder) then { files, folders }}
+  <!-- TODO: Handle when currentPath is null and the user is logged in
+  (it shows a blank page at the moment) -->
+  {#if currentPath !== null}
+    {#await API.getFiles(currentPath) then { files, folders }}
       {#if $preferences.filesLayout === "grid"}
         <FilesGrid
           {files}
