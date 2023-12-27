@@ -5,13 +5,16 @@
   import type Folder from "../logic/Folder";
   import { cmpFileNames } from "../logic/fileUtils";
   import { createEventDispatcher } from "svelte";
-  import type FileBase from "../logic/FileBase";
 
   export let files: File[];
   export let folders: Folder[];
   export let showOwners = false;
 
-  const dispatch = createEventDispatcher<{ select: FileBase; more: void }>();
+  const dispatch = createEventDispatcher<{
+    fileSelect: File;
+    folderSelect: Folder;
+    more: void;
+  }>();
 </script>
 
 <div class="relative">
@@ -32,7 +35,7 @@
       owner={showOwners ? folder.owner : null}
       lastModified={folder.lastModified}
       isFolder
-      on:select={() => dispatch("select", folder)}
+      on:select={() => dispatch("folderSelect", folder)}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -42,7 +45,7 @@
       fileType={file.fileType}
       owner={showOwners ? file.owner : null}
       lastModified={file.lastModified}
-      on:select={() => dispatch("select", file)}
+      on:select={() => dispatch("fileSelect", file)}
       on:more={() => dispatch("more")}
     />
   {/each}

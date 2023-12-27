@@ -52,7 +52,6 @@
       style="--level: {level};"
       on:click={() => (collapsed = !collapsed)}
     >
-      <!-- TODO: transition-transform -->
       <div class={collapsed ? "rotate-0" : "rotate-90"}>
         <i class="ri-arrow-drop-right-fill ri-xl" />
       </div>

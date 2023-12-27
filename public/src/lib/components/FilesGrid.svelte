@@ -10,7 +10,11 @@
   export let folders: Folder[];
   export let showOwners = false;
 
-  const dispatch = createEventDispatcher<{ select: FileBase; more: void }>();
+  const dispatch = createEventDispatcher<{
+    fileSelect: File;
+    folderSelect: Folder;
+    more: void;
+  }>();
 </script>
 
 <div
@@ -22,7 +26,7 @@
       name={folder.name}
       owner={showOwners ? folder.owner : null}
       isFolder
-      on:select={() => dispatch("select", folder)}
+      on:select={() => dispatch("folderSelect", folder)}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -31,7 +35,7 @@
       name={file.displayName}
       fileType={file.fileType}
       owner={showOwners ? file.owner : null}
-      on:select={() => dispatch("select", file)}
+      on:select={() => dispatch("fileSelect", file)}
       on:more={() => dispatch("more")}
     />
   {/each}

@@ -5,14 +5,24 @@
   import { workingFolder } from "../stores/workingFolder";
   import API from "../logic/api";
   import OverflowYAuto from "./OverflowYAuto.svelte";
-  import type FileBase from "../logic/FileBase";
+  import type Folder from "../logic/Folder";
+  import type File from "../logic/File";
 
-  function handleSelect({ detail: file }: CustomEvent<FileBase>): void {
-    console.log(file.name);
+  function handleFileSelect({ detail: file }: CustomEvent<File>): void {
+    // TODO: Open file
+  }
+
+  function handleFolderSelect({ detail: folder }: CustomEvent<Folder>): void {
+    if (folder.isEmpty || $workingFolder === null) {
+      return;
+    }
+    const newPath = $workingFolder.clone();
+    newPath.addSubFolder(folder.name);
+    workingFolder.change(newPath);
   }
 
   function handleMore(): void {
-    console.log("More");
+    // TODO: Open right-click menu
   }
 </script>
 
@@ -24,7 +34,8 @@
           {files}
           {folders}
           showOwners
-          on:select={handleSelect}
+          on:fileSelect={handleFileSelect}
+          on:folderSelect={handleFolderSelect}
           on:more={handleMore}
         />
       {:else}
@@ -32,7 +43,8 @@
           {files}
           {folders}
           showOwners
-          on:select={handleSelect}
+          on:fileSelect={handleFileSelect}
+          on:folderSelect={handleFolderSelect}
           on:more={handleMore}
         />
       {/if}
