@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
   import IconButton from "./IconButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
@@ -7,11 +8,17 @@
   export let isFolder = false;
   export let fileType: FileType | null = null;
   export let owner: string | null = null;
+
+  const dispatch = createEventDispatcher<{ select: void; more: void }>();
 </script>
 
 <div
   class="relative flex flex-col w-32 h-32 p-2 rounded-sm hover:bg-zinc-200 dark:hover:bg-zinc-700"
 >
+  <button
+    class="absolute top-0 left-0 w-full h-full cursor-default"
+    on:click={() => dispatch("select")}
+  ></button>
   <div class="flex justify-center items-center w-full flex-1">
     <i
       class="{isFolder
@@ -30,7 +37,7 @@
     </span>
   </div>
   <div class="absolute right-2">
-    <IconButton icon="ri-more-line" />
+    <IconButton icon="ri-more-line" on:click={() => dispatch("more")} />
   </div>
   {#if owner !== null}
     <div

@@ -3,10 +3,14 @@
   import File from "../logic/File";
   import type Folder from "../logic/Folder";
   import { cmpFileNames } from "../logic/fileUtils";
+  import { createEventDispatcher } from "svelte";
+  import type FileBase from "../logic/FileBase";
 
   export let files: File[];
   export let folders: Folder[];
   export let showOwners = false;
+
+  const dispatch = createEventDispatcher<{ select: FileBase; more: void }>();
 </script>
 
 <div
@@ -18,13 +22,17 @@
       name={folder.name}
       owner={showOwners ? folder.owner : null}
       isFolder
+      on:select={() => dispatch("select", folder)}
+      on:more={() => dispatch("more")}
     />
   {/each}
   {#each files.sort(cmpFileNames) as file}
     <FileCell
-      name={file.name}
+      name={file.displayName}
       fileType={file.fileType}
       owner={showOwners ? file.owner : null}
+      on:select={() => dispatch("select", file)}
+      on:more={() => dispatch("more")}
     />
   {/each}
 </div>

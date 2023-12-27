@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
@@ -8,6 +9,8 @@
   export let fileType: FileType | null = null;
   export let owner: string | null = null;
   export let lastModified: number;
+
+  const dispatch = createEventDispatcher<{ select: void; more: void }>();
 
   function formatLastModified(): string {
     return new Intl.DateTimeFormat(navigator.language, {
@@ -21,8 +24,12 @@
 </script>
 
 <li
-  class="flex items-center px-5 py-2 select-none border-b border-zinc-300 dark:border-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+  class="relative flex items-center px-5 py-2 select-none border-b border-zinc-300 dark:border-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-700"
 >
+  <button
+    class="absolute top-0 left-0 w-full h-full cursor-default"
+    on:click={() => dispatch("select")}
+  ></button>
   <i
     class="{isFolder
       ? 'ri-folder-3-fill text-indigo-400'
@@ -42,7 +49,8 @@
       {owner}
     </FileRowField>
   {/if}
-  <div class="ml-auto">
-    <IconButton icon="ri-more-line" />
+  <div class="w-[24px] ml-auto"></div>
+  <div class="absolute right-4">
+    <IconButton icon="ri-more-line" on:click={() => dispatch("more")} />
   </div>
 </li>
