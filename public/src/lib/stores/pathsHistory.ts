@@ -4,12 +4,22 @@ import type Path from "../logic/Path";
 type PathHistory = { paths: (Path | null)[], index: number };
 
 function initPathsHistory() {
+  // The history of paths is stored as a combination of an array of Path and
+  // the index of the current path in said array.
   const { subscribe, update } = writable<PathHistory>({ paths: [null], index: 0 });
 
   return {
     subscribe,
     push: (path: Path): void => {
       update(({ paths, index }) => {
+        const prevPath = getCurrentPath({ paths, index });
+        // Don't store the path if it's the same as the previous one
+        if (prevPath !== null && prevPath.cmp(path)) {
+          return {
+            paths: paths.slice(0, index + 1),
+            index
+          };
+        }
         return {
           paths: [...paths.slice(0, index + 1), path.clone()],
           index: index + 1
@@ -34,7 +44,7 @@ function initPathsHistory() {
   };
 }
 
-export function getCurrentPath({ paths, index }: PathHistory) {
+export function getCurrentPath({ paths, index }: PathHistory): Path | null {
   return paths[index]?.clone() || null;
 }
 

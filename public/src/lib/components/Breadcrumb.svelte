@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Path from "../logic/Path";
   import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
 
   let containerWidth: number | null = null;
@@ -22,12 +23,18 @@
       bind:offsetWidth={innerWidth}
     >
       {#each currentPath.rawPath as folder, i}
-        <a
-          href="/"
+        <button
           class="px-2 py-1 rounded-md text-zinc-700 hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-700"
+          on:click={() => {
+            if (currentPath === null) {
+              return;
+            }
+            const newRawPath = currentPath.rawPath.slice(0, i + 1);
+            pathsHistory.push(new Path(newRawPath));
+          }}
         >
           {folder}
-        </a>
+        </button>
         {#if i < currentPath.rawPath.length - 1}
           <i
             class="ri-arrow-right-s-line ri-1x -ml-1 text-zinc-400 dark:text-zinc-500"
