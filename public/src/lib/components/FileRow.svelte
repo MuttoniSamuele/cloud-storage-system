@@ -3,6 +3,7 @@
   import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
+  import { clickOutside } from "../actions/clickOutside";
 
   export let name: string;
   export let isFolder = false;
@@ -11,7 +12,10 @@
   export let lastModified: number;
   export let selected = false;
 
-  const dispatch = createEventDispatcher<{ more: void }>();
+  const dispatch = createEventDispatcher<{
+    clickOutside: MouseEvent;
+    more: void;
+  }>();
 
   function formatLastModified(): string {
     return new Intl.DateTimeFormat(navigator.language, {
@@ -34,6 +38,7 @@
     class="absolute top-0 left-0 w-full h-full cursor-default"
     on:click
     on:dblclick
+    use:clickOutside={(e) => dispatch("clickOutside", e)}
   ></button>
   <i
     class="{isFolder

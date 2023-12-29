@@ -3,6 +3,7 @@
   import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
   import IconButton from "./IconButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
+  import { clickOutside } from "../actions/clickOutside";
 
   export let name: string;
   export let isFolder = false;
@@ -10,7 +11,10 @@
   export let owner: string | null = null;
   export let selected = false;
 
-  const dispatch = createEventDispatcher<{ more: void }>();
+  const dispatch = createEventDispatcher<{
+    clickOutside: MouseEvent;
+    more: void;
+  }>();
 </script>
 
 <div
@@ -23,6 +27,7 @@
     class="absolute top-0 left-0 w-full h-full cursor-default"
     on:click
     on:dblclick
+    use:clickOutside={(e) => dispatch("clickOutside", e)}
   ></button>
   <div class="flex justify-center items-center w-full flex-1">
     <i

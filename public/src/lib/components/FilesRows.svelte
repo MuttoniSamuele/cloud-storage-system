@@ -14,8 +14,10 @@
   const dispatch = createEventDispatcher<{
     fileClick: File;
     fileDblClick: File;
+    fileClickOutside: { file: File; e: MouseEvent };
     folderClick: Folder;
     folderDblClick: Folder;
+    folderClickOutside: { folder: Folder; e: MouseEvent };
     more: void;
   }>();
 </script>
@@ -41,6 +43,8 @@
       isFolder
       on:click={() => dispatch("folderClick", folder)}
       on:dblclick={() => dispatch("folderDblClick", folder)}
+      on:clickOutside={({ detail: e }) =>
+        dispatch("folderClickOutside", { folder, e })}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -53,6 +57,8 @@
       selected={selectedFiles.has(file)}
       on:click={() => dispatch("fileClick", file)}
       on:dblclick={() => dispatch("fileDblClick", file)}
+      on:clickOutside={({ detail: e }) =>
+        dispatch("fileClickOutside", { file, e })}
       on:more={() => dispatch("more")}
     />
   {/each}
