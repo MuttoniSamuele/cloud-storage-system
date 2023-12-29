@@ -4,15 +4,17 @@
   import type Folder from "../logic/Folder";
   import { cmpFileNames } from "../logic/fileUtils";
   import { createEventDispatcher } from "svelte";
-  import type FileBase from "../logic/FileBase";
 
   export let files: File[];
   export let folders: Folder[];
+  export let selectedFiles: Set<File | Folder>;
   export let showOwners = false;
 
   const dispatch = createEventDispatcher<{
-    fileSelect: File;
-    folderSelect: Folder;
+    fileClick: File;
+    fileDblClick: File;
+    folderClick: Folder;
+    folderDblClick: Folder;
     more: void;
   }>();
 </script>
@@ -25,8 +27,10 @@
     <FileCell
       name={folder.name}
       owner={showOwners ? folder.owner : null}
+      selected={selectedFiles.has(folder)}
       isFolder
-      on:select={() => dispatch("folderSelect", folder)}
+      on:click={() => dispatch("folderClick", folder)}
+      on:dblclick={() => dispatch("folderDblClick", folder)}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -34,8 +38,10 @@
     <FileCell
       name={file.displayName}
       fileType={file.fileType}
+      selected={selectedFiles.has(file)}
       owner={showOwners ? file.owner : null}
-      on:select={() => dispatch("fileSelect", file)}
+      on:click={() => dispatch("fileClick", file)}
+      on:dblclick={() => dispatch("fileDblClick", file)}
       on:more={() => dispatch("more")}
     />
   {/each}

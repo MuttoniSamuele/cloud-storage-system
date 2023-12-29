@@ -8,11 +8,14 @@
 
   export let files: File[];
   export let folders: Folder[];
+  export let selectedFiles: Set<File | Folder>;
   export let showOwners = false;
 
   const dispatch = createEventDispatcher<{
-    fileSelect: File;
-    folderSelect: Folder;
+    fileClick: File;
+    fileDblClick: File;
+    folderClick: Folder;
+    folderDblClick: Folder;
     more: void;
   }>();
 </script>
@@ -34,8 +37,10 @@
       name={folder.name}
       owner={showOwners ? folder.owner : null}
       lastModified={folder.lastModified}
+      selected={selectedFiles.has(folder)}
       isFolder
-      on:select={() => dispatch("folderSelect", folder)}
+      on:click={() => dispatch("folderClick", folder)}
+      on:dblclick={() => dispatch("folderDblClick", folder)}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -45,7 +50,9 @@
       fileType={file.fileType}
       owner={showOwners ? file.owner : null}
       lastModified={file.lastModified}
-      on:select={() => dispatch("fileSelect", file)}
+      selected={selectedFiles.has(file)}
+      on:click={() => dispatch("fileClick", file)}
+      on:dblclick={() => dispatch("fileDblClick", file)}
       on:more={() => dispatch("more")}
     />
   {/each}

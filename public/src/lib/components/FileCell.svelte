@@ -8,16 +8,21 @@
   export let isFolder = false;
   export let fileType: FileType | null = null;
   export let owner: string | null = null;
+  export let selected = false;
 
-  const dispatch = createEventDispatcher<{ select: void; more: void }>();
+  const dispatch = createEventDispatcher<{ more: void }>();
 </script>
 
 <div
-  class="relative flex flex-col w-32 h-32 p-2 rounded-sm hover:bg-zinc-200 dark:hover:bg-zinc-700"
+  class="relative flex flex-col w-32 h-32 p-2 rounded-sm
+  {selected
+    ? 'bg-zinc-300 dark:bg-zinc-600'
+    : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}"
 >
   <button
     class="absolute top-0 left-0 w-full h-full cursor-default"
-    on:click={() => dispatch("select")}
+    on:click
+    on:dblclick
   ></button>
   <div class="flex justify-center items-center w-full flex-1">
     <i

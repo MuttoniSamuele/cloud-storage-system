@@ -9,8 +9,9 @@
   export let fileType: FileType | null = null;
   export let owner: string | null = null;
   export let lastModified: number;
+  export let selected = false;
 
-  const dispatch = createEventDispatcher<{ select: void; more: void }>();
+  const dispatch = createEventDispatcher<{ more: void }>();
 
   function formatLastModified(): string {
     return new Intl.DateTimeFormat(navigator.language, {
@@ -24,11 +25,15 @@
 </script>
 
 <li
-  class="relative flex items-center px-5 py-2 select-none border-b border-zinc-300 dark:border-zinc-600 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+  class="relative flex items-center px-5 py-2 select-none border-b border-zinc-300 dark:border-zinc-600
+  {selected
+    ? 'bg-zinc-300 dark:bg-zinc-600'
+    : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}"
 >
   <button
     class="absolute top-0 left-0 w-full h-full cursor-default"
-    on:click={() => dispatch("select")}
+    on:click
+    on:dblclick
   ></button>
   <i
     class="{isFolder
