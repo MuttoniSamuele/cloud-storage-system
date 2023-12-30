@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FilesGrid from "./FilesGrid.svelte";
+  import FilesGrid, { type ClickOutsideEvent } from "./FilesGrid.svelte";
   import FilesRows from "./FilesRows.svelte";
   import { preferences } from "../stores/preferences";
   import API from "../logic/api";
@@ -9,6 +9,7 @@
   import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
 
   let contentElement: HTMLElement | null = null;
+  // Set of files and folders that have been currently selected
   let selectedFiles = new Set<File | Folder>();
 
   $: currentPath = getCurrentPath($pathsHistory);
@@ -21,51 +22,36 @@
     return x >= left && x <= right && y >= top && y <= bottom;
   }
 
-  function selectFile(file: File | Folder): void {
+  function handleClick({ detail: file }: CustomEvent<File | Folder>): void {
+    // Select the file/folder
     selectedFiles.add(file);
     selectedFiles = new Set(selectedFiles);
   }
 
-  function deselectFile(file: File | Folder): void {
-    selectedFiles.delete(file);
+  function handleClickOutside({
+    detail: { f, e },
+  }: CustomEvent<ClickOutsideEvent>): void {
+    // Ignore if the click happened outside of FolderContent
+    if (!isPointInContentElement(e.x, e.y)) {
+      return;
+    }
+    // Deselect the file/folder
+    selectedFiles.delete(f);
     selectedFiles = new Set(selectedFiles);
-  }
-
-  function handleFileClick({ detail: file }: CustomEvent<File>): void {
-    selectFile(file);
   }
 
   function handleFileDblClick({ detail: file }: CustomEvent<File>): void {
     // TODO: Open file
   }
 
-  function handleFileClickOutside({
-    detail: { file, e },
-  }: CustomEvent<{ file: File; e: MouseEvent }>): void {
-    if (isPointInContentElement(e.x, e.y)) {
-      deselectFile(file);
-    }
-  }
-
-  function handleFolderClick({ detail: folder }: CustomEvent<Folder>): void {
-    selectFile(folder);
-  }
-
   function handleFolderDblClick({ detail: folder }: CustomEvent<Folder>): void {
     if (folder.isEmpty || currentPath === null) {
       return;
     }
+    // Enter the folder
     const newPath = currentPath.clone();
     newPath.addSubFolder(folder.name);
     pathsHistory.push(newPath);
-  }
-
-  function handleFolderClickOutside({
-    detail: { folder, e },
-  }: CustomEvent<{ folder: Folder; e: MouseEvent }>): void {
-    if (isPointInContentElement(e.x, e.y)) {
-      deselectFile(folder);
-    }
   }
 
   function handleMore(): void {
@@ -85,12 +71,12 @@
             {folders}
             {selectedFiles}
             showOwners
-            on:fileClick={handleFileClick}
+            on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
-            on:fileClickOutside={handleFileClickOutside}
-            on:folderClick={handleFolderClick}
+            on:fileClickOutside={handleClickOutside}
+            on:folderClick={handleClick}
             on:folderDblClick={handleFolderDblClick}
-            on:folderClickOutside={handleFolderClickOutside}
+            on:folderClickOutside={handleClickOutside}
             on:more={handleMore}
           />
         {:else}
@@ -99,12 +85,12 @@
             {folders}
             {selectedFiles}
             showOwners
-            on:fileClick={handleFileClick}
+            on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
-            on:fileClickOutside={handleFileClickOutside}
-            on:folderClick={handleFolderClick}
+            on:fileClickOutside={handleClickOutside}
+            on:folderClick={handleClick}
             on:folderDblClick={handleFolderDblClick}
-            on:folderClickOutside={handleFolderClickOutside}
+            on:folderClickOutside={handleClickOutside}
             on:more={handleMore}
           />
         {/if}

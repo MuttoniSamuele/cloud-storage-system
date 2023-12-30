@@ -1,5 +1,17 @@
-<script lang="ts">
+<script lang="ts" context="module">
   import { createEventDispatcher } from "svelte";
+
+  // This is stuff that FileCell and FileRow have in common.
+
+  export function createFileEventDispatcher() {
+    return createEventDispatcher<{
+      clickOutside: MouseEvent;
+      more: void;
+    }>();
+  }
+</script>
+
+<script lang="ts">
   import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
   import IconButton from "./IconButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
@@ -11,10 +23,7 @@
   export let owner: string | null = null;
   export let selected = false;
 
-  const dispatch = createEventDispatcher<{
-    clickOutside: MouseEvent;
-    more: void;
-  }>();
+  const dispatch = createFileEventDispatcher();
 </script>
 
 <div

@@ -1,24 +1,38 @@
+<script lang="ts" context="module">
+  import { createEventDispatcher } from "svelte";
+
+  // This is stuff that FilesGrid and FilesRows have in common.
+
+  export interface ClickOutsideEvent<T = File | Folder> {
+    f: T;
+    e: MouseEvent;
+  }
+
+  export function createFilesEventDispatcher() {
+    return createEventDispatcher<{
+      fileClick: File;
+      fileDblClick: File;
+      fileClickOutside: ClickOutsideEvent<File>;
+      folderClick: Folder;
+      folderDblClick: Folder;
+      folderClickOutside: ClickOutsideEvent<Folder>;
+      more: void;
+    }>();
+  }
+</script>
+
 <script lang="ts">
   import FileCell from "./FileCell.svelte";
   import File from "../logic/File";
   import type Folder from "../logic/Folder";
   import { cmpFileNames } from "../logic/fileUtils";
-  import { createEventDispatcher } from "svelte";
 
   export let files: File[];
   export let folders: Folder[];
   export let selectedFiles: Set<File | Folder>;
   export let showOwners = false;
 
-  const dispatch = createEventDispatcher<{
-    fileClick: File;
-    fileDblClick: File;
-    fileClickOutside: { file: File; e: MouseEvent };
-    folderClick: Folder;
-    folderDblClick: Folder;
-    folderClickOutside: { folder: Folder; e: MouseEvent };
-    more: void;
-  }>();
+  const dispatch = createFilesEventDispatcher();
 </script>
 
 <div
@@ -34,7 +48,7 @@
       on:click={() => dispatch("folderClick", folder)}
       on:dblclick={() => dispatch("folderDblClick", folder)}
       on:clickOutside={({ detail: e }) =>
-        dispatch("folderClickOutside", { folder, e })}
+        dispatch("folderClickOutside", { f: folder, e })}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -47,7 +61,7 @@
       on:click={() => dispatch("fileClick", file)}
       on:dblclick={() => dispatch("fileDblClick", file)}
       on:clickOutside={({ detail: e }) =>
-        dispatch("fileClickOutside", { file, e })}
+        dispatch("fileClickOutside", { f: file, e })}
       on:more={() => dispatch("more")}
     />
   {/each}

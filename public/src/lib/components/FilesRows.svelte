@@ -4,22 +4,14 @@
   import File from "../logic/File";
   import type Folder from "../logic/Folder";
   import { cmpFileNames } from "../logic/fileUtils";
-  import { createEventDispatcher } from "svelte";
+  import { createFilesEventDispatcher } from "./FilesGrid.svelte";
 
   export let files: File[];
   export let folders: Folder[];
   export let selectedFiles: Set<File | Folder>;
   export let showOwners = false;
 
-  const dispatch = createEventDispatcher<{
-    fileClick: File;
-    fileDblClick: File;
-    fileClickOutside: { file: File; e: MouseEvent };
-    folderClick: Folder;
-    folderDblClick: Folder;
-    folderClickOutside: { folder: Folder; e: MouseEvent };
-    more: void;
-  }>();
+  const dispatch = createFilesEventDispatcher();
 </script>
 
 <div class="relative">
@@ -44,7 +36,7 @@
       on:click={() => dispatch("folderClick", folder)}
       on:dblclick={() => dispatch("folderDblClick", folder)}
       on:clickOutside={({ detail: e }) =>
-        dispatch("folderClickOutside", { folder, e })}
+        dispatch("folderClickOutside", { f: folder, e })}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -58,7 +50,7 @@
       on:click={() => dispatch("fileClick", file)}
       on:dblclick={() => dispatch("fileDblClick", file)}
       on:clickOutside={({ detail: e }) =>
-        dispatch("fileClickOutside", { file, e })}
+        dispatch("fileClickOutside", { f: file, e })}
       on:more={() => dispatch("more")}
     />
   {/each}

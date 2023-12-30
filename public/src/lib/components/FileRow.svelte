@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
   import { clickOutside } from "../actions/clickOutside";
+  import { createFileEventDispatcher } from "./FileCell.svelte";
 
   export let name: string;
   export let isFolder = false;
@@ -12,10 +12,7 @@
   export let lastModified: number;
   export let selected = false;
 
-  const dispatch = createEventDispatcher<{
-    clickOutside: MouseEvent;
-    more: void;
-  }>();
+  const dispatch = createFileEventDispatcher();
 
   function formatLastModified(): string {
     return new Intl.DateTimeFormat(navigator.language, {
