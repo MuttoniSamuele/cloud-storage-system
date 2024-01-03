@@ -7,7 +7,7 @@
   import TextButton from "./TextButton.svelte";
 </script>
 
-<div class="flex">
+<div class="flex m-4">
   <div class="flex items-center whitespace-nowrap flex-1 mr-2">
     <Navigation />
     <RefreshButton />

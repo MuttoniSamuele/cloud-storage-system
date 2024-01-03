@@ -45,7 +45,7 @@
   }
 
   function handleFolderDblClick({ detail: folder }: CustomEvent<Folder>): void {
-    if (folder.isEmpty || currentPath === null) {
+    if (currentPath === null) {
       return;
     }
     // Enter the folder
@@ -59,10 +59,10 @@
   }
 </script>
 
-<div class="w-full h-full" bind:this={contentElement}>
+<div class="w-full h-full p-4" bind:this={contentElement}>
   <OverflowYAuto>
     <!-- TODO: Handle when currentPath is null and the user is logged in
-  (it shows a blank page at the moment) -->
+      (it shows a blank page at the moment) -->
     {#if currentPath !== null}
       {#await API.getFiles(currentPath) then { files, folders }}
         {#if $preferences.filesLayout === "grid"}
