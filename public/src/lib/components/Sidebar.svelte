@@ -23,12 +23,12 @@
           displayName="Shared with me"
           icon="ri-group-fill"
           path={new Path("Shared")}
-          droppable={isLoggedIn}
+          droppable={false}
         />
         <FolderAccordion
-          displayName="Recent"
-          icon="ri-history-fill"
-          path={new Path("Recent")}
+          displayName="Starred"
+          icon="ri-star-fill"
+          path={new Path("Starred")}
           droppable={false}
         />
         <FolderAccordion
