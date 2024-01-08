@@ -56,3 +56,13 @@ In more detail (*system requirements*):
 ### Work breakdown structure (WBS)
 
 ![WBS](./diagrams/wbs.png "WBS")
+
+
+## User stories
+
+- **As an** unregistered user, **I want** to create a new account on the platform **so that** I can access and use the service.
+- **As a** registered user, **I want** to upload files to my storage online **so that** I can access them from anywhere at anytime.
+- **As a** registered user, **I want** to download files from my storage online **so that** I can use them on my local machine.
+- **As a** registered user, **I want** to search for files, **so that** I can quickly retrieve the ones I need.
+- **As a** registered user, **I want** to share some of my files and folders **so that** specific users can access them.
+- **As a** registered user, **I want** to buy more storage **so that** I can save a larger amount a files online.
