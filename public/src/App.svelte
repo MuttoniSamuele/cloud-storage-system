@@ -1,6 +1,7 @@
 <script lang="ts">
   import Content from "./lib/components/Content.svelte";
   import Header from "./lib/components/Header.svelte";
+  import ModalHandler from "./lib/components/ModalHandler.svelte";
   import Sidebar from "./lib/components/Sidebar.svelte";
 </script>
 
@@ -11,3 +12,4 @@
     <Content />
   </div>
 </div>
+<ModalHandler />

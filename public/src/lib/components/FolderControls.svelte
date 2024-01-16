@@ -3,6 +3,7 @@
   import FilesLayoutToggle from "./FilesLayoutToggle.svelte";
   import IconButton from "./IconButton.svelte";
   import Navigation from "./Navigation.svelte";
+  import NewFolderButton from "./NewFolderButton.svelte";
   import RefreshButton from "./RefreshButton.svelte";
   import TextButton from "./TextButton.svelte";
 </script>
@@ -17,6 +18,6 @@
     <FilesLayoutToggle />
     <IconButton icon="ri-filter-line" margin />
     <TextButton icon="ri-upload-line" text="Upload" marginX />
-    <TextButton icon="ri-folder-add-line" text="New folder" marginX />
+    <NewFolderButton />
   </div>
 </div>
