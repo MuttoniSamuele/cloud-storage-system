@@ -42,7 +42,7 @@
     <h2 class="text-xl font-bold">
       {title}
     </h2>
-    <div class="my-5">
+    <div class="mt-5">
       <slot />
     </div>
   </div>

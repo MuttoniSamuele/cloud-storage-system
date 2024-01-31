@@ -1,6 +1,8 @@
 <script lang="ts">
-  import Modal from "./Modal.svelte";
   import { modalState, ModalState } from "../stores/modalState";
+  import Modal from "./Modal.svelte";
+  import TextButton from "./TextButton.svelte";
+  import TextInput from "./TextInput.svelte";
 </script>
 
 <Modal
@@ -8,5 +10,8 @@
   size="sm"
   on:requestClose={() => modalState.set(ModalState.Closed)}
 >
-  <input class="w-full" />
+  <TextInput wfull />
+  <div class="flex justify-end w-full mt-5 mb-1">
+    <TextButton text="Confirm" />
+  </div>
 </Modal>
