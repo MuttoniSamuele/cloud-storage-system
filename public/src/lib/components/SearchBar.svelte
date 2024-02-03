@@ -1,5 +1,7 @@
 <script lang="ts">
   let value: string = "";
+
+  $: showCancelBtn = value.length > 0;
 </script>
 
 <div
@@ -12,21 +14,17 @@
   </button>
   <input
     type="search"
-    class="block w-full h-full px-2 bg-transparent hover:bg-zinc-300 dark:hover:bg-zinc-600"
+    class="block w-full h-full px-2 bg-transparent hover:bg-zinc-300 dark:hover:bg-zinc-600
+      {!showCancelBtn ? 'rounded-r-md' : ''}"
     placeholder="Search"
     bind:value
   />
-  {#if value.length > 0}
+  {#if showCancelBtn}
     <button
-      class="h-full px-1 hover:bg-zinc-300 dark:hover:bg-zinc-600"
+      class="h-full px-1 rounded-r-md hover:bg-zinc-300 dark:hover:bg-zinc-600"
       on:click={() => (value = "")}
     >
       <i class="ri-close-line ri-lg" />
     </button>
   {/if}
-  <button
-    class="h-full px-2 rounded-r-md hover:bg-zinc-300 dark:hover:bg-zinc-600"
-  >
-    <i class="ri-equalizer-line ri-lg" />
-  </button>
 </div>
