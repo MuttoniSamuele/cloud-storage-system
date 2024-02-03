@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 
 export enum ModalState {
+  Login,
   TextInput,
   Closed
 }

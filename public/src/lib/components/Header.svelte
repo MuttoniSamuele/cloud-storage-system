@@ -5,7 +5,7 @@
   import SearchBar from "./SearchBar.svelte";
   import TextButton from "./TextButton.svelte";
   import { account } from "../stores/account";
-  import API from "../logic/api";
+  import { ModalState, modalState } from "../stores/modalState";
 </script>
 
 <header class="flex justify-between items-center w-full h-16 px-3">
@@ -20,7 +20,7 @@
       <TextButton
         text="Log in"
         marginX
-        on:click={() => API.login("User", "password")}
+        on:click={() => modalState.set(ModalState.Login)}
       />
     {:else}
       <ProfilePicture username={$account} />

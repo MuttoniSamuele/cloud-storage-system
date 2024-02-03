@@ -1,6 +1,7 @@
 <script lang="ts">
   import TextButton from "./TextButton.svelte";
   import API from "../logic/api";
+  import { ModalState, modalState } from "../stores/modalState";
 </script>
 
 <div class="flex justify-center items-center w-full h-full">
@@ -13,7 +14,7 @@
       text="Log in"
       marginY
       wide
-      on:click={() => API.login("User", "password")}
+      on:click={() => modalState.set(ModalState.Login)}
     />
     <TextButton
       text="Sign up"
