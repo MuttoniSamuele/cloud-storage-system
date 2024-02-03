@@ -20,7 +20,7 @@
       text="Sign up"
       marginY
       wide
-      on:click={() => API.login("User", "password")}
+      on:click={() => modalState.set(ModalState.Signup)}
     />
   </div>
 </div>

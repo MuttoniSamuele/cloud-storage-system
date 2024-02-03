@@ -7,12 +7,19 @@
 </script>
 
 <Modal
-  title="Log in"
+  title="Sign up"
   size="sm"
   on:requestClose={() => modalState.set(ModalState.Closed)}
 >
   <TextInput
-    id="login-email"
+    id="signup-username"
+    label="Username"
+    placeholder="Username"
+    wfull
+    marginY
+  />
+  <TextInput
+    id="signup-email"
     type="email"
     label="Email"
     placeholder="Email"
@@ -20,29 +27,29 @@
     marginY
   />
   <TextInput
-    id="login-password"
+    id="signup-password"
     type="password"
     label="Password"
     placeholder="Password"
     wfull
     marginY
   />
-  <div class="flex flex-col items-center w-full mt-6 mb-1">
+  <TextInput
+    id="signup-repeat-password"
+    type="password"
+    label="Repeat password"
+    placeholder="Repeat password"
+    wfull
+    marginY
+  />
+  <div class="flex flex-col items-center w-full mt-6 mb-3">
     <TextButton
-      text="Log in"
+      text="Sign up"
       wide
       on:click={() => {
         API.login("User", "password");
         modalState.set(ModalState.Closed);
       }}
     />
-    <div class="mt-5 mb-2 text-zinc-800 dark:text-zinc-200">
-      Don't have an account?
-      <TextButton
-        text="Sign up"
-        isLink
-        on:click={() => modalState.set(ModalState.Signup)}
-      />
-    </div>
   </div>
 </Modal>
