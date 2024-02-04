@@ -3,7 +3,6 @@
   import Header from "./lib/components/Header.svelte";
   import ModalHandler from "./lib/components/ModalHandler.svelte";
   import Sidebar from "./lib/components/Sidebar.svelte";
-  import FolderContextMenu from "./lib/components/FolderContextMenu.svelte";
 </script>
 
 <div class="flex flex-col w-full h-full bg-zinc-50 dark:bg-zinc-850">
@@ -14,4 +13,3 @@
   </div>
 </div>
 <ModalHandler />
-<FolderContextMenu />

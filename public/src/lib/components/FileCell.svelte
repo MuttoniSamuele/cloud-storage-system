@@ -35,6 +35,7 @@
   <button
     class="absolute top-0 left-0 w-full h-full cursor-default"
     on:click
+    on:contextmenu|preventDefault
     on:dblclick
     use:clickOutside={(e) => dispatch("clickOutside", e)}
   ></button>

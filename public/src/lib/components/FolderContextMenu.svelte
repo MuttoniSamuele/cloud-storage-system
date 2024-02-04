@@ -2,9 +2,12 @@
   import ContextMenu from "./ContextMenu.svelte";
   import ContextMenuDivider from "./ContextMenuDivider.svelte";
   import ContextMenuItem from "./ContextMenuItem.svelte";
+
+  export let x: number;
+  export let y: number;
 </script>
 
-<ContextMenu>
+<ContextMenu {x} {y}>
   <ContextMenuItem icon="ri-video-line" text="Open" />
   <ContextMenuDivider />
   <ContextMenuItem icon="ri-edit-line" text="Rename" />

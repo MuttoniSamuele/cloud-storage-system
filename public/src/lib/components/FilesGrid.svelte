@@ -3,7 +3,7 @@
 
   // This is stuff that FilesGrid and FilesRows have in common.
 
-  export interface ClickOutsideEvent<T = File | Folder> {
+  export interface ClickPositionEvent<T = File | Folder> {
     f: T;
     e: MouseEvent;
   }
@@ -12,10 +12,12 @@
     return createEventDispatcher<{
       fileClick: File;
       fileDblClick: File;
-      fileClickOutside: ClickOutsideEvent<File>;
+      fileClickOutside: ClickPositionEvent<File>;
+      fileContextMenu: ClickPositionEvent<File>;
       folderClick: Folder;
       folderDblClick: Folder;
-      folderClickOutside: ClickOutsideEvent<Folder>;
+      folderClickOutside: ClickPositionEvent<Folder>;
+      folderContextMenu: ClickPositionEvent<Folder>;
       more: void;
     }>();
   }
@@ -49,6 +51,7 @@
       on:dblclick={() => dispatch("folderDblClick", folder)}
       on:clickOutside={({ detail: e }) =>
         dispatch("folderClickOutside", { f: folder, e })}
+      on:contextmenu={(e) => dispatch("folderContextMenu", { f: folder, e })}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -62,6 +65,7 @@
       on:dblclick={() => dispatch("fileDblClick", file)}
       on:clickOutside={({ detail: e }) =>
         dispatch("fileClickOutside", { f: file, e })}
+      on:contextmenu={(e) => dispatch("fileContextMenu", { f: file, e })}
       on:more={() => dispatch("more")}
     />
   {/each}

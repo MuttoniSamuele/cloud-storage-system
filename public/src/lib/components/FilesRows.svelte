@@ -37,6 +37,7 @@
       on:dblclick={() => dispatch("folderDblClick", folder)}
       on:clickOutside={({ detail: e }) =>
         dispatch("folderClickOutside", { f: folder, e })}
+      on:contextmenu={(e) => dispatch("folderContextMenu", { f: folder, e })}
       on:more={() => dispatch("more")}
     />
   {/each}
@@ -51,6 +52,7 @@
       on:dblclick={() => dispatch("fileDblClick", file)}
       on:clickOutside={({ detail: e }) =>
         dispatch("fileClickOutside", { f: file, e })}
+      on:contextmenu={(e) => dispatch("fileContextMenu", { f: file, e })}
       on:more={() => dispatch("more")}
     />
   {/each}
