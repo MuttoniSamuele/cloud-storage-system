@@ -60,8 +60,10 @@
     <IconButton icon="ri-more-line" on:click={() => dispatch("more")} />
   </div>
   {#if owner !== null}
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
-      class="absolute {isFolder ? 'right-5 bottom-11' : 'right-6 bottom-10'} "
+      class="absolute {isFolder ? 'right-5 bottom-11' : 'right-6 bottom-10'}"
+      on:contextmenu|preventDefault
     >
       <ProfilePicture username={owner} small />
     </div>

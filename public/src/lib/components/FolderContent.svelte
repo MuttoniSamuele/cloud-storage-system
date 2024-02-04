@@ -8,6 +8,7 @@
   import type Folder from "../logic/Folder";
   import type File from "../logic/File";
   import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
+  import type Path from "../logic/Path";
 
   let contentElement: HTMLElement | null = null;
   // Set of files and folders that have been currently selected
@@ -18,7 +19,13 @@
   let contextMenuX = 0;
   let contextMenuY = 0;
 
-  $: currentPath = getCurrentPath($pathsHistory);
+  let currentPath: Path | null = null;
+  // This block runs every time currentPath changes, so it closes the
+  // context menu when the displayed files change
+  $: {
+    currentPath = getCurrentPath($pathsHistory);
+    isContextMenuOpen = false;
+  }
 
   function isPointInContentElement(x: number, y: number): boolean {
     if (!contentElement) {
@@ -85,8 +92,10 @@
   }
 </script>
 
+<svelte:window on:resize={() => (isContextMenuOpen = false)} />
+
 <div class="w-full h-full p-4" bind:this={contentElement}>
-  <OverflowYAuto>
+  <OverflowYAuto on:scroll={() => (isContextMenuOpen = false)}>
     <!-- TODO: Handle when currentPath is null and the user is logged in
       (it shows a blank page at the moment) -->
     {#if currentPath !== null}
@@ -128,7 +137,6 @@
     {/if}
   </OverflowYAuto>
 </div>
-<!-- TODO: Fix context menu position on window resize -->
 {#if isContextMenuOpen}
   <FolderContextMenu x={contextMenuX} y={contextMenuY} />
 {/if}

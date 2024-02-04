@@ -17,7 +17,11 @@
   });
 </script>
 
-<div class="h-full overflow-y-auto" bind:offsetHeight={availableHeight}>
+<div
+  class="h-full overflow-y-auto"
+  bind:offsetHeight={availableHeight}
+  on:scroll
+>
   <div style="height: {availableHeight !== null ? availableHeight : 0}px;">
     <slot />
   </div>
