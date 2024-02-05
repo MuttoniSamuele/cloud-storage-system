@@ -6,7 +6,8 @@
   export function createFileEventDispatcher() {
     return createEventDispatcher<{
       clickOutside: MouseEvent;
-      more: void;
+      rightClick: MouseEvent;
+      more: MouseEvent;
     }>();
   }
 </script>
@@ -35,7 +36,7 @@
   <button
     class="absolute top-0 left-0 w-full h-full cursor-default"
     on:click
-    on:contextmenu|preventDefault
+    on:contextmenu|preventDefault={(e) => dispatch("rightClick", e)}
     on:dblclick
     use:clickOutside={(e) => dispatch("clickOutside", e)}
   ></button>
@@ -56,14 +57,18 @@
       {name}
     </span>
   </div>
-  <div class="absolute right-2">
-    <IconButton icon="ri-more-line" on:click={() => dispatch("more")} />
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <div
+    class="absolute right-2"
+    on:contextmenu|preventDefault={(e) => dispatch("rightClick", e)}
+  >
+    <IconButton icon="ri-more-line" on:click={(e) => dispatch("more", e)} />
   </div>
   {#if owner !== null}
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="absolute {isFolder ? 'right-5 bottom-11' : 'right-6 bottom-10'}"
-      on:contextmenu|preventDefault
+      on:contextmenu|preventDefault={(e) => dispatch("rightClick", e)}
     >
       <ProfilePicture username={owner} small />
     </div>

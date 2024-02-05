@@ -37,8 +37,9 @@
       on:dblclick={() => dispatch("folderDblClick", folder)}
       on:clickOutside={({ detail: e }) =>
         dispatch("folderClickOutside", { f: folder, e })}
-      on:contextmenu={(e) => dispatch("folderContextMenu", { f: folder, e })}
-      on:more={() => dispatch("more")}
+      on:rightClick={({ detail: e }) =>
+        dispatch("folderRightClick", { f: folder, e })}
+      on:more={({ detail: e }) => dispatch("folderMore", { f: folder, e })}
     />
   {/each}
   {#each files.sort(cmpFileNames) as file}
@@ -52,8 +53,9 @@
       on:dblclick={() => dispatch("fileDblClick", file)}
       on:clickOutside={({ detail: e }) =>
         dispatch("fileClickOutside", { f: file, e })}
-      on:contextmenu={(e) => dispatch("fileContextMenu", { f: file, e })}
-      on:more={() => dispatch("more")}
+      on:rightClick={({ detail: e }) =>
+        dispatch("fileRightClick", { f: file, e })}
+      on:more={({ detail: e }) => dispatch("fileMore", { f: file, e })}
     />
   {/each}
 </div>

@@ -34,7 +34,7 @@
   <button
     class="absolute top-0 left-0 w-full h-full cursor-default"
     on:click
-    on:contextmenu|preventDefault
+    on:contextmenu|preventDefault={(e) => dispatch("rightClick", e)}
     on:dblclick
     use:clickOutside={(e) => dispatch("clickOutside", e)}
   ></button>
@@ -58,7 +58,11 @@
     </FileRowField>
   {/if}
   <div class="w-[24px] ml-auto"></div>
-  <div class="absolute right-4">
-    <IconButton icon="ri-more-line" on:click={() => dispatch("more")} />
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <div
+    class="absolute right-4"
+    on:contextmenu|preventDefault={(e) => dispatch("rightClick", e)}
+  >
+    <IconButton icon="ri-more-line" on:click={(e) => dispatch("more", e)} />
   </div>
 </li>

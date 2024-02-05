@@ -18,6 +18,9 @@
   let isContextMenuOpen = false;
   let contextMenuX = 0;
   let contextMenuY = 0;
+  // A flag used to prevent the clickOutside event from overriding the
+  // more button click event
+  let preventNextClose = false;
 
   let currentPath: Path | null = null;
   // This block runs every time currentPath changes, so it closes the
@@ -53,7 +56,17 @@
   function handleClickOutside({
     detail: { f, e },
   }: CustomEvent<ClickPositionEvent>): void {
-    isContextMenuOpen = false;
+    // Hacky way to prevent the clickOutside event from overriding the
+    // more button click event
+    if (selectedFiles.has(f)) {
+      if (preventNextClose) {
+        preventNextClose = false;
+        // Exit here so the file doesn't get deselected
+        return;
+      } else {
+        isContextMenuOpen = false;
+      }
+    }
     // Ignore if the click happened outside of FolderContent
     if (!isPointInContentElement(e.x, e.y)) {
       return;
@@ -75,7 +88,7 @@
     pathsHistory.push(newPath);
   }
 
-  function handleContextMenu({
+  function handleRightClick({
     detail: { f, e },
   }: CustomEvent<ClickPositionEvent>): void {
     isContextMenuOpen = true;
@@ -87,8 +100,9 @@
     selectFileFolder(f);
   }
 
-  function handleMore(): void {
-    // TODO: Open right-click menu
+  function handleMore(e: CustomEvent<ClickPositionEvent>): void {
+    handleRightClick(e);
+    preventNextClose = true;
   }
 </script>
 
@@ -109,12 +123,13 @@
             on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
             on:fileClickOutside={handleClickOutside}
-            on:fileContextMenu={handleContextMenu}
+            on:fileRightClick={handleRightClick}
+            on:fileMore={handleMore}
             on:folderClick={handleClick}
             on:folderDblClick={handleFolderDblClick}
             on:folderClickOutside={handleClickOutside}
-            on:folderContextMenu={handleContextMenu}
-            on:more={handleMore}
+            on:folderRightClick={handleRightClick}
+            on:folderMore={handleMore}
           />
         {:else}
           <FilesRows
@@ -125,12 +140,13 @@
             on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
             on:fileClickOutside={handleClickOutside}
-            on:fileContextMenu={handleContextMenu}
+            on:fileRightClick={handleRightClick}
+            on:fileMore={handleMore}
             on:folderClick={handleClick}
             on:folderDblClick={handleFolderDblClick}
             on:folderClickOutside={handleClickOutside}
-            on:folderContextMenu={handleContextMenu}
-            on:more={handleMore}
+            on:folderRightClick={handleRightClick}
+            on:folderMore={handleMore}
           />
         {/if}
       {/await}
