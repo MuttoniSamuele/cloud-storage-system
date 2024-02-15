@@ -1,6 +1,6 @@
 <script lang="ts">
   import IconButton from "./IconButton.svelte";
-  import DarkModeButton from "./DarkModeButton.svelte";
+  // import DarkModeButton from "./DarkModeButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
   import SearchBar from "./SearchBar.svelte";
   import TextButton from "./TextButton.svelte";
@@ -14,7 +14,7 @@
   </a>
   <SearchBar />
   <div class="flex items-center">
-    <DarkModeButton />
+    <!-- <DarkModeButton /> -->
     <IconButton icon="ri-settings-3-line" margin />
     {#if $account === null}
       <TextButton

@@ -42,4 +42,5 @@ function initTheme() {
 
 export const theme = initTheme();
 // Apply the theme to the page everytime the store updates
-theme.subscribe((t) => applyTheme(t));
+// (Ignore t because the light mode was removed)
+theme.subscribe((_t) => applyTheme("dark"));
