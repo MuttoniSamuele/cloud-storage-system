@@ -1,7 +1,6 @@
 mod models;
 mod routes;
 
-use dotenv::dotenv; // TODO: use dotenvy instead
 use models::init_db;
 use routes::create_routes;
 use std::env;
@@ -10,7 +9,7 @@ use std::net::SocketAddr;
 #[tokio::main]
 async fn main() {
     // Load environment variables from .env file
-    dotenv().ok();
+    dotenvy::dotenv().expect("Failed to load .env");
     // Initialize the model
     let pool = init_db(
         &env::var("DATABASE_URL").expect("DATABASE_URL missing in .env"),
