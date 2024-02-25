@@ -1,35 +1,27 @@
-use axum::Router;
-use dotenv::dotenv;
-use routes::dummy_api;
-use sqlx::{postgres::PgPoolOptions, Executor};
+mod models;
+mod routes;
+
+use dotenv::dotenv; // TODO: use dotenvy instead
+use models::init_db;
+use routes::create_routes;
 use std::env;
 use std::net::SocketAddr;
-use tower_http::services::ServeDir;
-
-mod routes;
 
 #[tokio::main]
 async fn main() {
+    // Load environment variables from .env file
     dotenv().ok();
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&format!(
-            "postgresql://{}:{}@{}:{}/{}",
-            env::var("POSTGRES_USER").expect("POSTGRES_USER missing in .env"),
-            env::var("POSTGRES_PASSWORD").expect("POSTGRES_PASSWORD missing in .env"),
-            env::var("POSTGRES_HOST").expect("POSTGRES_HOST missing in .env"),
-            env::var("POSTGRES_PORT").expect("POSTGRES_PORT missing in .env"),
-            env::var("POSTGRES_DB").expect("POSTGRES_DB missing in .env"),
-        ))
-        .await
-        .expect("Failed to connect to db");
-    pool.execute(include_str!("../schema.sql"))
-        .await
-        .expect("Failed to load schema");
-    // Combine the routes
-    let app = Router::new()
-        .merge(dummy_api())
-        .nest_service("/", ServeDir::new("public/dist"));
+    // Initialize the model
+    let pool = init_db(
+        &env::var("DATABASE_URL").expect("DATABASE_URL missing in .env"),
+        env::var("DB_MAX_CONNECTIONS")
+            .expect("DB_MAX_CONNECTIONS missing in .env")
+            .parse()
+            .expect("DB_MAX_CONNECTIONS must be a u32"),
+    )
+    .await;
+    // Initalize the controller
+    let app = create_routes(pool);
     // IP address and port of the server
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("Listening on http://{}", addr);

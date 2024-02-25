@@ -67,8 +67,8 @@ struct Files {
 
 pub fn dummy_api() -> Router {
     Router::new()
-        .route("/dummy/files", get(files))
-        .route("/dummy/login", post(login))
+        .route("/files", get(files))
+        .route("/login", post(login))
 }
 
 async fn login(Json(data): Json<LoginData>) -> impl IntoResponse {
