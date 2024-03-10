@@ -21,16 +21,15 @@ async fn post_signup(
     State(pool): State<PgPool>,
     Json(user): Json<SignupJsonData>,
 ) -> impl IntoResponse {
-    // TODO: Validate input data
-    // TODO: Hash password + salt
     let users_model = UsersModel::new(&pool);
     let res = users_model
         .signup(&user.username, &user.email, &user.password)
         .await;
+    // TODO: Handle session stuff
     match res {
         Ok(_) => StatusCode::CREATED,
         Err(err) => match err {
-            SignupError::UsernameExists => StatusCode::CONFLICT,
+            SignupError::UsernameExists | SignupError::EmailExists => StatusCode::CONFLICT,
             SignupError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
         },
     }

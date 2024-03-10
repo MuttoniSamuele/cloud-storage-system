@@ -1,5 +1,6 @@
 use super::User;
 use crate::errors::SignupError;
+use bcrypt;
 use sqlx::PgPool;
 
 pub struct UsersModel<'p> {
@@ -17,6 +18,9 @@ impl<'p> UsersModel<'p> {
         email: &str,
         password: &str,
     ) -> Result<i32, SignupError> {
+        // TODO: Validate input data
+        let hashed_psw = bcrypt::hash(&password, bcrypt::DEFAULT_COST)
+            .map_err(|_| SignupError::InternalError)?;
         let res = sqlx::query_as!(
             User,
             "INSERT INTO users (username, email, password)
@@ -24,17 +28,24 @@ impl<'p> UsersModel<'p> {
             RETURNING *;",
             username,
             email,
-            password
+            hashed_psw
         )
         .fetch_one(self.pool)
         .await;
-        // TODO: Handle session stuff
         match res {
             Ok(user) => Ok(user.id),
-            Err(sqlx::Error::Database(db)) if db.constraint() == Some("users_username_key") => {
-                Err(SignupError::UsernameExists)
-            }
-            Err(_) => Err(SignupError::InternalError),
+            Err(e) => match e {
+                sqlx::Error::Database(db) => {
+                    if db.constraint() == Some("users_username_key") {
+                        return Err(SignupError::UsernameExists);
+                    }
+                    if db.constraint() == Some("users_email_key") {
+                        return Err(SignupError::EmailExists);
+                    }
+                    Err(SignupError::InternalError)
+                }
+                _ => Err(SignupError::InternalError),
+            },
         }
     }
 }
