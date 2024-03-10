@@ -1,32 +1,37 @@
-use crate::models::UsersModel;
-use axum::{
-    extract::{Query, State},
-    http::StatusCode,
-    response::IntoResponse,
-    routing::get,
-    Router,
-};
+use crate::{errors::SignupError, models::UsersModel};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::post, Json, Router};
 use serde::Deserialize;
 use sqlx::PgPool;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-struct UserQuery {
+struct SignupJsonData {
+    username: String,
     email: String,
+    password: String,
 }
 
-pub fn api(state: PgPool) -> Router {
+pub fn api(pool: PgPool) -> Router {
     Router::new()
-        .route("/user", get(get_user))
-        .with_state(state)
+        .route("/signup", post(post_signup))
+        .with_state(pool)
 }
 
-async fn get_user(
-    Query(user): Query<UserQuery>,
+async fn post_signup(
     State(pool): State<PgPool>,
+    Json(user): Json<SignupJsonData>,
 ) -> impl IntoResponse {
-    // let pool = state.lock().await;
+    // TODO: Validate input data
+    // TODO: Hash password + salt
     let users_model = UsersModel::new(&pool);
-    let user = users_model.get_by_email(user.email).await.unwrap();
-    (StatusCode::OK, user.get_username())
+    let res = users_model
+        .signup(&user.username, &user.email, &user.password)
+        .await;
+    match res {
+        Ok(_) => StatusCode::CREATED,
+        Err(err) => match err {
+            SignupError::UsernameExists => StatusCode::CONFLICT,
+            SignupError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+        },
+    }
 }

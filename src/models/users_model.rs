@@ -1,4 +1,5 @@
 use super::User;
+use crate::errors::SignupError;
 use sqlx::PgPool;
 
 pub struct UsersModel<'p> {
@@ -10,14 +11,30 @@ impl<'p> UsersModel<'p> {
         UsersModel { pool }
     }
 
-    pub async fn get_by_email(&self, email: String) -> Result<User, sqlx::Error> {
-        let user = sqlx::query_as!(
+    pub async fn signup(
+        &self,
+        username: &str,
+        email: &str,
+        password: &str,
+    ) -> Result<i32, SignupError> {
+        let res = sqlx::query_as!(
             User,
-            "SELECT id, username, email, password FROM users WHERE email = $1",
-            email
+            "INSERT INTO users (username, email, password)
+            VALUES ($1, $2, $3)
+            RETURNING *;",
+            username,
+            email,
+            password
         )
         .fetch_one(self.pool)
-        .await?;
-        Ok(user)
+        .await;
+        // TODO: Handle session stuff
+        match res {
+            Ok(user) => Ok(user.id),
+            Err(sqlx::Error::Database(db)) if db.constraint() == Some("users_username_key") => {
+                Err(SignupError::UsernameExists)
+            }
+            Err(_) => Err(SignupError::InternalError),
+        }
     }
 }
