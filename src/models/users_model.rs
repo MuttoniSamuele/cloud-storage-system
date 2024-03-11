@@ -1,6 +1,7 @@
 use super::User;
 use crate::errors::SignupError;
 use bcrypt;
+use email_address::EmailAddress;
 use sqlx::PgPool;
 
 pub struct UsersModel<'p> {
@@ -18,7 +19,12 @@ impl<'p> UsersModel<'p> {
         email: &str,
         password: &str,
     ) -> Result<i32, SignupError> {
-        // TODO: Validate input data
+        if !self.validate_username(username) {
+            return Err(SignupError::InvalidUsername);
+        }
+        if !EmailAddress::is_valid(email) {
+            return Err(SignupError::InvalidEmail);
+        }
         let hashed_psw = bcrypt::hash(&password, bcrypt::DEFAULT_COST)
             .map_err(|_| SignupError::InternalError)?;
         let res = sqlx::query_as!(
@@ -47,5 +53,13 @@ impl<'p> UsersModel<'p> {
                 _ => Err(SignupError::InternalError),
             },
         }
+    }
+
+    fn validate_username(&self, username: &str) -> bool {
+        username.len() >= 3
+            && username.len() <= 20
+            && username
+                .chars()
+                .all(|c| matches!(c, 'a'..='z' | 'A'..='Z' | '0'..='9' | '-' | '_'))
     }
 }

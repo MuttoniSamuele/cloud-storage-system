@@ -30,6 +30,7 @@ async fn post_signup(
         Ok(_) => StatusCode::CREATED,
         Err(err) => match err {
             SignupError::UsernameExists | SignupError::EmailExists => StatusCode::CONFLICT,
+            SignupError::InvalidUsername | SignupError::InvalidEmail => StatusCode::BAD_REQUEST,
             SignupError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
         },
     }
