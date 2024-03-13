@@ -6,6 +6,7 @@ pub enum SignupError {
     EmailExists,
     InvalidUsername,
     InvalidEmail,
+    ShortPassword,
     InternalError,
 }
 
@@ -16,7 +17,8 @@ impl Display for SignupError {
             SignupError::EmailExists => f.write_str("Email already exists"),
             SignupError::InvalidUsername => f.write_str("Invalid username"),
             SignupError::InvalidEmail => f.write_str("Invalid email"),
-            SignupError::InternalError => f.write_str("Internal Error"),
+            SignupError::ShortPassword => f.write_str("Password too short"),
+            SignupError::InternalError => f.write_str("Internal error"),
         }
     }
 }

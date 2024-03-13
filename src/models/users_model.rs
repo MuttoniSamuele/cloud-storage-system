@@ -19,11 +19,14 @@ impl<'p> UsersModel<'p> {
         email: &str,
         password: &str,
     ) -> Result<i32, SignupError> {
-        if !self.validate_username(username) {
+        if !Self::validate_username(username) {
             return Err(SignupError::InvalidUsername);
         }
         if !EmailAddress::is_valid(email) {
             return Err(SignupError::InvalidEmail);
+        }
+        if !Self::validate_password(password) {
+            return Err(SignupError::ShortPassword);
         }
         let hashed_psw = bcrypt::hash(&password, bcrypt::DEFAULT_COST)
             .map_err(|_| SignupError::InternalError)?;
@@ -55,11 +58,15 @@ impl<'p> UsersModel<'p> {
         }
     }
 
-    fn validate_username(&self, username: &str) -> bool {
+    fn validate_username(username: &str) -> bool {
         username.len() >= 3
             && username.len() <= 20
             && username
                 .chars()
                 .all(|c| matches!(c, 'a'..='z' | 'A'..='Z' | '0'..='9' | '-' | '_'))
+    }
+
+    fn validate_password(password: &str) -> bool {
+        password.len() >= 8
     }
 }

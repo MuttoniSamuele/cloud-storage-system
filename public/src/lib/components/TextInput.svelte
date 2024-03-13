@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import type { HTMLInputTypeAttribute } from "svelte/elements";
 
   /** It's recommended to specify an ID when using a label */
@@ -9,6 +10,8 @@
   export let wfull = false;
   export let marginX = false;
   export let marginY = false;
+
+  const dispatch = createEventDispatcher<{ input: string }>();
 </script>
 
 <div
@@ -27,6 +30,7 @@
     {id}
     {placeholder}
     class="px-2 py-1 rounded border border-zinc-700 dark:border-zinc-400 bg-transparent placeholder-zinc-600 dark:placeholder-zinc-400 text-zinc-900 dark:text-zinc-200
-    {wfull ? 'w-full' : ''}"
+      {wfull ? 'w-full' : ''}"
+    on:input={(e) => dispatch("input", e.currentTarget.value)}
   />
 </div>

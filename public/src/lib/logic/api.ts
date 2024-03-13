@@ -15,6 +15,29 @@ namespace API {
     }
   }
 
+  interface SignupResponse {
+    sessionId: number | null,
+    message: string | null
+  }
+
+  export async function signup(username: string, email: string, password: string): Promise<void> {
+    const res = await fetch("/api/signup", {
+      method: "POST",
+      headers: new Headers({ "content-type": "application/json" }),
+      body: JSON.stringify({ username, email, password }),
+    });
+    let data: SignupResponse;
+    try {
+      data = await res.json();
+    } catch (e) {
+      data = { sessionId: null, message: null }
+    }
+    if (data.sessionId === null) {
+      throw new ApiError(data.message || "Failed to communicate with the server.");
+    }
+    // TODO: Handle login and session
+  }
+
   export async function login(username: string, password: string): Promise<void> {
     const options = {
       method: "POST",
