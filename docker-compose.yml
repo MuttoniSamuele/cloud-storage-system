@@ -3,25 +3,28 @@ services:
   postgres:
     image: postgres
     container_name: postgres
-    restart: always
     ports:
       - "5432:5432"
     env_file:
       - ./.env
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4
-    restart: always
     ports:
       - "8888:80"
     env_file:
       - ./.env
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
 
-volumes:
-  postgres-data:
-  pgadmin-data:
+  redis:
+    image: redis
+    container_name: redis
+    # https://stackoverflow.com/a/72593084
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
+    ports:
+      - "6379:6379"
+    env_file:
+      - ./.env

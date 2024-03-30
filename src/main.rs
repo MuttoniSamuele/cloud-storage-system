@@ -2,7 +2,7 @@ mod errors;
 mod models;
 mod routes;
 
-use models::init_db;
+use models::{init_postgres, init_redis};
 use routes::create_routes;
 use std::env;
 use std::net::SocketAddr;
@@ -11,17 +11,19 @@ use std::net::SocketAddr;
 async fn main() {
     // Load environment variables from .env file
     dotenvy::dotenv().expect("Failed to load .env");
-    // Initialize the model
-    let pool = init_db(
-        &env::var("DATABASE_URL").expect("DATABASE_URL missing in .env"),
-        env::var("DB_MAX_CONNECTIONS")
-            .expect("DB_MAX_CONNECTIONS missing in .env")
+    // Initialize postgres
+    let pg_pool = init_postgres(
+        &env::var("POSTGRES_URL").expect("POSTGRES_URL missing in .env"),
+        env::var("PG_MAX_CONNECTIONS")
+            .expect("PG_MAX_CONNECTIONS missing in .env")
             .parse()
-            .expect("DB_MAX_CONNECTIONS must be a u32"),
+            .expect("PG_MAX_CONNECTIONS must be a u32"),
     )
     .await;
+    // Initialize redis
+    let redis_pool = init_redis(&env::var("REDIS_URL").expect("REDIS_URL missing in .env")).await;
     // Initalize the controller
-    let app = create_routes(pool);
+    let app = create_routes(pg_pool, redis_pool);
     // IP address and port of the server
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("Listening on http://{}", addr);

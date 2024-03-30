@@ -1,4 +1,7 @@
-use crate::{errors::SignupError, models::UsersModel};
+use crate::{
+    errors::SignupError,
+    models::{RedisPool, UsersModel},
+};
 use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::post, Json, Router};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
@@ -36,10 +39,10 @@ impl SignupResponse {
     }
 }
 
-pub fn api(pool: PgPool) -> Router {
+pub fn api(pg_pool: PgPool, redis_pool: RedisPool) -> Router {
     Router::new()
         .route("/signup", post(post_signup))
-        .with_state(pool)
+        .with_state(pg_pool)
 }
 
 async fn post_signup(
