@@ -318,6 +318,8 @@ dependencies = [
  "bcrypt",
  "dotenvy",
  "email_address",
+ "rand_chacha",
+ "rand_core",
  "serde",
  "serde_json",
  "sqlx",

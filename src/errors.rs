@@ -24,3 +24,14 @@ impl Display for SignupError {
 }
 
 impl Error for SignupError {}
+
+#[derive(Debug)]
+pub struct SessionError;
+
+impl Display for SessionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str("Session error")
+    }
+}
+
+impl Error for SessionError {}

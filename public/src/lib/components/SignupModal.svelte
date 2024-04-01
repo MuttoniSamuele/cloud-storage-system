@@ -16,8 +16,6 @@
     [username, email, password, repeatedPassword].every((s) => s !== "") &&
     !isValidating;
 
-  $: console.log(canSignup);
-
   async function handleSignupClick(): Promise<void> {
     isValidating = true;
     if (password !== repeatedPassword) {

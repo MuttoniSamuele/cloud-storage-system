@@ -15,9 +15,8 @@ namespace API {
     }
   }
 
-  interface SignupResponse {
-    sessionId: number | null,
-    message: string | null
+  interface ErrorResponse {
+    message: string
   }
 
   export async function signup(username: string, email: string, password: string): Promise<void> {
@@ -26,16 +25,16 @@ namespace API {
       headers: new Headers({ "content-type": "application/json" }),
       body: JSON.stringify({ username, email, password }),
     });
-    let data: SignupResponse;
+    if (res.ok) {
+      return;
+    }
+    let errData: ErrorResponse;
     try {
-      data = await res.json();
-    } catch (e) {
-      data = { sessionId: null, message: null }
+      errData = await res.json();
+    } catch (_e) {
+      errData = { message: "Failed to communicate with the server." }
     }
-    if (data.sessionId === null) {
-      throw new ApiError(data.message || "Failed to communicate with the server.");
-    }
-    // TODO: Handle login and session
+    throw new ApiError(errData.message);
   }
 
   export async function login(username: string, password: string): Promise<void> {

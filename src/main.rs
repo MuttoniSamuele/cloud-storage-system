@@ -3,6 +3,8 @@ mod models;
 mod routes;
 
 use models::{init_postgres, init_redis};
+use rand_chacha::ChaCha8Rng;
+use rand_core::{OsRng, RngCore, SeedableRng};
 use routes::create_routes;
 use std::env;
 use std::net::SocketAddr;
@@ -22,8 +24,10 @@ async fn main() {
     .await;
     // Initialize redis
     let redis_pool = init_redis(&env::var("REDIS_URL").expect("REDIS_URL missing in .env")).await;
+    // Initialize ChaCha algorithm
+    let rng = ChaCha8Rng::seed_from_u64(OsRng.next_u64());
     // Initalize the controller
-    let app = create_routes(pg_pool, redis_pool);
+    let app = create_routes(pg_pool, redis_pool, rng);
     // IP address and port of the server
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("Listening on http://{}", addr);

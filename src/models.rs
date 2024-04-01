@@ -1,3 +1,4 @@
+mod sessions_model;
 mod user;
 mod users_model;
 
@@ -7,6 +8,7 @@ use bb8_redis::{
 };
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
+pub use sessions_model::SessionsModel;
 pub use user::User;
 pub use users_model::UsersModel;
 pub type RedisPool = Pool<RedisConnectionManager>;
