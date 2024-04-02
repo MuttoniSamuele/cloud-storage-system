@@ -73,16 +73,8 @@ async fn post_signup(
                 // Everything went well
                 login_response(session_id).into_response()
             } else {
-                // If the session can't be created, delete the user
-                // (pray that it works because I'm not handling this one too)
-                let _ = users_model.delete(user_id).await;
-                (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    Json(ErrorResponse {
-                        message: "Something went wrong, please try again later.".to_string(),
-                    }),
-                )
-                    .into_response()
+                // If the session can't be created, the user will have to manually login
+                StatusCode::CREATED.into_response()
             }
         }
         Err(err) => match err {
