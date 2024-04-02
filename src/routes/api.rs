@@ -59,18 +59,23 @@ async fn post_signup(
     Json(user): Json<SignupJsonData>,
 ) -> impl IntoResponse {
     let users_model = UsersModel::new(&state.pg_pool);
+    // Try to create the user
     let res = users_model
         .signup(&user.username, &user.email, &user.password)
         .await;
     match res {
         Ok(user_id) => {
+            // Try to create a session for the new user
             let mut rng = state.rng.lock().await;
             let mut sessions_model = SessionsModel::new(state.redis_pool.clone(), &mut rng);
             let res = sessions_model.new_session(user_id).await;
             if let Ok(session_id) = res {
+                // Everything went well
                 login_response(session_id).into_response()
             } else {
-                // TODO: Delete user
+                // If the session can't be created, delete the user
+                // (pray that it works because I'm not handling this one too)
+                let _ = users_model.delete(user_id).await;
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     Json(ErrorResponse {
@@ -129,14 +134,17 @@ async fn post_signup(
     }
 }
 
+/// Wrapper that returns a new session.
 fn login_response(session_id: u128) -> impl IntoResponse {
     session_cookie_response(&session_id.to_string(), SESSION_COOKIE_AGE)
 }
 
+/// Wrapper that removes the saved session.
 fn logout_response() -> impl IntoResponse {
     session_cookie_response("_", 0)
 }
 
+/// Returns a response while setting the session_id cookie with the given value and age.
 fn session_cookie_response(value: &str, age: u32) -> impl IntoResponse {
     http::Response::builder()
         .status(StatusCode::CREATED)

@@ -1,5 +1,5 @@
 use super::User;
-use crate::errors::SignupError;
+use crate::errors::{InternalError, SignupError};
 use bcrypt;
 use email_address::EmailAddress;
 use sqlx::PgPool;
@@ -55,6 +55,21 @@ impl<'p> UsersModel<'p> {
                 }
                 _ => Err(SignupError::InternalError),
             },
+        }
+    }
+
+    pub async fn delete(&self, user_id: i32) -> Result<(), InternalError> {
+        let res: Result<_, sqlx::Error> = sqlx::query!(
+            "DELETE FROM users
+            WHERE id = $1;",
+            user_id,
+        )
+        .fetch_one(self.pool)
+        .await;
+        if res.is_err() {
+            Err(InternalError("Failed to delete user".to_string()))
+        } else {
+            Ok(())
         }
     }
 

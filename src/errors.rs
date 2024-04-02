@@ -26,12 +26,12 @@ impl Display for SignupError {
 impl Error for SignupError {}
 
 #[derive(Debug)]
-pub struct SessionError;
+pub struct InternalError(pub String);
 
-impl Display for SessionError {
+impl Display for InternalError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str("Session error")
+        f.write_str(&format!("Internal error: {}", self.0))
     }
 }
 
-impl Error for SessionError {}
+impl Error for InternalError {}
