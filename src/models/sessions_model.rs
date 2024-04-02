@@ -1,4 +1,4 @@
-use crate::{errors::SessionError, models::RedisPool};
+use crate::{errors::SessionError, models::RedisPool, SESSION_TTL};
 use bb8_redis::redis::AsyncCommands;
 use rand_chacha::ChaCha8Rng;
 use rand_core::RngCore;
@@ -22,7 +22,7 @@ impl<'r> SessionsModel<'r> {
         let mut conn = self.pool.get().await.map_err(|_| SessionError)?;
         // Save the session
         let _: () = conn
-            .set_ex(&session_id.to_string(), user_id, 3600) // TODO: Read expiry from .env
+            .set_ex(&session_id.to_string(), user_id, *SESSION_TTL)
             .await
             .map_err(|_| SessionError)?;
         Ok(session_id)

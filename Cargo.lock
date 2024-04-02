@@ -318,6 +318,7 @@ dependencies = [
  "bcrypt",
  "dotenvy",
  "email_address",
+ "lazy_static",
  "rand_chacha",
  "rand_core",
  "serde",
