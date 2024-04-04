@@ -1,6 +1,6 @@
 use crate::{
     errors::SignupError,
-    models::{RedisPool, SessionsModel, UsersModel},
+    models::{sessions_model::new_session, users_model::new_user, RedisPool},
 };
 use axum::{
     body::Body,
@@ -58,17 +58,13 @@ async fn post_signup(
     State(state): State<AppState>,
     Json(user): Json<SignupJsonData>,
 ) -> impl IntoResponse {
-    let users_model = UsersModel::new(&state.pg_pool);
     // Try to create the user
-    let res = users_model
-        .signup(&user.username, &user.email, &user.password)
-        .await;
+    let res = new_user(&state.pg_pool, &user.username, &user.email, &user.password).await;
     match res {
         Ok(user_id) => {
             // Try to create a session for the new user
             let mut rng = state.rng.lock().await;
-            let mut sessions_model = SessionsModel::new(state.redis_pool.clone(), &mut rng);
-            let res = sessions_model.new_session(user_id).await;
+            let res = new_session(&state.redis_pool, &mut rng, user_id).await;
             if let Ok(session_id) = res {
                 // Everything went well
                 login_response(session_id).into_response()

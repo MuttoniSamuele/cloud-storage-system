@@ -1,6 +1,7 @@
-mod sessions_model;
 mod user;
-mod users_model;
+
+pub mod sessions_model;
+pub mod users_model;
 
 use bb8_redis::{
     bb8::{self, Pool},
@@ -8,9 +9,7 @@ use bb8_redis::{
 };
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
-pub use sessions_model::SessionsModel;
 pub use user::User;
-pub use users_model::UsersModel;
 pub type RedisPool = Pool<RedisConnectionManager>;
 
 pub async fn init_postgres(url: &str, max_connections: u32) -> PgPool {
