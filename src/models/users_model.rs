@@ -49,6 +49,19 @@ pub async fn new_user(
     }
 }
 
+pub async fn get_user_by_id(pg_pool: &PgPool, user_id: i32) -> Result<Option<User>, InternalError> {
+    sqlx::query_as!(
+        User,
+        "SELECT *
+        FROM users
+        WHERE id = $1;",
+        user_id
+    )
+    .fetch_optional(pg_pool)
+    .await
+    .map_err(|_| InternalError("User not found".to_string()))
+}
+
 pub async fn delete_user(pg_pool: &PgPool, user_id: i32) -> Result<(), InternalError> {
     let res: Result<_, sqlx::Error> = sqlx::query!(
         "DELETE FROM users

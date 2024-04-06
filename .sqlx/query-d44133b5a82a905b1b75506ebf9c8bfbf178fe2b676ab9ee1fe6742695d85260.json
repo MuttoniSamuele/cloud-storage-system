@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "DELETE FROM users\n            WHERE id = $1;",
+  "query": "DELETE FROM users\n        WHERE id = $1;",
   "describe": {
     "columns": [],
     "parameters": {
@@ -10,5 +10,5 @@
     },
     "nullable": []
   },
-  "hash": "e1f0edd0e40104ad52eab2af28e285b4dae4808197320416309908937a467161"
+  "hash": "d44133b5a82a905b1b75506ebf9c8bfbf178fe2b676ab9ee1fe6742695d85260"
 }
