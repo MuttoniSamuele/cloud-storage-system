@@ -1,9 +1,9 @@
-use super::auth::{auth, login_response, signup_response, AuthState};
+use super::auth::{auth, login_response, logout_response, signup_response, AuthState};
 // TODO: include sessions_model::new_session, users_model::new_user with "namespace"
 use crate::{
     errors::{LoginError, SignupError},
     models::{
-        sessions_model::new_session,
+        sessions_model::{delete_session, new_session},
         users_model::{get_user_by_id, new_user, verify_user},
         RedisPool,
     },
@@ -66,6 +66,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
     };
     // Routes protected by the auth middleware (require authentication)
     let protected_routes = Router::new()
+        .route("/logout", post(logout))
         .route("/me", get(me))
         .layer(axum::middleware::from_fn(move |req, next| {
             auth(req, next, redis_pool.clone())
@@ -186,6 +187,18 @@ async fn login(
             )
                 .into_response(),
         },
+    }
+}
+
+async fn logout(
+    Extension((session_id, _)): Extension<AuthState>,
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let res = delete_session(&state.redis_pool, session_id).await;
+    if res.is_ok() {
+        logout_response().into_response()
+    } else {
+        StatusCode::INTERNAL_SERVER_ERROR.into_response()
     }
 }
 

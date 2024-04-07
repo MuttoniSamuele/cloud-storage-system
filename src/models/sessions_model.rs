@@ -52,3 +52,16 @@ pub async fn get_session_user_id(
         .map_err(|_| InternalError("Error while reading session".to_string()))?;
     Ok(Some(user_id))
 }
+
+pub async fn delete_session(redis_pool: &RedisPool, session_id: u128) -> Result<(), InternalError> {
+    // Connect to the Redis database
+    let mut conn = redis_pool
+        .get()
+        .await
+        .map_err(|_| InternalError("Session error".to_string()))?;
+    // Delete the session
+    conn.del(session_id.to_string())
+        .await
+        .map_err(|_| InternalError("Error while deleting session".to_string()))?;
+    Ok(())
+}

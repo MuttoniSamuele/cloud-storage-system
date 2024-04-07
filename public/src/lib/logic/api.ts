@@ -55,6 +55,11 @@ namespace API {
     pathsHistory.push(new Path("MyCloud"));
   }
 
+  export async function logout(): Promise<void> {
+    await rawRequest("POST", "/api/logout");
+    // TODO: account.logout()
+  }
+
   export async function getFiles(
     path: Path,
     { foldersOnly, filter }: { foldersOnly?: boolean, filter?: FileType } = {}

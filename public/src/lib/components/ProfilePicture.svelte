@@ -3,7 +3,7 @@
   export let small = false;
 </script>
 
-<button class="mx-2" title={username}>
+<button class="mx-2" title={username} on:click>
   <img
     class="rounded-full object-cover
       {small ? 'w-5 h-5' : 'w-8 h-8'}"
