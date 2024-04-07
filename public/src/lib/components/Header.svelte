@@ -24,7 +24,10 @@
         on:click={() => modalState.set(ModalState.Login)}
       />
     {:else}
-      <ProfilePicture username={$account} on:click={() => API.logout()} />
+      <ProfilePicture
+        username={$account.username}
+        on:click={() => API.logout()}
+      />
     {/if}
   </div>
 </header>

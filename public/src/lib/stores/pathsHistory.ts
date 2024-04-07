@@ -6,7 +6,7 @@ type PathHistory = { paths: (Path | null)[], index: number };
 function initPathsHistory() {
   // The history of paths is stored as a combination of an array of Path and
   // the index of the current path in said array.
-  const { subscribe, update } = writable<PathHistory>({ paths: [null], index: 0 });
+  const { subscribe, update, set } = writable<PathHistory>({ paths: [null], index: 0 });
 
   return {
     subscribe,
@@ -40,6 +40,9 @@ function initPathsHistory() {
     },
     refresh: (): void => {
       update((history: PathHistory) => history);
+    },
+    clear: (): void => {
+      set({ paths: [null], index: 0 })
     }
   };
 }

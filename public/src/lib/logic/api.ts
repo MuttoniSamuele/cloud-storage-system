@@ -6,6 +6,8 @@ import File from "./File"
 import type IFolder from "./IFolder";
 import Folder from "./Folder";
 import { pathsHistory } from "../stores/pathsHistory";
+import type IUser from "./IUser";
+import User from "./User";
 
 namespace API {
   type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -21,6 +23,7 @@ namespace API {
     message: string
   }
 
+  // TODO: Make it logout if the server responds with 401
   async function rawRequest(method: HttpMethod, url: string, headers?: Headers, jsonBody?: object): Promise<Response> {
     const res = await fetch(url, { method, headers, body: JSON.stringify(jsonBody) });
     if (res.ok) {
@@ -51,13 +54,25 @@ namespace API {
   export async function login(email: string, password: string): Promise<void> {
     // If the response is an error rawRequest raises ApiError
     await rawRequest("POST", "/api/login", new Headers({ "content-type": "application/json" }), { email, password });
-    account.login("User");
-    pathsHistory.push(new Path("MyCloud"));
+    await loadSession();
   }
 
   export async function logout(): Promise<void> {
     await rawRequest("POST", "/api/logout");
-    // TODO: account.logout()
+    account.logout();
+    pathsHistory.clear();
+  }
+
+  export async function loadSession(): Promise<void> {
+    const user = await me();
+    account.login(user);
+    pathsHistory.push(new Path("MyCloud"));
+  }
+
+  export async function me(): Promise<User> {
+    let res = await rawRequest("GET", "/api/me");
+    const user: IUser = await res.json();
+    return new User(user.username, user.email);
   }
 
   export async function getFiles(
