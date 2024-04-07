@@ -8,6 +8,8 @@ import Folder from "./Folder";
 import { pathsHistory } from "../stores/pathsHistory";
 
 namespace API {
+  type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
   export class ApiError extends Error {
     constructor(msg: string) {
       super(msg);
@@ -19,35 +21,38 @@ namespace API {
     message: string
   }
 
-  export async function signup(username: string, email: string, password: string): Promise<void> {
-    const res = await fetch("/api/signup", {
-      method: "POST",
-      headers: new Headers({ "content-type": "application/json" }),
-      body: JSON.stringify({ username, email, password }),
-    });
+  async function rawRequest(method: HttpMethod, url: string, headers?: Headers, jsonBody?: object): Promise<Response> {
+    const res = await fetch(url, { method, headers, body: JSON.stringify(jsonBody) });
     if (res.ok) {
-      return;
+      // Success
+      return res;
     }
+    // An error happened, forward it
     let errData: ErrorResponse;
     try {
+      // The server provided an error
       errData = await res.json();
-    } catch (_e) {
-      errData = { message: "Failed to communicate with the server." }
+    } catch {
+      // Default error message
+      errData = { message: "Something went wrong." }
     }
     throw new ApiError(errData.message);
   }
 
-  export async function login(username: string, password: string): Promise<void> {
-    const options = {
-      method: "POST",
-      headers: new Headers({ "content-type": "application/json" }),
-      body: JSON.stringify({ username: username, password: password }),
-    };
-    const res = await fetch("/dummy/login", options);
-    if (res.ok) {
-      account.login(username);
-      pathsHistory.push(new Path("MyCloud"));
-    }
+  export async function signup(username: string, email: string, password: string): Promise<void> {
+    await rawRequest(
+      "POST",
+      "/api/signup",
+      new Headers({ "content-type": "application/json" }),
+      { username, email, password }
+    );
+  }
+
+  export async function login(email: string, password: string): Promise<void> {
+    // If the response is an error rawRequest raises ApiError
+    await rawRequest("POST", "/api/login", new Headers({ "content-type": "application/json" }), { email, password });
+    account.login("User");
+    pathsHistory.push(new Path("MyCloud"));
   }
 
   export async function getFiles(

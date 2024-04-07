@@ -1,10 +1,10 @@
-use super::auth::{auth, login_response, AuthState};
+use super::auth::{auth, login_response, signup_response, AuthState};
 // TODO: include sessions_model::new_session, users_model::new_user with "namespace"
 use crate::{
-    errors::SignupError,
+    errors::{LoginError, SignupError},
     models::{
         sessions_model::new_session,
-        users_model::{get_user_by_id, new_user},
+        users_model::{get_user_by_id, new_user, verify_user},
         RedisPool,
     },
 };
@@ -33,6 +33,13 @@ struct AppState {
 #[serde(rename_all = "camelCase")]
 struct SignupJsonData {
     username: String,
+    email: String,
+    password: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct LoginJsonData {
     email: String,
     password: String,
 }
@@ -66,6 +73,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
     // Combine the rest of the routes with the protected ones
     Router::new()
         .route("/signup", post(signup))
+        .route("/login", post(login))
         .nest("/", protected_routes)
         .with_state(state)
 }
@@ -83,8 +91,7 @@ async fn signup(
             let mut rng = state.rng.lock().await;
             let res = new_session(&state.redis_pool, &mut rng, user_id).await;
             if let Ok(session_id) = res {
-                // Everything went well
-                login_response(session_id).into_response()
+                signup_response(session_id).into_response()
             } else {
                 // If the session can't be created, the user will have to manually login
                 StatusCode::CREATED.into_response()
@@ -129,6 +136,49 @@ async fn signup(
             )
                 .into_response(),
             SignupError::InternalError => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse {
+                    message: "Something went wrong, please try again later.".to_string(),
+                }),
+            )
+                .into_response(),
+        },
+    }
+}
+
+async fn login(
+    State(state): State<AppState>,
+    Json(user): Json<LoginJsonData>,
+) -> impl IntoResponse {
+    let res = verify_user(&state.pg_pool, &user.email, &user.password).await;
+    match res {
+        Ok(user_id) => {
+            // Try to create a new session
+            let mut rng = state.rng.lock().await;
+            let res = new_session(&state.redis_pool, &mut rng, user_id).await;
+            if let Ok(session_id) = res {
+                login_response(session_id).into_response()
+            } else {
+                // The session can't be created
+                StatusCode::INTERNAL_SERVER_ERROR.into_response()
+            }
+        }
+        Err(err) => match err {
+            LoginError::EmailDoesNotExists => (
+                StatusCode::UNAUTHORIZED,
+                Json(ErrorResponse {
+                    message: "Email does not exist.".to_string(),
+                }),
+            )
+                .into_response(),
+            LoginError::WrongPassword => (
+                StatusCode::UNAUTHORIZED,
+                Json(ErrorResponse {
+                    message: "Wrong password.".to_string(),
+                }),
+            )
+                .into_response(),
+            LoginError::InternalError => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(ErrorResponse {
                     message: "Something went wrong, please try again later.".to_string(),

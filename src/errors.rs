@@ -26,6 +26,25 @@ impl Display for SignupError {
 impl Error for SignupError {}
 
 #[derive(Debug)]
+pub enum LoginError {
+    EmailDoesNotExists,
+    WrongPassword,
+    InternalError,
+}
+
+impl Display for LoginError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            LoginError::EmailDoesNotExists => f.write_str("Email does not exist"),
+            LoginError::WrongPassword => f.write_str("Wrong password"),
+            LoginError::InternalError => f.write_str("Internal error"),
+        }
+    }
+}
+
+impl Error for LoginError {}
+
+#[derive(Debug)]
 pub struct InternalError(pub String);
 
 impl Display for InternalError {

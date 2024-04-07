@@ -1,5 +1,5 @@
 use super::User;
-use crate::errors::{InternalError, SignupError};
+use crate::errors::{InternalError, LoginError, SignupError};
 use bcrypt;
 use email_address::EmailAddress;
 use sqlx::PgPool;
@@ -59,7 +59,37 @@ pub async fn get_user_by_id(pg_pool: &PgPool, user_id: i32) -> Result<Option<Use
     )
     .fetch_optional(pg_pool)
     .await
-    .map_err(|_| InternalError("User not found".to_string()))
+    .map_err(|_| InternalError("Error while fetching user".to_string()))
+}
+
+pub async fn get_user_by_email(
+    pg_pool: &PgPool,
+    email: &str,
+) -> Result<Option<User>, InternalError> {
+    sqlx::query_as!(
+        User,
+        "SELECT *
+        FROM users
+        WHERE email = $1;",
+        email
+    )
+    .fetch_optional(pg_pool)
+    .await
+    .map_err(|_| InternalError("Error while fetching user".to_string()))
+}
+
+pub async fn verify_user(pg_pool: &PgPool, email: &str, password: &str) -> Result<i32, LoginError> {
+    let user = get_user_by_email(pg_pool, email)
+        .await
+        .map_err(|_| LoginError::InternalError)?
+        .ok_or(LoginError::EmailDoesNotExists)?;
+    let is_pwd_correct =
+        bcrypt::verify(password, &user.password).map_err(|_| LoginError::InternalError)?;
+    if is_pwd_correct {
+        Ok(user.id)
+    } else {
+        Err(LoginError::WrongPassword)
+    }
 }
 
 pub async fn delete_user(pg_pool: &PgPool, user_id: i32) -> Result<(), InternalError> {

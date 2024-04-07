@@ -45,20 +45,30 @@ pub async fn auth<B>(
     Ok(next.run(axum::http::Request::from_parts(parts, body)).await)
 }
 
-/// Wrapper that returns a new session.
-pub fn login_response(session_id: u128) -> impl IntoResponse {
-    session_cookie_response(&session_id.to_string(), SESSION_COOKIE_AGE)
+pub fn signup_response(session_id: u128) -> impl IntoResponse {
+    session_cookie_response(
+        StatusCode::CREATED,
+        &session_id.to_string(),
+        SESSION_COOKIE_AGE,
+    )
 }
 
-/// Wrapper that removes the saved session.
+pub fn login_response(session_id: u128) -> impl IntoResponse {
+    session_cookie_response(
+        StatusCode::NO_CONTENT,
+        &session_id.to_string(),
+        SESSION_COOKIE_AGE,
+    )
+}
+
 pub fn logout_response() -> impl IntoResponse {
-    session_cookie_response("_", 0)
+    session_cookie_response(StatusCode::NO_CONTENT, "_", 0)
 }
 
 /// Returns a response while setting the session_id cookie with the given value and age.
-fn session_cookie_response(value: &str, age: u32) -> impl IntoResponse {
+fn session_cookie_response(status: StatusCode, value: &str, age: u32) -> impl IntoResponse {
     http::Response::builder()
-        .status(StatusCode::CREATED)
+        .status(status)
         .header(
             "Set-Cookie",
             format!(
