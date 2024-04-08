@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "CREATE TABLE IF NOT EXISTS folders (\n  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,\n  name text NOT NULL,\n  last_modified timestamp NOT NULL,\n  starred boolean NOT NULL,\n  fk_owner integer REFERENCES users(id) NOT NULL,\n  fk_parent integer REFERENCES folders(id)\n);\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "8892527b00b8097df8b746da2c09a8c8af1635ee992c42e8eda4283281f1f4fb"
+}

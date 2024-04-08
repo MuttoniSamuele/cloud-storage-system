@@ -20,10 +20,9 @@ pub async fn init_postgres(url: &str, max_connections: u32) -> PgPool {
         .await
         .expect(&format!("Failed to connect to {url}"));
     // Load the database schema
-    sqlx::query_file!("./schema.sql")
-        .execute(&pool)
+    load_schema(&pool)
         .await
-        .expect("Failed to load schema.sql");
+        .expect("Failed to load database schema");
     pool
 }
 
@@ -33,4 +32,20 @@ pub async fn init_redis(url: &str) -> RedisPool {
         .build(manager)
         .await
         .expect("Failed to create Redis pool")
+}
+
+async fn load_schema(pg_pool: &PgPool) -> Result<(), sqlx::Error> {
+    sqlx::query_file!("./schema/file_type.sql")
+        .execute(pg_pool)
+        .await?;
+    sqlx::query_file!("./schema/users.sql")
+        .execute(pg_pool)
+        .await?;
+    sqlx::query_file!("./schema/folders.sql")
+        .execute(pg_pool)
+        .await?;
+    sqlx::query_file!("./schema/files.sql")
+        .execute(pg_pool)
+        .await?;
+    Ok(())
 }

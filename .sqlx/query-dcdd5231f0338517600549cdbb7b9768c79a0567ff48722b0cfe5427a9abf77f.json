@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "CREATE TABLE IF NOT EXISTS files (\n  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,\n  name text NOT NULL,\n  type file_type,\n  size integer NOT NULL,\n  last_modified timestamp NOT NULL,\n  starred boolean NOT NULL,\n  fk_owner integer REFERENCES users(id) NOT NULL,\n  fk_parent integer REFERENCES folders(id) NOT NULL\n);\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "dcdd5231f0338517600549cdbb7b9768c79a0567ff48722b0cfe5427a9abf77f"
+}

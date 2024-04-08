@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DO\n$$\nBEGIN\n    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'file_type') THEN\n        CREATE TYPE file_type AS ENUM ('Text', 'Image');\n    END IF;\nEND\n$$;\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "359eb74d2854c70b122434a01555489dd7faabc451e10c596a44e0831e72f959"
+}
