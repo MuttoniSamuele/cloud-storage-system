@@ -49,6 +49,7 @@ namespace API {
       new Headers({ "content-type": "application/json" }),
       { username, email, password }
     );
+    await loadSession();
   }
 
   export async function login(email: string, password: string): Promise<void> {

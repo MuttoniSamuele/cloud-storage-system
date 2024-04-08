@@ -1,5 +1,4 @@
 mod api;
-mod auth;
 mod dummy_api;
 
 use crate::models::RedisPool;
