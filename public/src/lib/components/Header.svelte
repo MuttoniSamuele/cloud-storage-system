@@ -2,7 +2,7 @@
   import IconButton from "./IconButton.svelte";
   // import DarkModeButton from "./DarkModeButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
-  import SearchBar from "./SearchBar.svelte";
+  // import SearchBar from "./SearchBar.svelte";
   import TextButton from "./TextButton.svelte";
   import { account } from "../stores/account";
   import { ModalState, modalState } from "../stores/modalState";
@@ -13,7 +13,7 @@
   <a href="/" class="text-2xl uppercase text-zinc-800 dark:text-zinc-200">
     Cloud Storage
   </a>
-  <SearchBar />
+  <!-- <SearchBar /> -->
   <div class="flex items-center">
     <!-- <DarkModeButton /> -->
     <IconButton icon="ri-settings-3-line" margin />

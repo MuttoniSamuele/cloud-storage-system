@@ -19,12 +19,12 @@
           path={new Path("MyCloud")}
           droppable={isLoggedIn}
         />
-        <FolderAccordion
+        <!-- <FolderAccordion
           displayName="Shared with me"
           icon="ri-group-fill"
           path={new Path("Shared")}
           droppable={false}
-        />
+        /> -->
         <FolderAccordion
           displayName="Starred"
           icon="ri-star-fill"

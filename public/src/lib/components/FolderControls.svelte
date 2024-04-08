@@ -1,7 +1,7 @@
 <script lang="ts">
   import Breadcrumb from "./Breadcrumb.svelte";
   import FilesLayoutToggle from "./FilesLayoutToggle.svelte";
-  import IconButton from "./IconButton.svelte";
+  // import IconButton from "./IconButton.svelte";
   import Navigation from "./Navigation.svelte";
   import NewFolderButton from "./NewFolderButton.svelte";
   import RefreshButton from "./RefreshButton.svelte";
@@ -16,7 +16,8 @@
   </div>
   <div class="flex items-center whitespace-nowrap">
     <FilesLayoutToggle />
-    <IconButton icon="ri-filter-line" margin />
+    <!-- TODO: Implement client-side filtering (by extension) -->
+    <!-- <IconButton icon="ri-filter-line" margin /> -->
     <TextButton icon="ri-upload-line" text="Upload" marginX />
     <NewFolderButton />
   </div>
