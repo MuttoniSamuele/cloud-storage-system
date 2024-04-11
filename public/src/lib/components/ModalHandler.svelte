@@ -3,6 +3,7 @@
   import LoginModal from "./LoginModal.svelte";
   import SignupModal from "./SignupModal.svelte";
   import TextInputModal from "./TextInputModal.svelte";
+  import UploadModal from "./UploadModal.svelte";
 </script>
 
 {#if $modalState === ModalState.Login}
@@ -11,4 +12,6 @@
   <SignupModal />
 {:else if $modalState === ModalState.TextInput}
   <TextInputModal />
+{:else if $modalState === ModalState.Upload}
+  <UploadModal />
 {/if}

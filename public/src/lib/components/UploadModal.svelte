@@ -1,0 +1,85 @@
+<script lang="ts">
+  import API from "../logic/api";
+  import { modalState, ModalState } from "../stores/modalState";
+  import Modal from "./Modal.svelte";
+  import TextButton from "./TextButton.svelte";
+  import IconButton from "./IconButton.svelte";
+
+  let inputElem: HTMLInputElement | null = null;
+  let selectedFile: File | null = null;
+  let errorMessage: string | null = null;
+
+  function formatBytes(bytes: number): string {
+    if (bytes === 0) return "0 Bytes";
+    const units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    let i = 0;
+    while (bytes >= 1000 && i < units.length - 1) {
+      bytes /= 1000;
+      i++;
+    }
+    return bytes.toFixed(2) + " " + units[i];
+  }
+
+  async function handleUpload(): Promise<void> {
+    if (selectedFile === null) {
+      return;
+    }
+    try {
+      await API.upload(selectedFile);
+    } catch (e) {
+      if (e instanceof API.ApiError) {
+        errorMessage = e.message;
+        return;
+      }
+      throw e;
+    }
+    modalState.set(ModalState.Closed);
+  }
+</script>
+
+<Modal
+  title="Upload files"
+  size="sm"
+  on:requestClose={() => modalState.set(ModalState.Closed)}
+>
+  {#if selectedFile !== null}
+    <div class="relative flex px-3 py-2 rounded-lg dark:bg-zinc-600">
+      <span
+        class="max-w-[65%] mr-2 whitespace-nowrap text-ellipsis overflow-hidden font-bold"
+      >
+        {selectedFile.name}
+      </span>
+      <span>
+        ({formatBytes(selectedFile.size)})
+      </span>
+      <div class="absolute right-2">
+        <IconButton
+          icon="ri-close-line"
+          small
+          on:click={() => (selectedFile = null)}
+        />
+      </div>
+    </div>
+  {/if}
+  <input
+    bind:this={inputElem}
+    type="file"
+    name="f"
+    class="hidden"
+    on:change={() => inputElem?.files && (selectedFile = inputElem.files[0])}
+  />
+
+  {#if errorMessage !== null}
+    <div class="text-red-500">
+      {errorMessage}
+    </div>
+  {/if}
+
+  <div class="flex flex-col items-center w-full mt-6 mb-3">
+    {#if selectedFile === null}
+      <TextButton text="Browse" wide on:click={() => inputElem?.click()} />
+    {:else}
+      <TextButton text="Upload" wide on:click={handleUpload} />
+    {/if}
+  </div>
+</Modal>

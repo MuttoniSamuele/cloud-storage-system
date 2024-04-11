@@ -4,6 +4,7 @@ export enum ModalState {
   Login,
   Signup,
   TextInput,
+  Upload,
   Closed
 }
 

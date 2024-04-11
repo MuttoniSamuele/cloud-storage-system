@@ -2,9 +2,9 @@ import { account } from "../stores/account";
 import Path from "./Path";
 import type { FileType } from "./fileUtils";
 import type IFile from "./IFile";
-import File from "./File"
+import CloudFile from "./File"
 import type IFolder from "./IFolder";
-import Folder from "./Folder";
+import CloudFolder from "./Folder";
 import { pathsHistory } from "../stores/pathsHistory";
 import type IUser from "./IUser";
 import User from "./User";
@@ -24,8 +24,8 @@ namespace API {
   }
 
   // TODO: Make it logout if the server responds with 401
-  async function rawRequest(method: HttpMethod, url: string, headers?: Headers, jsonBody?: object): Promise<Response> {
-    const res = await fetch(url, { method, headers, body: JSON.stringify(jsonBody) });
+  async function rawRequest(method: HttpMethod, url: string, headers?: Headers, body?: object | FormData): Promise<Response> {
+    const res = await fetch(url, { method, headers, body: (body instanceof FormData ? body : JSON.stringify(body)) });
     if (res.ok) {
       // Success
       return res;
@@ -76,10 +76,16 @@ namespace API {
     return new User(user.username, user.email);
   }
 
+  export async function upload(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+    await rawRequest("POST", "/api/upload", undefined, formData);
+  }
+
   export async function getFiles(
     path: Path,
     { foldersOnly, filter }: { foldersOnly?: boolean, filter?: FileType } = {}
-  ): Promise<{ files: File[]; folders: Folder[] }> {
+  ): Promise<{ files: CloudFile[]; folders: CloudFolder[] }> {
     const url = new URL("/dummy/files", window.location.origin);
     url.searchParams.set("path", path.toString());
     url.searchParams.set("folders-only", (foldersOnly || false).toString());
@@ -98,13 +104,13 @@ namespace API {
     const files: IFile[] = json.files;
     const folders: IFolder[] = json.folders;
     return {
-      files: files.map((f) => new File(
+      files: files.map((f) => new CloudFile(
         f.name,
         f.fileType,
         f.owner,
         f.lastModified
       )),
-      folders: folders.map((f) => new Folder(
+      folders: folders.map((f) => new CloudFolder(
         f.name,
         f.isEmpty,
         f.owner,

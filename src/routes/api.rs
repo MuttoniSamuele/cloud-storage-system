@@ -1,11 +1,14 @@
 mod auth;
+mod cloud;
 
 use crate::models::RedisPool;
 use auth::{auth_middleware, login, logout, me, signup};
 use axum::{
+    extract::DefaultBodyLimit,
     routing::{get, post},
     Router,
 };
+use cloud::upload;
 use rand_chacha::ChaCha8Rng;
 use serde::Serialize;
 use sqlx::PgPool;
@@ -36,9 +39,11 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
     let protected_routes = Router::new()
         .route("/logout", post(logout))
         .route("/me", get(me))
+        .route("/upload", post(upload))
         .layer(axum::middleware::from_fn(move |req, next| {
             auth_middleware(req, next, redis_pool.clone())
-        }));
+        }))
+        .layer(DefaultBodyLimit::max(1_000_000_000));
     // Combine the rest of the routes with the protected ones
     Router::new()
         .route("/signup", post(signup))

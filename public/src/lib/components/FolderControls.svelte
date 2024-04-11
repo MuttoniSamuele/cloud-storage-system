@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { account } from "../stores/account";
+  import { ModalState, modalState } from "../stores/modalState";
   import Breadcrumb from "./Breadcrumb.svelte";
   import FilesLayoutToggle from "./FilesLayoutToggle.svelte";
   // import IconButton from "./IconButton.svelte";
   import Navigation from "./Navigation.svelte";
-  import NewFolderButton from "./NewFolderButton.svelte";
   import RefreshButton from "./RefreshButton.svelte";
   import TextButton from "./TextButton.svelte";
 </script>
@@ -18,7 +19,17 @@
     <FilesLayoutToggle />
     <!-- TODO: Implement client-side filtering (by extension) -->
     <!-- <IconButton icon="ri-filter-line" margin /> -->
-    <TextButton icon="ri-upload-line" text="Upload" marginX />
-    <NewFolderButton />
+    <TextButton
+      icon="ri-upload-line"
+      text="Upload"
+      marginX
+      on:click={() => $account !== null && modalState.set(ModalState.Upload)}
+    />
+    <TextButton
+      icon="ri-folder-add-line"
+      text="New folder"
+      marginX
+      on:click={() => $account !== null && modalState.set(ModalState.TextInput)}
+    />
   </div>
 </div>
