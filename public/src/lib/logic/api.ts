@@ -76,9 +76,10 @@ namespace API {
     return new User(user.username, user.email);
   }
 
-  export async function upload(file: File) {
+  export async function upload(file: File, parentFolder: string): Promise<void> {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("parent", parentFolder);
     await rawRequest("POST", "/api/upload", undefined, formData);
   }
 

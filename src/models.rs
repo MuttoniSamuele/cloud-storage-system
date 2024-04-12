@@ -1,5 +1,6 @@
 mod user;
 
+pub mod files_model;
 pub mod sessions_model;
 pub mod users_model;
 

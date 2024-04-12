@@ -12,17 +12,22 @@ use std::net::SocketAddr;
 
 lazy_static! {
     // Load environment variables from .env file
-    pub static ref DATABASE_URL: String =
-        env::var("DATABASE_URL").expect("DATABASE_URL missing in .env");
+    pub static ref DATABASE_URL: String = env::var("DATABASE_URL")
+        .expect("DATABASE_URL missing in .env");
     pub static ref DB_MAX_CONNECTIONS: u32 = env::var("DB_MAX_CONNECTIONS")
         .expect("DB_MAX_CONNECTIONS missing in .env")
         .parse()
         .expect("DB_MAX_CONNECTIONS must be a u32");
-    pub static ref REDIS_URL: String = env::var("REDIS_URL").expect("REDIS_URL missing in .env");
+    pub static ref REDIS_URL: String = env::var("REDIS_URL")
+        .expect("REDIS_URL missing in .env");
     pub static ref SESSION_TTL: u64 = env::var("SESSION_TTL")
         .expect("SESSION_TTL missing in .env")
         .parse()
         .expect("SESSION_TTL must be a u64");
+    pub static ref MAX_UPLOAD_MB: usize = env::var("MAX_UPLOAD_MB")
+        .expect("MAX_UPLOAD_MB missing in .env")
+        .parse()
+        .expect("MAX_UPLOAD_MB must be a usize");
 }
 
 #[tokio::main]

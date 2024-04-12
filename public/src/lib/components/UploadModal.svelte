@@ -4,10 +4,16 @@
   import Modal from "./Modal.svelte";
   import TextButton from "./TextButton.svelte";
   import IconButton from "./IconButton.svelte";
+  import { pathsHistory } from "../stores/pathsHistory";
 
   let inputElem: HTMLInputElement | null = null;
   let selectedFile: File | null = null;
   let errorMessage: string | null = null;
+
+  // Set errorMessage to null every time selectedFile changes
+  $: if (selectedFile || true) {
+    errorMessage = null;
+  }
 
   function formatBytes(bytes: number): string {
     if (bytes === 0) return "0 Bytes";
@@ -24,8 +30,13 @@
     if (selectedFile === null) {
       return;
     }
+    const curPath = $pathsHistory.paths[$pathsHistory.index];
+    if (curPath === null) {
+      errorMessage = "You can't upload a file here.";
+      return;
+    }
     try {
-      await API.upload(selectedFile);
+      await API.upload(selectedFile, curPath.rawPath.reverse()[0]);
     } catch (e) {
       if (e instanceof API.ApiError) {
         errorMessage = e.message;
@@ -70,7 +81,7 @@
   />
 
   {#if errorMessage !== null}
-    <div class="text-red-500">
+    <div class="text-red-500 mt-2">
       {errorMessage}
     </div>
   {/if}

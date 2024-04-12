@@ -6,7 +6,7 @@ use auth::{auth_middleware, login, logout, me, signup};
 use axum::{
     extract::DefaultBodyLimit,
     routing::{get, post},
-    Router,
+    Json, Router,
 };
 use cloud::upload;
 use rand_chacha::ChaCha8Rng;
@@ -29,6 +29,15 @@ pub struct ErrorResponse {
     pub message: String,
 }
 
+// TODO: Add more methods to reduce code repetition
+impl ErrorResponse {
+    pub fn json(message: &str) -> Json<Self> {
+        Json(ErrorResponse {
+            message: message.to_string(),
+        })
+    }
+}
+
 pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
     let state = AppState {
         pg_pool: pg_pool.clone(),
@@ -43,7 +52,8 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
         .layer(axum::middleware::from_fn(move |req, next| {
             auth_middleware(req, next, redis_pool.clone())
         }))
-        .layer(DefaultBodyLimit::max(1_000_000_000));
+        // TODO: Add an actual limit because this is a vulnerability
+        .layer(DefaultBodyLimit::disable());
     // Combine the rest of the routes with the protected ones
     Router::new()
         .route("/signup", post(signup))
