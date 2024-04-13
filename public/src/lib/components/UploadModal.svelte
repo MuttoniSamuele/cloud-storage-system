@@ -36,7 +36,7 @@
       return;
     }
     try {
-      await API.upload(selectedFile, curPath.rawPath.reverse()[0]);
+      await API.upload(selectedFile, curPath.rawPath.reverse()[0].id);
     } catch (e) {
       if (e instanceof API.ApiError) {
         errorMessage = e.message;
@@ -90,6 +90,7 @@
     {#if selectedFile === null}
       <TextButton text="Browse" wide on:click={() => inputElem?.click()} />
     {:else}
+      <!-- TODO: Add loader -->
       <TextButton text="Upload" wide on:click={handleUpload} />
     {/if}
   </div>

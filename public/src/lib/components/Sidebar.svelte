@@ -16,7 +16,7 @@
         <FolderAccordion
           displayName="My Cloud"
           icon="ri-hard-drive-2-fill"
-          path={new Path("MyCloud")}
+          path={new Path({ id: 0, name: "MyCloud" })}
           droppable={isLoggedIn}
         />
         <!-- <FolderAccordion
@@ -28,13 +28,13 @@
         <FolderAccordion
           displayName="Starred"
           icon="ri-star-fill"
-          path={new Path("Starred")}
+          path={new Path({ id: 2, name: "Starred" })}
           droppable={false}
         />
         <FolderAccordion
           displayName="Trash"
           icon="ri-delete-bin-fill"
-          path={new Path("Trash")}
+          path={new Path({ id: 1, name: "Trash" })}
           droppable={false}
         />
       </nav>

@@ -15,7 +15,7 @@ pub async fn upload(
     // Data to be extracted from the multipart
     let mut file_name: Option<String> = None;
     let mut content: Option<Bytes> = None;
-    let mut parent_folder: Option<String> = None;
+    let mut parent_folder: Option<i32> = None;
     // Parse the multipart data
     while let Some(field) = multipart.next_field().await.map_err(|_| {
         (
@@ -32,18 +32,19 @@ pub async fn upload(
                 file_name = field.file_name().map(|s| s.to_string());
                 content = field.bytes().await.ok();
             }
-            "parent" => parent_folder = field.text().await.ok(),
+            "parent" => parent_folder = field.text().await.ok().and_then(|n| n.parse().ok()),
             _ => continue,
         };
     }
-    let (Some(file_name), Some(content), Some(parent_folder)) = (file_name, content, parent_folder)
+    let (Some(file_name), Some(content), Some(parent_folder_id)) =
+        (file_name, content, parent_folder)
     else {
         return Err((
             StatusCode::BAD_REQUEST,
             ErrorResponse::json("Invalid form data."),
         ));
     };
-    println!("{} {} {}", file_name, content.len(), parent_folder);
+    println!("{} {} {}", file_name, content.len(), parent_folder_id);
     if content.len() > (*MAX_UPLOAD_MB * 1_000_000) {
         return Err((
             StatusCode::PAYLOAD_TOO_LARGE,
@@ -57,7 +58,7 @@ pub async fn upload(
         &state.pg_pool,
         &file_name,
         &content,
-        &parent_folder,
+        parent_folder_id,
         user_id,
     )
     .await;

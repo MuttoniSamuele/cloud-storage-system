@@ -23,7 +23,7 @@
           path={(() => {
             // This is an IIFE that clones the path, adds a subfolder and returns it
             const p = path.clone();
-            p.addSubFolder(folder.name);
+            p.addSubFolder({ id: folder.id, name: folder.name });
             return p;
           })()}
         />

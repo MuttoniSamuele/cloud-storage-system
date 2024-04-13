@@ -33,7 +33,7 @@
             pathsHistory.push(new Path(newRawPath));
           }}
         >
-          {folder}
+          {folder.name}
         </button>
         {#if i < currentPath.rawPath.length - 1}
           <i

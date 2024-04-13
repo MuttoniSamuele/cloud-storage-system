@@ -1,10 +1,15 @@
+export interface PathFolder {
+  id: number;
+  name: string;
+}
+
 export default class Path {
-  private path: string[];
+  private path: PathFolder[];
 
   constructor();
-  constructor(path: string[]);
-  constructor(baseFolder: string);
-  constructor(param?: string[] | string) {
+  constructor(rawPath: PathFolder[]);
+  constructor(baseFolder: PathFolder);
+  constructor(param?: PathFolder[] | PathFolder) {
     if (param === undefined) {
       this.path = [];
       return;
@@ -16,11 +21,11 @@ export default class Path {
     }
   }
 
-  public get rawPath(): string[] {
+  public get rawPath(): PathFolder[] {
     return [...this.path];
   }
 
-  public addSubFolder(folder: string): void {
+  public addSubFolder(folder: PathFolder): void {
     this.path.push(folder);
   }
 
@@ -29,7 +34,7 @@ export default class Path {
       return false;
     }
     for (let i = 0; i < subPath.path.length; i++) {
-      if (subPath.path[i] !== this.path[i]) {
+      if (subPath.path[i].id !== this.path[i].id) {
         return false;
       }
     }
@@ -41,7 +46,7 @@ export default class Path {
       return false;
     }
     for (let i = 0; i < this.path.length; i++) {
-      if (this.path[i] !== other.path[i]) {
+      if (this.path[i].id !== other.path[i].id) {
         return false;
       }
     }
@@ -53,6 +58,6 @@ export default class Path {
   }
 
   public toString(): string {
-    return "/" + this.path.join("/");
+    return "/" + this.path.map(({ name }) => name).join("/");
   }
 }

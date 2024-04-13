@@ -6,6 +6,7 @@ export default class File implements IFile {
   public readonly extension: string | null;
 
   constructor(
+    public readonly id: number,
     public readonly name: string,
     public readonly fileType: FileType,
     public readonly owner: string,

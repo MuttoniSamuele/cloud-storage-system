@@ -2,6 +2,7 @@ import type IFolder from "./IFolder";
 
 export default class Folder implements IFolder {
   constructor(
+    public readonly id: number,
     public readonly name: string,
     public readonly isEmpty: boolean,
     public readonly owner: string,

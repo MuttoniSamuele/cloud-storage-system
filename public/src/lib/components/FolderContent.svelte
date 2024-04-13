@@ -84,7 +84,7 @@
     }
     // Enter the folder
     const newPath = currentPath.clone();
-    newPath.addSubFolder(folder.name);
+    newPath.addSubFolder({ id: folder.id, name: folder.name });
     pathsHistory.push(newPath);
   }
 

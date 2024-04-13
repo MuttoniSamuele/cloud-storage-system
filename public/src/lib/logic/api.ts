@@ -67,7 +67,7 @@ namespace API {
   export async function loadSession(): Promise<void> {
     const user = await me();
     account.login(user);
-    pathsHistory.push(new Path("MyCloud"));
+    pathsHistory.push(new Path({ id: 0, name: "My Cloud" }));
   }
 
   export async function me(): Promise<User> {
@@ -76,10 +76,10 @@ namespace API {
     return new User(user.username, user.email);
   }
 
-  export async function upload(file: File, parentFolder: string): Promise<void> {
+  export async function upload(file: File, parentFolderId: number): Promise<void> {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("parent", parentFolder);
+    formData.append("parent", parentFolderId.toString());
     await rawRequest("POST", "/api/upload", undefined, formData);
   }
 
@@ -106,12 +106,14 @@ namespace API {
     const folders: IFolder[] = json.folders;
     return {
       files: files.map((f) => new CloudFile(
+        0,
         f.name,
         f.fileType,
         f.owner,
         f.lastModified
       )),
       folders: folders.map((f) => new CloudFolder(
+        0,
         f.name,
         f.isEmpty,
         f.owner,

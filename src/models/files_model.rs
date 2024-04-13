@@ -6,7 +6,7 @@ pub async fn new_file(
     pg_pool: &PgPool,
     file_name: &str,
     content: &Bytes,
-    parent_folder: &str,
+    parent_folder_id: i32,
     owner_id: i32,
 ) -> Result<(), InternalError> {
     Ok(())
