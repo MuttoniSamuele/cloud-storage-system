@@ -1,7 +1,7 @@
 mod auth;
 mod cloud;
 
-use crate::models::RedisPool;
+use crate::{models::RedisPool, MAX_UPLOAD_MB};
 use auth::{auth_middleware, login, logout, me, signup};
 use axum::{
     extract::DefaultBodyLimit,
@@ -52,8 +52,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
         .layer(axum::middleware::from_fn(move |req, next| {
             auth_middleware(req, next, redis_pool.clone())
         }))
-        // TODO: Add an actual limit because this is a vulnerability
-        .layer(DefaultBodyLimit::disable());
+        .layer(DefaultBodyLimit::max(*MAX_UPLOAD_MB * 1_000_000));
     // Combine the rest of the routes with the protected ones
     Router::new()
         .route("/signup", post(signup))

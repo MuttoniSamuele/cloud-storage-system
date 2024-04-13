@@ -5,10 +5,12 @@
   import TextButton from "./TextButton.svelte";
   import IconButton from "./IconButton.svelte";
   import { pathsHistory } from "../stores/pathsHistory";
+  import Loader from "./Loader.svelte";
 
   let inputElem: HTMLInputElement | null = null;
   let selectedFile: File | null = null;
   let errorMessage: string | null = null;
+  let isUploading = false;
 
   // Set errorMessage to null every time selectedFile changes
   $: if (selectedFile || true) {
@@ -35,6 +37,7 @@
       errorMessage = "You can't upload a file here.";
       return;
     }
+    isUploading = true;
     try {
       await API.upload(selectedFile, curPath.rawPath.reverse()[0].id);
     } catch (e) {
@@ -42,7 +45,10 @@
         errorMessage = e.message;
         return;
       }
+      errorMessage = "The file can't be larger than 10 MB.";
       throw e;
+    } finally {
+      isUploading = false;
     }
     modalState.set(ModalState.Closed);
   }
@@ -64,11 +70,15 @@
         ({formatBytes(selectedFile.size)})
       </span>
       <div class="absolute right-2">
-        <IconButton
-          icon="ri-close-line"
-          small
-          on:click={() => (selectedFile = null)}
-        />
+        {#if isUploading}
+          <Loader />
+        {:else}
+          <IconButton
+            icon="ri-close-line"
+            small
+            on:click={() => (selectedFile = null)}
+          />
+        {/if}
       </div>
     </div>
   {/if}
@@ -90,7 +100,6 @@
     {#if selectedFile === null}
       <TextButton text="Browse" wide on:click={() => inputElem?.click()} />
     {:else}
-      <!-- TODO: Add loader -->
       <TextButton text="Upload" wide on:click={handleUpload} />
     {/if}
   </div>
