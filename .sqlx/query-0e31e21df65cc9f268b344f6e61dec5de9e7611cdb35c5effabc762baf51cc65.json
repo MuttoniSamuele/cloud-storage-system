@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM folders\n        WHERE fk_owner = $1 AND fk_parent IS null;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "last_modified",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
+        "name": "starred",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "fk_owner",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "fk_parent",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "0e31e21df65cc9f268b344f6e61dec5de9e7611cdb35c5effabc762baf51cc65"
+}

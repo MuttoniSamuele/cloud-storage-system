@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS files (
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name text NOT NULL,
-  type file_type,
+  file_type text,
   size integer NOT NULL,
   last_modified timestamp NOT NULL,
   starred boolean NOT NULL,

@@ -1,3 +1,5 @@
 /target
 
 .env
+
+/files_data

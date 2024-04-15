@@ -19,6 +19,7 @@
     <FilesLayoutToggle />
     <!-- TODO: Implement client-side filtering (by extension) -->
     <!-- <IconButton icon="ri-filter-line" margin /> -->
+    <!-- TODO: Replace these buttons with "Empty trash" when in Trash folder -->
     <TextButton
       icon="ri-upload-line"
       text="Upload"

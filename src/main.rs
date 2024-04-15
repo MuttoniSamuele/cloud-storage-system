@@ -3,7 +3,7 @@ mod models;
 mod routes;
 
 use lazy_static::lazy_static;
-use models::{init_postgres, init_redis};
+use models::{init_files_folder, init_postgres, init_redis};
 use rand_chacha::ChaCha8Rng;
 use rand_core::{OsRng, RngCore, SeedableRng};
 use routes::create_routes;
@@ -38,6 +38,8 @@ async fn main() {
     let pg_pool = init_postgres(&DATABASE_URL, *DB_MAX_CONNECTIONS).await;
     // Initialize redis
     let redis_pool = init_redis(&REDIS_URL).await;
+    // Intialize the folder with the actual files
+    init_files_folder().await;
     // Initialize ChaCha algorithm
     let rng = ChaCha8Rng::seed_from_u64(OsRng.next_u64());
     // Initalize the controller

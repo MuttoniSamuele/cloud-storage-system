@@ -4,8 +4,6 @@
   import FolderAccordion from "./FolderAccordion.svelte";
   import OverflowYAuto from "./OverflowYAuto.svelte";
   import StoragePreview from "./StoragePreview.svelte";
-
-  $: isLoggedIn = $account !== null;
 </script>
 
 <aside class="flex flex-col justify-between w-72 overflow-x-hidden">
@@ -13,34 +11,43 @@
     <!-- This overflow-y-auto is useless but it doesn't work without it -->
     <div class="overflow-y-auto">
       <nav class="pr-3">
-        <FolderAccordion
-          displayName="My Cloud"
-          icon="ri-hard-drive-2-fill"
-          path={new Path({ id: 0, name: "MyCloud" })}
-          droppable={isLoggedIn}
-        />
-        <!-- <FolderAccordion
+        <!-- TODO: Make it so these don't disappear when logged out -->
+        {#if $account !== null}
+          <FolderAccordion
+            displayName="My Cloud"
+            icon="ri-hard-drive-2-fill"
+            path={new Path({
+              id: $account.personalFolderId,
+              name: "MyCloud",
+            })}
+            droppable
+          />
+          <!-- <FolderAccordion
           displayName="Shared with me"
           icon="ri-group-fill"
           path={new Path("Shared")}
           droppable={false}
         /> -->
-        <FolderAccordion
+          <!-- <FolderAccordion
           displayName="Starred"
           icon="ri-star-fill"
-          path={new Path({ id: 2, name: "Starred" })}
+          path={new Path({})}
           droppable={false}
-        />
-        <FolderAccordion
-          displayName="Trash"
-          icon="ri-delete-bin-fill"
-          path={new Path({ id: 1, name: "Trash" })}
-          droppable={false}
-        />
+        /> -->
+          <FolderAccordion
+            displayName="Trash"
+            icon="ri-delete-bin-fill"
+            path={new Path({
+              id: $account.trashFolderId,
+              name: "Trash",
+            })}
+            droppable={false}
+          />
+        {/if}
       </nav>
     </div>
   </OverflowYAuto>
   <div class="my-8">
-    <StoragePreview usedSpace={isLoggedIn ? 5.3 : 0} totalSpace={15} />
+    <StoragePreview usedSpace={$account !== null ? 5.3 : 0} totalSpace={15} />
   </div>
 </aside>

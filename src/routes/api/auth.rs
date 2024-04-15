@@ -1,7 +1,7 @@
 use super::{AppState, ErrorResponse};
 use crate::{
     errors::{LoginError, SignupError},
-    models::{sessions_model, users_model, RedisPool},
+    models::{folders_model, sessions_model, users_model, RedisPool},
 };
 use axum::{
     body::Body,
@@ -35,6 +35,8 @@ pub struct LoginJsonData {
 struct MeResponse {
     username: String,
     email: String,
+    personal_folder_id: i32,
+    trash_folder_id: i32,
 }
 
 pub type AuthState = (u128, i32);
@@ -84,6 +86,22 @@ pub async fn signup(
         users_model::new_user(&state.pg_pool, &user.username, &user.email, &user.password).await;
     match res {
         Ok(user_id) => {
+            // Try to create the root folders for the user
+            if folders_model::init_root_folders(&state.pg_pool, user_id)
+                .await
+                .is_err()
+            {
+                // If the root folders can't be created, it's a really big problem.
+                // It should never happen, but if it does... oh well
+                return (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse {
+                        message: "Failed to initialize root folders. Please, create a new account."
+                            .to_string(),
+                    }),
+                )
+                    .into_response();
+            }
             // Try to create a session for the new user
             let mut rng = state.rng.lock().await;
             let res = sessions_model::new_session(&state.redis_pool, &mut rng, user_id).await;
@@ -203,6 +221,9 @@ pub async fn me(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     let res = users_model::get_user_by_id(&state.pg_pool, user_id).await;
+    let Ok(folders) = folders_model::get_root_folders(&state.pg_pool, user_id).await else {
+        return StatusCode::INTERNAL_SERVER_ERROR.into_response();
+    };
     match res {
         Ok(user) => {
             if let Some(u) = user {
@@ -211,6 +232,9 @@ pub async fn me(
                     Json(MeResponse {
                         username: u.get_username(),
                         email: u.get_email(),
+                        // This works as long as there are only 2 root folders
+                        personal_folder_id: folders[0].get_id(),
+                        trash_folder_id: folders[1].get_id(),
                     }),
                 )
                     .into_response()

@@ -44,7 +44,6 @@ pub async fn upload(
             ErrorResponse::json("Invalid form data."),
         ));
     };
-    println!("{} {} {}", file_name, content.len(), parent_folder_id);
     if content.len() > (*MAX_UPLOAD_MB * 1_000_000) {
         return Err((
             StatusCode::PAYLOAD_TOO_LARGE,

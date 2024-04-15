@@ -67,13 +67,13 @@ namespace API {
   export async function loadSession(): Promise<void> {
     const user = await me();
     account.login(user);
-    pathsHistory.push(new Path({ id: 0, name: "My Cloud" }));
+    pathsHistory.push(new Path({ id: user.personalFolderId, name: "My Cloud" }));
   }
 
   export async function me(): Promise<User> {
     let res = await rawRequest("GET", "/api/me");
     const user: IUser = await res.json();
-    return new User(user.username, user.email);
+    return new User(user.username, user.email, user.personalFolderId, user.trashFolderId);
   }
 
   export async function upload(file: File, parentFolderId: number): Promise<void> {
