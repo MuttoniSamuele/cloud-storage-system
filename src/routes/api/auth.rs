@@ -76,7 +76,6 @@ pub async fn auth_middleware<B>(
     Ok(next.run(axum::http::Request::from_parts(parts, body)).await)
 }
 
-// TODO: Make this less repetitive
 pub async fn signup(
     State(state): State<AppState>,
     Json(user): Json<SignupJsonData>,
@@ -93,14 +92,11 @@ pub async fn signup(
             {
                 // If the root folders can't be created, it's a really big problem.
                 // It should never happen, but if it does... oh well
-                return (
+                return ErrorResponse::response(
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    Json(ErrorResponse {
-                        message: "Failed to initialize root folders. Please, create a new account."
-                            .to_string(),
-                    }),
+                    "Failed to initialize root folders. Please, create a new account.",
                 )
-                    .into_response();
+                .into_response();
             }
             // Try to create a session for the new user
             let mut rng = state.rng.lock().await;
@@ -113,50 +109,34 @@ pub async fn signup(
             }
         }
         Err(err) => match err {
-            SignupError::UsernameExists => (
+            SignupError::UsernameExists => {
+                ErrorResponse::response(StatusCode::CONFLICT, "Username already taken.")
+                    .into_response()
+            }
+            SignupError::EmailExists => ErrorResponse::response(
                 StatusCode::CONFLICT,
-                Json(ErrorResponse {
-                    message: "Username already taken.".to_string(),
-                }),
+                "An account with this email already exists.",
             )
-                .into_response(),
-            SignupError::EmailExists => (
-                StatusCode::CONFLICT,
-                Json(ErrorResponse {
-                    message: "An account with this email already exists.".to_string(),
-                }),
-            )
-                .into_response(),
-            SignupError::InvalidUsername => (
+            .into_response(),
+            SignupError::InvalidUsername => ErrorResponse::response(
                 StatusCode::BAD_REQUEST,
-                Json(ErrorResponse {
-                    message: "The username must be from 8 to 20 characters long and
-                    should only contain letters, numbers, '-' and '_'."
-                        .to_string(),
-                }),
+                "The username must be from 8 to 20 characters long and
+                should only contain letters, numbers, '-' and '_'.",
             )
-                .into_response(),
-            SignupError::InvalidEmail => (
+            .into_response(),
+            SignupError::InvalidEmail => {
+                ErrorResponse::response(StatusCode::BAD_REQUEST, "Invalid email.").into_response()
+            }
+            SignupError::ShortPassword => ErrorResponse::response(
                 StatusCode::BAD_REQUEST,
-                Json(ErrorResponse {
-                    message: "Invalid email.".to_string(),
-                }),
+                "The password must be at least 8 characters long.",
             )
-                .into_response(),
-            SignupError::ShortPassword => (
-                StatusCode::BAD_REQUEST,
-                Json(ErrorResponse {
-                    message: "The password must be at least 8 characters long.".to_string(),
-                }),
-            )
-                .into_response(),
-            SignupError::InternalError => (
+            .into_response(),
+            SignupError::InternalError => ErrorResponse::response(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                Json(ErrorResponse {
-                    message: "Something went wrong, please try again later.".to_string(),
-                }),
+                "Something went wrong, please try again later.",
             )
-                .into_response(),
+            .into_response(),
         },
     }
 }
@@ -179,27 +159,18 @@ pub async fn login(
             }
         }
         Err(err) => match err {
-            LoginError::EmailDoesNotExists => (
-                StatusCode::UNAUTHORIZED,
-                Json(ErrorResponse {
-                    message: "Email does not exist.".to_string(),
-                }),
-            )
-                .into_response(),
-            LoginError::WrongPassword => (
-                StatusCode::UNAUTHORIZED,
-                Json(ErrorResponse {
-                    message: "Wrong password.".to_string(),
-                }),
-            )
-                .into_response(),
-            LoginError::InternalError => (
+            LoginError::EmailDoesNotExists => {
+                ErrorResponse::response(StatusCode::UNAUTHORIZED, "Email does not exist.")
+                    .into_response()
+            }
+            LoginError::WrongPassword => {
+                ErrorResponse::response(StatusCode::UNAUTHORIZED, "Wrong password.").into_response()
+            }
+            LoginError::InternalError => ErrorResponse::response(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                Json(ErrorResponse {
-                    message: "Something went wrong, please try again later.".to_string(),
-                }),
+                "Something went wrong, please try again later.",
             )
-                .into_response(),
+            .into_response(),
         },
     }
 }

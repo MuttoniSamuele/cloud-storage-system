@@ -5,6 +5,7 @@ use crate::{models::RedisPool, MAX_UPLOAD_MB};
 use auth::{auth_middleware, login, logout, me, signup};
 use axum::{
     extract::DefaultBodyLimit,
+    http::StatusCode,
     routing::{get, post},
     Json, Router,
 };
@@ -29,12 +30,18 @@ pub struct ErrorResponse {
     pub message: String,
 }
 
-// TODO: Add more methods to reduce code repetition
+// TODO: Consider this idea
+// pub type ApiResponse<T> = Result<(StatusCode, T), (StatusCode, Json<ErrorResponse>)>;
+
 impl ErrorResponse {
     pub fn json(message: &str) -> Json<Self> {
         Json(ErrorResponse {
             message: message.to_string(),
         })
+    }
+
+    pub fn response(code: StatusCode, message: &str) -> (StatusCode, Json<Self>) {
+        (code, Self::json(message))
     }
 }
 
