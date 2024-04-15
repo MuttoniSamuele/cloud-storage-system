@@ -11,39 +11,40 @@
     <!-- This overflow-y-auto is useless but it doesn't work without it -->
     <div class="overflow-y-auto">
       <nav class="pr-3">
-        <!-- TODO: Make it so these don't disappear when logged out -->
-        {#if $account !== null}
-          <FolderAccordion
-            displayName="My Cloud"
-            icon="ri-hard-drive-2-fill"
-            path={new Path({
-              id: $account.personalFolderId,
-              name: "MyCloud",
-            })}
-            droppable
-          />
-          <!-- <FolderAccordion
+        <FolderAccordion
+          displayName="My Cloud"
+          icon="ri-hard-drive-2-fill"
+          path={$account === null
+            ? null
+            : new Path({
+                id: $account.personalFolderId,
+                name: "MyCloud",
+              })}
+          droppable
+        />
+        <!-- <FolderAccordion
           displayName="Shared with me"
           icon="ri-group-fill"
           path={new Path("Shared")}
           droppable={false}
         /> -->
-          <!-- <FolderAccordion
+        <!-- <FolderAccordion
           displayName="Starred"
           icon="ri-star-fill"
           path={new Path({})}
           droppable={false}
         /> -->
-          <FolderAccordion
-            displayName="Trash"
-            icon="ri-delete-bin-fill"
-            path={new Path({
-              id: $account.trashFolderId,
-              name: "Trash",
-            })}
-            droppable={false}
-          />
-        {/if}
+        <FolderAccordion
+          displayName="Trash"
+          icon="ri-delete-bin-fill"
+          path={$account === null
+            ? null
+            : new Path({
+                id: $account.trashFolderId,
+                name: "Trash",
+              })}
+          droppable={false}
+        />
       </nav>
     </div>
   </OverflowYAuto>

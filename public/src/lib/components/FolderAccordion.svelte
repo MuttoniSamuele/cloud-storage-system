@@ -6,22 +6,23 @@
 
   export let icon: string | null = null;
   export let displayName: string;
-  export let path: Path;
+  export let path: Path | null;
   export let droppable = true;
   export let level = 0;
 
   $: currentPath = getCurrentPath($pathsHistory);
   let collapsed = true;
 
-  $: isSelected = currentPath === null ? false : currentPath.cmp(path);
+  $: isSelected =
+    currentPath === null || path === null ? false : currentPath.cmp(path);
   // Check if it contains the selected folder and it isn't directly visible
   $: containsSelected =
-    isSelected || !collapsed || currentPath === null
+    isSelected || !collapsed || currentPath === null || path === null
       ? false
       : currentPath.contains(path);
 
   function handleSelect(): void {
-    if ($account !== null) {
+    if ($account !== null && path !== null) {
       pathsHistory.push(path);
     }
   }
@@ -46,7 +47,7 @@
       {displayName}
     </span>
   </button>
-  {#if droppable}
+  {#if droppable && path !== null}
     <button
       class="absolute top-1/2 -translate-y-1/2 offset-arrow-by-level
         {isSelected ? 'contrast-focus' : ''}"
@@ -59,7 +60,7 @@
     </button>
   {/if}
 </div>
-{#if droppable}
+{#if droppable && path !== null}
   <FolderTree level={level + 1} {collapsed} path={path.clone()} />
 {/if}
 
