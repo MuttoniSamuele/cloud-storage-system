@@ -110,8 +110,6 @@
 
 <div class="w-full h-full p-4" bind:this={contentElement}>
   <OverflowYAuto on:scroll={() => (isContextMenuOpen = false)}>
-    <!-- TODO: Handle when currentPath is null and the user is logged in
-      (it shows a blank page at the moment) -->
     {#if currentPath !== null}
       {#await API.getFiles(currentPath) then { files, folders }}
         {#if $preferences.filesLayout === "grid"}

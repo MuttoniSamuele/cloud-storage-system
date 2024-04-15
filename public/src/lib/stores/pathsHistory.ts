@@ -28,7 +28,7 @@ function initPathsHistory() {
     },
     goBack: (): void => {
       update((history: PathHistory) => {
-        history.index = Math.max(0, history.index - 1);
+        history.index = Math.max(1, history.index - 1);
         return history;
       });
     },
