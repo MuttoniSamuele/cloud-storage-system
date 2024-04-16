@@ -150,5 +150,9 @@
   </OverflowYAuto>
 </div>
 {#if isContextMenuOpen}
-  <FolderContextMenu x={contextMenuX} y={contextMenuY} />
+  <FolderContextMenu
+    x={contextMenuX}
+    y={contextMenuY}
+    selectedFile={Array.from(selectedFiles)[0]}
+  />
 {/if}
