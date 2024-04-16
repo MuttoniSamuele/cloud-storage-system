@@ -51,6 +51,7 @@
       isUploading = false;
     }
     modalState.set(ModalState.Closed);
+    pathsHistory.refresh();
   }
 </script>
 

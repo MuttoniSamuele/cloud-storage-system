@@ -111,13 +111,12 @@
 <div class="w-full h-full p-4" bind:this={contentElement}>
   <OverflowYAuto on:scroll={() => (isContextMenuOpen = false)}>
     {#if currentPath !== null}
-      {#await API.getFiles(currentPath) then { files, folders }}
+      {#await API.view(currentPath.lastId) then { files, folders }}
         {#if $preferences.filesLayout === "grid"}
           <FilesGrid
             {files}
             {folders}
             {selectedFiles}
-            showOwners
             on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
             on:fileClickOutside={handleClickOutside}
@@ -134,7 +133,6 @@
             {files}
             {folders}
             {selectedFiles}
-            showOwners
             on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
             on:fileClickOutside={handleClickOutside}

@@ -1,4 +1,3 @@
-import type { FileType } from "./fileUtils";
 import type IFile from "./IFile";
 
 export default class File implements IFile {
@@ -8,9 +7,12 @@ export default class File implements IFile {
   constructor(
     public readonly id: number,
     public readonly name: string,
-    public readonly fileType: FileType,
-    public readonly owner: string,
-    public readonly lastModified: number
+    public readonly fileType: string | null,
+    public readonly size: number,
+    public readonly lastModified: string,
+    public readonly starred: boolean,
+    public readonly ownerId: number,
+    public readonly parentId: number,
   ) {
     const fileNameArr = name.split(".");
     // Check if there was at least a "."

@@ -1,6 +1,8 @@
 export default interface FileBase {
   readonly id: number,
   readonly name: string;
-  readonly owner: string;
-  readonly lastModified: number;
+  readonly lastModified: string;
+  readonly starred: boolean,
+  readonly ownerId: number;
+  readonly parentId: number;
 }

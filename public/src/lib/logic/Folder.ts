@@ -4,8 +4,9 @@ export default class Folder implements IFolder {
   constructor(
     public readonly id: number,
     public readonly name: string,
-    public readonly isEmpty: boolean,
-    public readonly owner: string,
-    public readonly lastModified: number
+    public readonly lastModified: string,
+    public readonly starred: boolean,
+    public readonly ownerId: number,
+    public readonly parentId: number
   ) { }
 }

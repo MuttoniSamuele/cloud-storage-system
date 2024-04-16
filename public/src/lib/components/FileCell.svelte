@@ -13,14 +13,14 @@
 </script>
 
 <script lang="ts">
-  import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
+  import { fileTypeToIcon } from "../logic/fileUtils";
   import IconButton from "./IconButton.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
   import { clickOutside } from "../actions/clickOutside";
 
   export let name: string;
   export let isFolder = false;
-  export let fileType: FileType | null = null;
+  export let fileType: string | null = null;
   export let owner: string | null = null;
   export let selected = false;
 
@@ -32,6 +32,7 @@
   {selected
     ? 'bg-zinc-300 dark:bg-zinc-600'
     : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}"
+  title={name}
 >
   <button
     class="absolute top-0 left-0 w-full h-full cursor-default"

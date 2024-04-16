@@ -35,6 +35,9 @@
   export let selectedFiles: Set<File | Folder>;
   export let showOwners = false;
 
+  // Disables the unused variable warning
+  $: showOwners;
+
   const dispatch = createFilesEventDispatcher();
 </script>
 
@@ -45,7 +48,6 @@
   {#each folders.sort(cmpFileNames) as folder}
     <FileCell
       name={folder.name}
-      owner={showOwners ? folder.owner : null}
       selected={selectedFiles.has(folder)}
       isFolder
       on:click={() => dispatch("folderClick", folder)}
@@ -59,10 +61,9 @@
   {/each}
   {#each files.sort(cmpFileNames) as file}
     <FileCell
-      name={file.displayName}
+      name={file.name}
       fileType={file.fileType}
       selected={selectedFiles.has(file)}
-      owner={showOwners ? file.owner : null}
       on:click={() => dispatch("fileClick", file)}
       on:dblclick={() => dispatch("fileDblClick", file)}
       on:clickOutside={({ detail: e }) =>

@@ -25,6 +25,10 @@ export default class Path {
     return [...this.path];
   }
 
+  public get lastId(): number {
+    return this.rawPath.reverse()[0].id;
+  }
+
   public addSubFolder(folder: PathFolder): void {
     this.path.push(folder);
   }

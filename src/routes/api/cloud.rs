@@ -115,6 +115,7 @@ pub async fn view(
     State(state): State<AppState>,
     Query(params): Query<ViewQuery>,
 ) -> Result<(StatusCode, Json<ViewResponse>), (StatusCode, Json<ErrorResponse>)> {
+    // TODO: Check max storage for user
     // Fetch the folders from the database first
     let raw_folders = folders_model::get_folders(&state.pg_pool, params.parent_folder_id, user_id)
         .await

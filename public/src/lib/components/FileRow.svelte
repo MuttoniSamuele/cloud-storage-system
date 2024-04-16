@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fileTypeToIcon, type FileType } from "../logic/fileUtils";
+  import { fileTypeToIcon } from "../logic/fileUtils";
   import FileRowField from "./FileRowField.svelte";
   import IconButton from "./IconButton.svelte";
   import { clickOutside } from "../actions/clickOutside";
@@ -7,13 +7,14 @@
 
   export let name: string;
   export let isFolder = false;
-  export let fileType: FileType | null = null;
+  export let fileType: string | null = null;
   export let owner: string | null = null;
-  export let lastModified: number;
+  export let lastModified: string;
   export let selected = false;
 
   const dispatch = createFileEventDispatcher();
 
+  // TODO: Fix wrong timezone
   function formatLastModified(): string {
     return new Intl.DateTimeFormat(navigator.language, {
       day: "2-digit",
@@ -21,7 +22,8 @@
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(new Date(lastModified * 1000));
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    }).format(new Date(lastModified));
   }
 </script>
 
@@ -30,6 +32,7 @@
   {selected
     ? 'bg-zinc-300 dark:bg-zinc-600'
     : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}"
+  title={name}
 >
   <button
     class="absolute top-0 left-0 w-full h-full cursor-default"

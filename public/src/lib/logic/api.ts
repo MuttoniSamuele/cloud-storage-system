@@ -1,6 +1,5 @@
 import { account } from "../stores/account";
 import Path from "./Path";
-import type { FileType } from "./fileUtils";
 import type IFile from "./IFile";
 import CloudFile from "./File"
 import type IFolder from "./IFolder";
@@ -71,7 +70,7 @@ namespace API {
   }
 
   export async function me(): Promise<User> {
-    let res = await rawRequest("GET", "/api/me");
+    const res = await rawRequest("GET", "/api/me");
     const user: IUser = await res.json();
     return new User(user.username, user.email, user.personalFolderId, user.trashFolderId);
   }
@@ -83,41 +82,36 @@ namespace API {
     await rawRequest("POST", "/api/upload", undefined, formData);
   }
 
-  export async function getFiles(
-    path: Path,
-    { foldersOnly, filter }: { foldersOnly?: boolean, filter?: FileType } = {}
-  ): Promise<{ files: CloudFile[]; folders: CloudFolder[] }> {
-    const url = new URL("/dummy/files", window.location.origin);
-    url.searchParams.set("path", path.toString());
-    url.searchParams.set("folders-only", (foldersOnly || false).toString());
-    if (filter !== undefined) {
-      url.searchParams.set("types", filter);
-    }
-    const res = await fetch(url.href);
-    if (!res.ok) {
-      throw new ApiError(`Failed to fetch the files: code ${res.status}`);
-    }
-    const json = await res.json();
-    // TODO: Add controls for object properties
-    if (!Array.isArray(json.files) || !Array.isArray(json.folders)) {
-      throw new ApiError(`Failed to parse fetched files`);
-    }
-    const files: IFile[] = json.files;
-    const folders: IFolder[] = json.folders;
+  export async function view(
+    parentId: number,
+    foldersOnly = false
+  ): Promise<{ files: CloudFile[]; folders: CloudFolder[]; }> {
+    // Build the request URL
+    const url = new URL("/api/view", window.location.origin);
+    url.searchParams.set("parent-folder-id", parentId.toString());
+    url.searchParams.set("folders-only", foldersOnly.toString());
+    // Query the server
+    const res = await rawRequest("GET", url.href);
+    const viewResponse: { files: IFile[], folders: IFolder[] } = await res.json();
+    // Turn the raw objects into instances of the corresponding classes
     return {
-      files: files.map((f) => new CloudFile(
-        0,
+      files: viewResponse.files.map((f) => new CloudFile(
+        f.id,
         f.name,
         f.fileType,
-        f.owner,
-        f.lastModified
+        f.size,
+        f.lastModified,
+        f.starred,
+        f.ownerId,
+        f.parentId
       )),
-      folders: folders.map((f) => new CloudFolder(
-        0,
+      folders: viewResponse.folders.map((f) => new CloudFolder(
+        f.id,
         f.name,
-        f.isEmpty,
-        f.owner,
-        f.lastModified
+        f.lastModified,
+        f.starred,
+        f.ownerId,
+        f.parentId
       )),
     };
   }

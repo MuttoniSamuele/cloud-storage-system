@@ -29,7 +29,6 @@
   {#each folders.sort(cmpFileNames) as folder}
     <FileRow
       name={folder.name}
-      owner={showOwners ? folder.owner : null}
       lastModified={folder.lastModified}
       selected={selectedFiles.has(folder)}
       isFolder
@@ -44,9 +43,8 @@
   {/each}
   {#each files.sort(cmpFileNames) as file}
     <FileRow
-      name={file.displayName}
+      name={file.name}
       fileType={file.fileType}
-      owner={showOwners ? file.owner : null}
       lastModified={file.lastModified}
       selected={selectedFiles.has(file)}
       on:click={() => dispatch("fileClick", file)}
