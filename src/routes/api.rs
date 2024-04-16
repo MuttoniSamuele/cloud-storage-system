@@ -9,7 +9,7 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use cloud::upload;
+use cloud::{upload, view};
 use rand_chacha::ChaCha8Rng;
 use serde::Serialize;
 use sqlx::PgPool;
@@ -30,9 +30,6 @@ pub struct ErrorResponse {
     pub message: String,
 }
 
-// TODO: Consider this idea
-// pub type ApiResponse<T> = Result<(StatusCode, T), (StatusCode, Json<ErrorResponse>)>;
-
 impl ErrorResponse {
     pub fn json(message: &str) -> Json<Self> {
         Json(ErrorResponse {
@@ -43,7 +40,14 @@ impl ErrorResponse {
     pub fn response(code: StatusCode, message: &str) -> (StatusCode, Json<Self>) {
         (code, Self::json(message))
     }
+
+    pub fn internal_err() -> (StatusCode, Json<Self>) {
+        Self::response(StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong.")
+    }
 }
+
+// TODO: Consider this idea
+// pub type ApiResponse<T> = Result<(StatusCode, T), (StatusCode, Json<ErrorResponse>)>;
 
 pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
     let state = AppState {
@@ -56,6 +60,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
         .route("/logout", post(logout))
         .route("/me", get(me))
         .route("/upload", post(upload))
+        .route("/view", get(view))
         .layer(axum::middleware::from_fn(move |req, next| {
             auth_middleware(req, next, redis_pool.clone())
         }))

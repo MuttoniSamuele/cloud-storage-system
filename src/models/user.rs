@@ -7,28 +7,19 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(id: i32, username: String, email: String, password: String) -> Self {
-        User {
-            id,
-            username,
-            email,
-            password,
-        }
-    }
-
     pub fn get_id(&self) -> i32 {
         self.id
     }
 
-    pub fn get_username(&self) -> String {
-        self.username.clone()
+    pub fn get_username(&self) -> &String {
+        &self.username
     }
 
-    pub fn get_email(&self) -> String {
-        self.email.clone()
+    pub fn get_email(&self) -> &String {
+        &self.email
     }
 
-    fn get_password(&self) -> String {
-        self.password.clone()
+    fn get_password(&self) -> &String {
+        &self.password
     }
 }

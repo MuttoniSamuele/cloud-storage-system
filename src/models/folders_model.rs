@@ -33,6 +33,24 @@ pub async fn get_root_folders(
     .map_err(|_| InternalError("Failed to add folder to database".to_string()))
 }
 
+pub async fn get_folders(
+    pg_pool: &PgPool,
+    parent_folder_id: i32,
+    owner_id: i32,
+) -> Result<Vec<Folder>, InternalError> {
+    sqlx::query_as!(
+        Folder,
+        "SELECT *
+        FROM folders
+        WHERE fk_owner = $1 AND fk_parent = $2;",
+        owner_id,
+        parent_folder_id
+    )
+    .fetch_all(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed get the folders from the database".to_string()))
+}
+
 async fn new_raw_folder(
     pg_pool: &PgPool,
     folder_name: &str,

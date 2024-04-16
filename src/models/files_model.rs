@@ -35,6 +35,24 @@ pub async fn new_file(
     Ok(file)
 }
 
+pub async fn get_files(
+    pg_pool: &PgPool,
+    parent_folder_id: i32,
+    owner_id: i32,
+) -> Result<Vec<File>, InternalError> {
+    sqlx::query_as!(
+        File,
+        "SELECT *
+        FROM files
+        WHERE fk_owner = $1 AND fk_parent = $2;",
+        owner_id,
+        parent_folder_id
+    )
+    .fetch_all(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed get the files from the database".to_string()))
+}
+
 async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), InternalError> {
     let raw_path = format!("{}/{}", FILES_FOLDER, file_id);
     let path = Path::new(&raw_path);

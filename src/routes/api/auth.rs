@@ -201,8 +201,8 @@ pub async fn me(
                 (
                     StatusCode::OK,
                     Json(MeResponse {
-                        username: u.get_username(),
-                        email: u.get_email(),
+                        username: u.get_username().clone(),
+                        email: u.get_email().clone(),
                         // This works as long as there are only 2 root folders
                         personal_folder_id: folders[0].get_id(),
                         trash_folder_id: folders[1].get_id(),
