@@ -17,7 +17,7 @@ const SESSION_COOKIE_AGE: u32 = 9999999;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct SignupJsonData {
+pub struct SignupData {
     username: String,
     email: String,
     password: String,
@@ -25,7 +25,7 @@ pub struct SignupJsonData {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct LoginJsonData {
+pub struct LoginData {
     email: String,
     password: String,
 }
@@ -78,7 +78,7 @@ pub async fn auth_middleware<B>(
 
 pub async fn signup(
     State(state): State<AppState>,
-    Json(user): Json<SignupJsonData>,
+    Json(user): Json<SignupData>,
 ) -> impl IntoResponse {
     // Try to create the user
     let res =
@@ -143,7 +143,7 @@ pub async fn signup(
 
 pub async fn login(
     State(state): State<AppState>,
-    Json(user): Json<LoginJsonData>,
+    Json(user): Json<LoginData>,
 ) -> impl IntoResponse {
     let res = users_model::verify_user(&state.pg_pool, &user.email, &user.password).await;
     match res {

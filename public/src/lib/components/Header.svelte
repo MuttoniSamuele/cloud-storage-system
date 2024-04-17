@@ -16,7 +16,7 @@
   <!-- <SearchBar /> -->
   <div class="flex items-center">
     <!-- <DarkModeButton /> -->
-    <IconButton icon="ri-settings-3-line" margin />
+    <!-- <IconButton icon="ri-settings-3-line" margin /> -->
     {#if $account === null}
       <TextButton
         text="Log in"

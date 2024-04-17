@@ -1,17 +1,30 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import { modalState, ModalState } from "../stores/modalState";
   import Modal from "./Modal.svelte";
   import TextButton from "./TextButton.svelte";
   import TextInput from "./TextInput.svelte";
+
+  export let title: string;
+  export let errorMessage: string | null = null;
+
+  let text = "";
+
+  const dispatch = createEventDispatcher<{ confirm: string }>();
 </script>
 
 <Modal
-  title="Text input"
+  {title}
   size="sm"
   on:requestClose={() => modalState.set(ModalState.Closed)}
 >
-  <TextInput wfull />
+  <TextInput wfull on:input={({ detail }) => (text = detail)} />
+  {#if errorMessage !== null}
+    <div class="text-red-500 mt-2">
+      {errorMessage}
+    </div>
+  {/if}
   <div class="flex justify-end w-full mt-5 mb-1">
-    <TextButton text="Confirm" />
+    <TextButton text="Confirm" on:click={() => dispatch("confirm", text)} />
   </div>
 </Modal>

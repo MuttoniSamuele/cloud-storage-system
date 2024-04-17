@@ -57,6 +57,7 @@ async fn new_raw_folder(
     parent_folder_id: Option<i32>,
     owner_id: i32,
 ) -> Result<Folder, InternalError> {
+    // TODO: Validate name
     let folder = sqlx::query_as!(
         Folder,
         "INSERT INTO folders (name, last_modified, starred, fk_owner, fk_parent)

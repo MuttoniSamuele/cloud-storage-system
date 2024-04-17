@@ -3,8 +3,8 @@ import { writable } from "svelte/store";
 export enum ModalState {
   Login,
   Signup,
-  TextInput,
   Upload,
+  NewFolder,
   Closed
 }
 

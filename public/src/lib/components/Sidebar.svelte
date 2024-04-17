@@ -31,7 +31,12 @@
         <!-- <FolderAccordion
           displayName="Starred"
           icon="ri-star-fill"
-          path={new Path({})}
+          path={$account === null
+            ? null
+            : new Path({
+                id: $account.personalFolderId,
+                name: "Starred",
+              })}
           droppable={false}
         /> -->
         <FolderAccordion

@@ -9,7 +9,7 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use cloud::{upload, view};
+use cloud::{new_folder, upload, view};
 use rand_chacha::ChaCha8Rng;
 use serde::Serialize;
 use sqlx::PgPool;
@@ -61,6 +61,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
         .route("/me", get(me))
         .route("/upload", post(upload))
         .route("/view", get(view))
+        .route("/new-folder", post(new_folder))
         .layer(axum::middleware::from_fn(move |req, next| {
             auth_middleware(req, next, redis_pool.clone())
         }))

@@ -30,7 +30,7 @@
       icon="ri-folder-add-line"
       text="New folder"
       marginX
-      on:click={() => $account !== null && modalState.set(ModalState.TextInput)}
+      on:click={() => $account !== null && modalState.set(ModalState.NewFolder)}
     />
   </div>
 </div>

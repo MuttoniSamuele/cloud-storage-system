@@ -115,6 +115,10 @@ namespace API {
       )),
     };
   }
+
+  export async function newFolder(parentId: number, name: string): Promise<void> {
+    await rawRequest("POST", "/api/new-folder", new Headers({ "content-type": "application/json" }), { parentId, name });
+  }
 }
 
 export default API;

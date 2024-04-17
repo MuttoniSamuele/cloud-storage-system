@@ -49,6 +49,13 @@ pub struct Folder {
     pub parent_id: i32,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct NewFolderData {
+    parent_id: i32,
+    name: String,
+}
+
 pub async fn upload(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -166,4 +173,15 @@ pub async fn view(
         .collect();
     // Send the files and folders
     Ok((StatusCode::OK, Json(ViewResponse { files, folders })))
+}
+
+pub async fn new_folder(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Json(data): Json<NewFolderData>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    folders_model::new_folder(&state.pg_pool, &data.name, data.parent_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::CREATED)
 }
