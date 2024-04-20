@@ -61,7 +61,10 @@
   on:requestClose={() => modalState.set(ModalState.Closed)}
 >
   {#if selectedFile !== null}
-    <div class="relative flex px-3 py-2 rounded-lg dark:bg-zinc-600">
+    <div
+      class="relative flex px-3 py-2 rounded-lg dark:bg-zinc-600"
+      title={selectedFile.name}
+    >
       <span
         class="max-w-[65%] mr-2 whitespace-nowrap text-ellipsis overflow-hidden font-bold"
       >

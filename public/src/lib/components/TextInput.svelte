@@ -11,6 +11,13 @@
   export let marginX = false;
   export let marginY = false;
   export let baseValue: string | null = null;
+  export let autofocus = false;
+  export let autoSelect = false;
+
+  let inputElem: HTMLInputElement | null = null;
+  $: if (inputElem !== null && autoSelect) {
+    inputElem.select();
+  }
 
   const dispatch = createEventDispatcher<{ input: string }>();
 </script>
@@ -26,13 +33,16 @@
       {label}
     </label>
   {/if}
+  <!-- svelte-ignore a11y-autofocus -->
   <input
+    bind:this={inputElem}
     {type}
     {id}
     {placeholder}
     value={baseValue}
-    class="px-2 py-1 rounded border border-zinc-700 dark:border-zinc-400 bg-transparent placeholder-zinc-600 dark:placeholder-zinc-400 text-zinc-900 dark:text-zinc-200
+    class=" px-2 py-1 rounded border border-zinc-700 dark:border-zinc-400 bg-transparent placeholder-zinc-600 dark:placeholder-zinc-400 text-zinc-900 dark:text-zinc-200
       {wfull ? 'w-full' : ''}"
+    {autofocus}
     on:input={(e) => dispatch("input", e.currentTarget.value)}
   />
 </div>

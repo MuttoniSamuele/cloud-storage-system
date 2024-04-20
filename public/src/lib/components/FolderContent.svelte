@@ -153,5 +153,7 @@
     x={contextMenuX}
     y={contextMenuY}
     selectedFile={Array.from($selectedFiles)[0]}
+    on:fileOpen={handleFileDblClick}
+    on:folderOpen={handleFolderDblClick}
   />
 {/if}

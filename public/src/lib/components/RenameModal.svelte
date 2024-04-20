@@ -37,6 +37,7 @@
 <TextInputModal
   title="Rename {isFolder ? 'folder' : 'file'}"
   {errorMessage}
+  autoSelect
   baseValue={selectedFile === null ? "" : selectedFile.name}
   on:confirm={handleConfirm}
 />
