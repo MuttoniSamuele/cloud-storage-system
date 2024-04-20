@@ -20,7 +20,7 @@
   >
     <FileRowField size="large" isHeader>Name</FileRowField>
     <FileRowField size="small" secondary isHeader fixedMargin>
-      Last modified
+      Date added
     </FileRowField>
     {#if showOwners}
       <FileRowField size="medium" secondary isHeader>Owner</FileRowField>

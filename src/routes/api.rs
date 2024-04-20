@@ -68,7 +68,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
             auth_middleware(req, next, redis_pool.clone())
         }))
         .layer(DefaultBodyLimit::max(*MAX_UPLOAD_MB * 1_000_000));
-    // Combine the rest of the routes with the protected ones
+    // Combine the rest of the routes with the protected oneshello
     Router::new()
         .route("/signup", post(signup))
         .route("/login", post(login))
