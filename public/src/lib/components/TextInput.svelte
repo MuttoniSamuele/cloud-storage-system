@@ -10,6 +10,7 @@
   export let wfull = false;
   export let marginX = false;
   export let marginY = false;
+  export let baseValue: string | null = null;
 
   const dispatch = createEventDispatcher<{ input: string }>();
 </script>
@@ -29,6 +30,7 @@
     {type}
     {id}
     {placeholder}
+    value={baseValue}
     class="px-2 py-1 rounded border border-zinc-700 dark:border-zinc-400 bg-transparent placeholder-zinc-600 dark:placeholder-zinc-400 text-zinc-900 dark:text-zinc-200
       {wfull ? 'w-full' : ''}"
     on:input={(e) => dispatch("input", e.currentTarget.value)}

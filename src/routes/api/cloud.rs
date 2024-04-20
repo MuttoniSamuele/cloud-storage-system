@@ -203,3 +203,14 @@ pub async fn file_rename(
         .map_err(|_| ErrorResponse::internal_err())?;
     Ok(StatusCode::OK)
 }
+
+pub async fn folder_rename(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Json(data): Json<RenameData>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    folders_model::rename_folder(&state.pg_pool, data.id, user_id, &data.new_name)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
+}

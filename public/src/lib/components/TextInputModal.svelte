@@ -7,8 +7,9 @@
 
   export let title: string;
   export let errorMessage: string | null = null;
+  export let baseValue: string | null = null;
 
-  let text = "";
+  let text = baseValue || "";
 
   const dispatch = createEventDispatcher<{ confirm: string }>();
 </script>
@@ -18,7 +19,7 @@
   size="sm"
   on:requestClose={() => modalState.set(ModalState.Closed)}
 >
-  <TextInput wfull on:input={({ detail }) => (text = detail)} />
+  <TextInput wfull {baseValue} on:input={({ detail }) => (text = detail)} />
   {#if errorMessage !== null}
     <div class="text-red-500 mt-2">
       {errorMessage}

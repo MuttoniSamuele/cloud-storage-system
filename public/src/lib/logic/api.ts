@@ -120,8 +120,8 @@ namespace API {
     await rawRequest("POST", "/api/folder/new", new Headers({ "content-type": "application/json" }), { parentId, name });
   }
 
-  export async function renameFile(id: number, newName: string): Promise<void> {
-    await rawRequest("PATCH", "/api/file/rename", new Headers({ "content-type": "application/json" }), { id, newName });
+  export async function renameFile(id: number, newName: string, isFolder = false): Promise<void> {
+    await rawRequest("PATCH", `/api/${isFolder ? "folder" : "file"}/rename`, new Headers({ "content-type": "application/json" }), { id, newName });
   }
 }
 

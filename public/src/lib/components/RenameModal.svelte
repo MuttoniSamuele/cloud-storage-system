@@ -21,11 +21,7 @@
       return;
     }
     try {
-      if (isFolder) {
-        // TODO: await API.renameFolder(selectedFile.id, name);
-      } else {
-        await API.renameFile(selectedFile.id, name);
-      }
+      await API.renameFile(selectedFile.id, name, isFolder);
     } catch (e) {
       if (e instanceof API.ApiError) {
         errorMessage = e.message;
@@ -41,5 +37,6 @@
 <TextInputModal
   title="Rename {isFolder ? 'folder' : 'file'}"
   {errorMessage}
+  baseValue={selectedFile === null ? "" : selectedFile.name}
   on:confirm={handleConfirm}
 />

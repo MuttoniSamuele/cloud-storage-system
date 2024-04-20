@@ -51,6 +51,27 @@ pub async fn get_folders(
     .map_err(|_| InternalError("Failed get the folders from the database".to_string()))
 }
 
+pub async fn rename_folder(
+    pg_pool: &PgPool,
+    file_id: i32,
+    owner_id: i32,
+    new_name: &str,
+) -> Result<(), InternalError> {
+    // TODO: Validate name
+    sqlx::query!(
+        "UPDATE folders
+        SET name = $3
+        WHERE id = $1 AND fk_owner = $2;",
+        file_id,
+        owner_id,
+        new_name
+    )
+    .fetch_all(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to rename the folder".to_string()))?;
+    Ok(())
+}
+
 async fn new_raw_folder(
     pg_pool: &PgPool,
     folder_name: &str,

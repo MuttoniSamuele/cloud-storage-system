@@ -60,8 +60,7 @@ pub async fn rename_file(
     new_name: &str,
 ) -> Result<(), InternalError> {
     // TODO: Validate name
-    sqlx::query_as!(
-        File,
+    sqlx::query!(
         "UPDATE files
         SET name = $3
         WHERE id = $1 AND fk_owner = $2;",
