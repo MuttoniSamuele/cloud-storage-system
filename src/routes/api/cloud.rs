@@ -56,6 +56,13 @@ pub struct NewFolderData {
     name: String,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RenameData {
+    id: i32,
+    new_name: String,
+}
+
 pub async fn upload(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -175,7 +182,7 @@ pub async fn view(
     Ok((StatusCode::OK, Json(ViewResponse { files, folders })))
 }
 
-pub async fn new_folder(
+pub async fn folder_new(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
     Json(data): Json<NewFolderData>,
@@ -184,4 +191,15 @@ pub async fn new_folder(
         .await
         .map_err(|_| ErrorResponse::internal_err())?;
     Ok(StatusCode::CREATED)
+}
+
+pub async fn file_rename(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Json(data): Json<RenameData>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    files_model::rename_file(&state.pg_pool, data.id, user_id, &data.new_name)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type File from "../logic/File";
   import Folder from "../logic/Folder";
+  import { ModalState, modalState } from "../stores/modalState";
   import ContextMenu from "./ContextMenu.svelte";
   import ContextMenuDivider from "./ContextMenuDivider.svelte";
   import ContextMenuItem from "./ContextMenuItem.svelte";
@@ -15,7 +16,12 @@
 <ContextMenu {x} {y}>
   <ContextMenuItem icon="ri-video-line" text="Open" />
   <ContextMenuDivider />
-  <ContextMenuItem icon="ri-edit-line" text="Rename" />
+  <ContextMenuItem
+    icon="ri-edit-line"
+    text="Rename"
+    on:click={() => modalState.set(ModalState.Rename  // let selectedFiles = new Set<File | Folder>();
+      )}
+  />
   {#if !isFolder}
     <ContextMenuItem icon="ri-file-copy-line" text="Duplicate" />
   {/if}

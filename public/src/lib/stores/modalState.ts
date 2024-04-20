@@ -5,6 +5,7 @@ export enum ModalState {
   Signup,
   Upload,
   NewFolder,
+  Rename,
   Closed
 }
 

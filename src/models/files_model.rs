@@ -53,6 +53,28 @@ pub async fn get_files(
     .map_err(|_| InternalError("Failed get the files from the database".to_string()))
 }
 
+pub async fn rename_file(
+    pg_pool: &PgPool,
+    file_id: i32,
+    owner_id: i32,
+    new_name: &str,
+) -> Result<(), InternalError> {
+    // TODO: Validate name
+    sqlx::query_as!(
+        File,
+        "UPDATE files
+        SET name = $3
+        WHERE id = $1 AND fk_owner = $2;",
+        file_id,
+        owner_id,
+        new_name
+    )
+    .fetch_all(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to rename the file".to_string()))?;
+    Ok(())
+}
+
 async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), InternalError> {
     let raw_path = format!("{}/{}", FILES_FOLDER, file_id);
     let path = Path::new(&raw_path);

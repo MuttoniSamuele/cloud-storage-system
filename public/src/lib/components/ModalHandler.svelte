@@ -2,6 +2,7 @@
   import { modalState, ModalState } from "../stores/modalState";
   import LoginModal from "./LoginModal.svelte";
   import NewFolderModal from "./NewFolderModal.svelte";
+  import RenameModal from "./RenameModal.svelte";
   import SignupModal from "./SignupModal.svelte";
   import UploadModal from "./UploadModal.svelte";
 </script>
@@ -14,4 +15,6 @@
   <UploadModal />
 {:else if $modalState === ModalState.NewFolder}
   <NewFolderModal />
+{:else if $modalState === ModalState.Rename}
+  <RenameModal />
 {/if}

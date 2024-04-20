@@ -9,10 +9,11 @@
   import type File from "../logic/File";
   import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
   import type Path from "../logic/Path";
+  import { selectedFiles } from "../stores/selectedFile";
 
   let contentElement: HTMLElement | null = null;
   // Set of files and folders that have been currently selected
-  let selectedFiles = new Set<File | Folder>();
+  // let selectedFiles = new Set<File | Folder>();
 
   // Context menu
   let isContextMenuOpen = false;
@@ -40,12 +41,10 @@
 
   function selectFileFolder(f: File | Folder): void {
     selectedFiles.add(f);
-    selectedFiles = new Set(selectedFiles);
   }
 
   function deselectFileFolder(f: File | Folder): void {
     selectedFiles.delete(f);
-    selectedFiles = new Set(selectedFiles);
   }
 
   function handleClick({ detail: f }: CustomEvent<File | Folder>): void {
@@ -94,7 +93,7 @@
     isContextMenuOpen = true;
     contextMenuX = e.x;
     contextMenuY = e.y;
-    for (const file of selectedFiles) {
+    for (const file of $selectedFiles) {
       deselectFileFolder(file);
     }
     selectFileFolder(f);
@@ -116,7 +115,7 @@
           <FilesGrid
             {files}
             {folders}
-            {selectedFiles}
+            selectedFiles={$selectedFiles}
             on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
             on:fileClickOutside={handleClickOutside}
@@ -132,7 +131,7 @@
           <FilesRows
             {files}
             {folders}
-            {selectedFiles}
+            selectedFiles={$selectedFiles}
             on:fileClick={handleClick}
             on:fileDblClick={handleFileDblClick}
             on:fileClickOutside={handleClickOutside}
@@ -153,6 +152,6 @@
   <FolderContextMenu
     x={contextMenuX}
     y={contextMenuY}
-    selectedFile={Array.from(selectedFiles)[0]}
+    selectedFile={Array.from($selectedFiles)[0]}
   />
 {/if}
