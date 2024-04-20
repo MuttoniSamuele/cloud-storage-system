@@ -6,7 +6,8 @@ use crate::{
 use axum::{
     body::Bytes,
     extract::{Multipart, Query, State},
-    http::StatusCode,
+    http::{HeaderMap, StatusCode},
+    response::IntoResponse,
     Extension, Json,
 };
 use serde::{Deserialize, Serialize};
@@ -47,6 +48,12 @@ pub struct Folder {
     pub starred: bool,
     pub owner_id: i32,
     pub parent_id: i32,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct IdQuery {
+    id: i32,
 }
 
 #[derive(Deserialize)]
@@ -193,6 +200,17 @@ pub async fn folder_new(
     Ok(StatusCode::CREATED)
 }
 
+pub async fn folder_rename(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Json(data): Json<RenameData>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    folders_model::rename_folder(&state.pg_pool, data.id, user_id, &data.new_name)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
+}
+
 pub async fn file_rename(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -204,13 +222,18 @@ pub async fn file_rename(
     Ok(StatusCode::OK)
 }
 
-pub async fn folder_rename(
+pub async fn file_download(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
-    Json(data): Json<RenameData>,
-) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
-    folders_model::rename_folder(&state.pg_pool, data.id, user_id, &data.new_name)
+    Query(IdQuery { id: file_id }): Query<IdQuery>,
+) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    let (name, content) = files_model::get_file(&state.pg_pool, file_id, user_id)
         .await
         .map_err(|_| ErrorResponse::internal_err())?;
-    Ok(StatusCode::OK)
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Content-Disposition",
+        format!("attachment; filename={}", name).parse().unwrap(),
+    );
+    Ok((StatusCode::OK, headers, content))
 }

@@ -3,7 +3,7 @@ use super::FILES_FOLDER;
 use crate::errors::InternalError;
 use axum::body::Bytes;
 use sqlx::PgPool;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use tokio::{fs, io::AsyncWriteExt};
 
 pub async fn new_file(
@@ -74,9 +74,29 @@ pub async fn rename_file(
     Ok(())
 }
 
+pub async fn get_file(
+    pg_pool: &PgPool,
+    file_id: i32,
+    owner_id: i32,
+) -> Result<(String, Vec<u8>), InternalError> {
+    let name = sqlx::query!(
+        "SELECT name
+        FROM files
+        WHERE id = $1 AND fk_owner = $2;",
+        file_id,
+        owner_id
+    )
+    .fetch_one(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to get the file".to_string()))?
+    .name;
+    read_file_content(file_id)
+        .await
+        .map(|content| (name, content))
+}
+
 async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), InternalError> {
-    let raw_path = format!("{}/{}", FILES_FOLDER, file_id);
-    let path = Path::new(&raw_path);
+    let path = build_file_path(file_id);
     let data = content.to_vec();
     let mut file = fs::File::create(path)
         .await
@@ -85,6 +105,19 @@ async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), Internal
         .await
         .map_err(|_| InternalError(format!("Failed to write data to file '{}'", file_id)))?;
     Ok(())
+}
+
+async fn read_file_content(file_id: i32) -> Result<Vec<u8>, InternalError> {
+    let path = build_file_path(file_id);
+    fs::read(path)
+        .await
+        .map_err(|_| InternalError(format!("Failed to read content from '{}'", file_id)))
+}
+
+fn build_file_path(file_id: i32) -> PathBuf {
+    let mut path = PathBuf::from(FILES_FOLDER);
+    path.push(file_id.to_string());
+    path
 }
 
 fn get_file_type(file_name: &str) -> Option<String> {

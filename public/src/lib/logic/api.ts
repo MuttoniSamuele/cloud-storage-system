@@ -123,6 +123,25 @@ namespace API {
   export async function renameFile(id: number, newName: string, isFolder = false): Promise<void> {
     await rawRequest("PATCH", `/api/${isFolder ? "folder" : "file"}/rename`, new Headers({ "content-type": "application/json" }), { id, newName });
   }
+
+  export async function downloadFile(id: number): Promise<void> {
+    const url = new URL("/api/file/download", window.location.origin);
+    url.searchParams.set("id", id.toString());
+    const res = await rawRequest("GET", url.href);
+    // Get the blob and create a URL for it
+    const blob = await res.blob();
+    const urlBlob = URL.createObjectURL(blob);
+    // Create an anchor element to download the file
+    const aElem = document.createElement("a");
+    aElem.href = urlBlob;
+    aElem.download = res.headers.get("Content-Disposition")?.split("=")[1] ?? "default";
+    aElem.style.display = "none";
+    // Add the element to the DOM, click it, and remove it
+    document.body.appendChild(aElem);
+    aElem.click();
+    document.body.removeChild(aElem);
+    URL.revokeObjectURL(urlBlob);
+  }
 }
 
 export default API;
