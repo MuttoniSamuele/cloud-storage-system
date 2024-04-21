@@ -7,6 +7,7 @@ export enum ModalState {
   NewFolder,
   Rename,
   TextFile,
+  ImageFile,
   Closed
 }
 

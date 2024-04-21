@@ -62,7 +62,7 @@
 >
   {#if selectedFile !== null}
     <div
-      class="relative flex px-3 py-2 rounded-lg dark:bg-zinc-600"
+      class="relative flex px-3 py-2 mb-6 rounded-lg dark:bg-zinc-600"
       title={selectedFile.name}
     >
       <span

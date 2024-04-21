@@ -16,13 +16,20 @@
 <Modal
   title={selectedFile === null ? "No file selected" : selectedFile.name}
   size="fill"
+  scrollable
   on:requestClose={() => modalState.set(ModalState.Closed)}
 >
   {#if selectedFile !== null}
     {#await getFileContent(selectedFile.id)}
-      <Loader />
+      <div class="flex justify-center items-center w-full h-full">
+        <Loader />
+      </div>
     {:then content}
       <pre>{content}</pre>
+    {:catch}
+      <div class="text-red-500">
+        <p>Failed to load the text file.</p>
+      </div>
     {/await}
   {/if}
 </Modal>

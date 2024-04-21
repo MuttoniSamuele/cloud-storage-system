@@ -82,7 +82,7 @@
         break;
       }
       case "Image": {
-        // modalState.set(ModalState.ImageFile);
+        modalState.set(ModalState.ImageFile);
         break;
       }
       default: {

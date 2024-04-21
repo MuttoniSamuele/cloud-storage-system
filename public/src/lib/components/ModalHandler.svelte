@@ -1,5 +1,6 @@
 <script lang="ts">
   import { modalState, ModalState } from "../stores/modalState";
+  import ImageFileModal from "./ImageFileModal.svelte";
   import LoginModal from "./LoginModal.svelte";
   import NewFolderModal from "./NewFolderModal.svelte";
   import RenameModal from "./RenameModal.svelte";
@@ -20,4 +21,6 @@
   <RenameModal />
 {:else if $modalState === ModalState.TextFile}
   <TextFileModal />
+{:else if $modalState === ModalState.ImageFile}
+  <ImageFileModal />
 {/if}

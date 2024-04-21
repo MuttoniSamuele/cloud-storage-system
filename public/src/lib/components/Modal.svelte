@@ -3,7 +3,9 @@
   import IconButton from "./IconButton.svelte";
 
   export let title: string;
-  export let size: "sm" | "md" | "lg" | "fill";
+  export let size: "sm" | "md" | "lg" | "fill" | "adapt";
+  export let scrollable: boolean | null = null;
+  export let noContainer = false;
 
   let dialog: HTMLDialogElement | null = null;
   $: dialog && dialog.showModal();
@@ -25,7 +27,11 @@
       ? 'w-[36rem]'
       : size === 'lg'
         ? 'w-[46rem]'
-        : 'w-4/5 h-4/5'}"
+        : size === 'fill'
+          ? 'w-4/5 h-4/5'
+          : size === 'adapt'
+            ? 'h-4/5'
+            : ''}"
   bind:this={dialog}
   on:click|self={requestClose}
   on:keydown={(e) => {
@@ -39,11 +45,24 @@
     <div class="absolute top-3 right-3">
       <IconButton icon="ri-close-line" on:click={requestClose} />
     </div>
-    <h2 class="text-xl font-bold">
+    <!-- TODO: Fix image stretch when title is too long in ImageFileModal -->
+    <h2
+      class="w-11/12 text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis"
+    >
       {title}
     </h2>
-    <div class="flex-1 mt-5 overflow-auto">
+    {#if noContainer}
       <slot />
-    </div>
+    {:else}
+      <div
+        class="flex-1 mt-5 {scrollable === null
+          ? ''
+          : scrollable
+            ? 'overflow-auto'
+            : 'overflow-hidden'}"
+      >
+        <slot />
+      </div>
+    {/if}
   </div>
 </dialog>
