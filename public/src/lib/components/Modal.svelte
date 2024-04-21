@@ -3,7 +3,7 @@
   import IconButton from "./IconButton.svelte";
 
   export let title: string;
-  export let size: "sm" | "md" | "lg" | "xl";
+  export let size: "sm" | "md" | "lg" | "fill";
 
   let dialog: HTMLDialogElement | null = null;
   $: dialog && dialog.showModal();
@@ -25,7 +25,7 @@
       ? 'w-[36rem]'
       : size === 'lg'
         ? 'w-[46rem]'
-        : 'w-[56rem]'}"
+        : 'w-4/5 h-4/5'}"
   bind:this={dialog}
   on:click|self={requestClose}
   on:keydown={(e) => {
@@ -35,14 +35,14 @@
     }
   }}
 >
-  <div class="relative w-full h-full px-5 py-4">
+  <div class="flex flex-col w-full h-full px-5 py-4">
     <div class="absolute top-3 right-3">
       <IconButton icon="ri-close-line" on:click={requestClose} />
     </div>
     <h2 class="text-xl font-bold">
       {title}
     </h2>
-    <div class="mt-5">
+    <div class="flex-1 mt-5 overflow-auto">
       <slot />
     </div>
   </div>

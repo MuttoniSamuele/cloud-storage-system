@@ -100,7 +100,7 @@
     </div>
   {/if}
 
-  <div class="flex flex-col items-center w-full mt-6 mb-3">
+  <div class="flex flex-col items-center w-full mt-1 mb-3">
     {#if selectedFile === null}
       <TextButton text="Browse" wide on:click={() => inputElem?.click()} />
     {:else}

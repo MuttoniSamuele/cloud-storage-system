@@ -4,6 +4,7 @@
   import NewFolderModal from "./NewFolderModal.svelte";
   import RenameModal from "./RenameModal.svelte";
   import SignupModal from "./SignupModal.svelte";
+  import TextFileModal from "./TextFileModal.svelte";
   import UploadModal from "./UploadModal.svelte";
 </script>
 
@@ -17,4 +18,6 @@
   <NewFolderModal />
 {:else if $modalState === ModalState.Rename}
   <RenameModal />
+{:else if $modalState === ModalState.TextFile}
+  <TextFileModal />
 {/if}

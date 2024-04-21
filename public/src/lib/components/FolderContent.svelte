@@ -10,6 +10,7 @@
   import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
   import type Path from "../logic/Path";
   import { selectedFiles } from "../stores/selectedFile";
+  import { ModalState, modalState } from "../stores/modalState";
 
   let contentElement: HTMLElement | null = null;
   // Set of files and folders that have been currently selected
@@ -74,7 +75,20 @@
   }
 
   function handleFileDblClick({ detail: file }: CustomEvent<File>): void {
-    // TODO: Open file
+    console.log(file.fileType);
+    switch (file.fileType) {
+      case "Text": {
+        modalState.set(ModalState.TextFile);
+        break;
+      }
+      case "Image": {
+        // modalState.set(ModalState.ImageFile);
+        break;
+      }
+      default: {
+        // TODO: Unsupported file modal
+      }
+    }
   }
 
   function handleFolderDblClick({ detail: folder }: CustomEvent<Folder>): void {
