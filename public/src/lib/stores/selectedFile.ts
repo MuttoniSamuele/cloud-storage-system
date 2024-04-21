@@ -9,6 +9,9 @@ function initSelectedFiles() {
   return {
     subscribe,
     add: (f: File | Folder): void => update((s) => {
+      // Terrible way to fix a bug where folders don't get deselected.
+      // Works until you want to select multiple files/folders.
+      s.clear();
       s.add(f)
       return s;
     }),
