@@ -92,20 +92,20 @@ pub async fn verify_user(pg_pool: &PgPool, email: &str, password: &str) -> Resul
     }
 }
 
-pub async fn delete_user(pg_pool: &PgPool, user_id: i32) -> Result<(), InternalError> {
-    let res: Result<_, sqlx::Error> = sqlx::query!(
-        "DELETE FROM users
-        WHERE id = $1;",
-        user_id,
-    )
-    .fetch_one(pg_pool)
-    .await;
-    if res.is_err() {
-        Err(InternalError("Failed to delete user".to_string()))
-    } else {
-        Ok(())
-    }
-}
+// pub async fn delete_user(pg_pool: &PgPool, user_id: i32) -> Result<(), InternalError> {
+//     let res: Result<_, sqlx::Error> = sqlx::query!(
+//         "DELETE FROM users
+//         WHERE id = $1;",
+//         user_id,
+//     )
+//     .fetch_one(pg_pool)
+//     .await;
+//     if res.is_err() {
+//         Err(InternalError("Failed to delete user".to_string()))
+//     } else {
+//         Ok(())
+//     }
+// }
 
 fn validate_username(username: &str) -> bool {
     username.len() >= 3

@@ -7,9 +7,9 @@ pub struct User {
 }
 
 impl User {
-    pub fn get_id(&self) -> i32 {
-        self.id
-    }
+    // pub fn get_id(&self) -> i32 {
+    //     self.id
+    // }
 
     pub fn get_username(&self) -> &String {
         &self.username
@@ -19,7 +19,7 @@ impl User {
         &self.email
     }
 
-    fn get_password(&self) -> &String {
-        &self.password
-    }
+    // fn get_password(&self) -> &String {
+    //     &self.password
+    // }
 }
