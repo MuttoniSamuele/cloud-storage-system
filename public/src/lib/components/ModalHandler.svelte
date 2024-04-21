@@ -6,6 +6,7 @@
   import RenameModal from "./RenameModal.svelte";
   import SignupModal from "./SignupModal.svelte";
   import TextFileModal from "./TextFileModal.svelte";
+  import UnsupportedFileModal from "./UnsupportedFileModal.svelte";
   import UploadModal from "./UploadModal.svelte";
 </script>
 
@@ -23,4 +24,6 @@
   <TextFileModal />
 {:else if $modalState === ModalState.ImageFile}
   <ImageFileModal />
+{:else if $modalState === ModalState.UnsupportedFile}
+  <UnsupportedFileModal />
 {/if}

@@ -75,7 +75,6 @@
   }
 
   function handleFileDblClick({ detail: file }: CustomEvent<File>): void {
-    console.log(file.fileType);
     switch (file.fileType) {
       case "Text": {
         modalState.set(ModalState.TextFile);
@@ -86,7 +85,7 @@
         break;
       }
       default: {
-        // TODO: Unsupported file modal
+        modalState.set(ModalState.UnsupportedFile);
       }
     }
   }

@@ -8,6 +8,7 @@ export enum ModalState {
   Rename,
   TextFile,
   ImageFile,
+  UnsupportedFile,
   Closed
 }
 
