@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "WITH RECURSIVE folder_storage AS (\n            SELECT id, size\n            FROM files\n            WHERE fk_parent = $1 AND fk_owner = $2\n            UNION ALL\n            SELECT f.id, f.size\n            FROM files f\n            JOIN folder_storage fs ON f.fk_parent = fs.id\n        )\n        SELECT SUM(size) as size\n        FROM folder_storage;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "size",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "a92a4a2a31620d7a0c6e699f8a95a3bd4f6486a942bd5f4922d8e8a2646d4a72"
+}

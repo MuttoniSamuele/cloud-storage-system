@@ -72,6 +72,34 @@ pub async fn rename_folder(
     Ok(())
 }
 
+pub async fn folder_size(
+    pg_pool: &PgPool,
+    folder_id: i32,
+    owner_id: i32,
+) -> Result<i64, InternalError> {
+    // Recursive query to get the storage of the folder and all its children
+    let size = sqlx::query!(
+        "WITH RECURSIVE folder_storage AS (
+            SELECT id, size
+            FROM files
+            WHERE fk_parent = $1 AND fk_owner = $2
+            UNION ALL
+            SELECT f.id, f.size
+            FROM files f
+            JOIN folder_storage fs ON f.fk_parent = fs.id
+        )
+        SELECT SUM(size) as size
+        FROM folder_storage;",
+        folder_id,
+        owner_id
+    )
+    .fetch_one(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to get the storage of the folder".to_string()))?
+    .size;
+    Ok(size.unwrap_or(0))
+}
+
 async fn new_raw_folder(
     pg_pool: &PgPool,
     folder_name: &str,

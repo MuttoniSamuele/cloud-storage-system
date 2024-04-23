@@ -9,7 +9,7 @@ use axum::{
     routing::{get, patch, post},
     Json, Router,
 };
-use cloud::{file_download, file_rename, folder_new, folder_rename, upload, view};
+use cloud::{file_download, file_rename, folder_new, folder_rename, folder_size, upload, view};
 use rand_chacha::ChaCha8Rng;
 use serde::Serialize;
 use sqlx::PgPool;
@@ -63,6 +63,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
         .route("/view", get(view))
         .route("/folder/new", post(folder_new))
         .route("/folder/rename", patch(folder_rename))
+        .route("/folder/size", get(folder_size))
         .route("/file/download", get(file_download))
         .route("/file/rename", patch(file_rename))
         .layer(axum::middleware::from_fn(move |req, next| {

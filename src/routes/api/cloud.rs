@@ -70,6 +70,12 @@ pub struct RenameData {
     new_name: String,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FolderSizeResponse {
+    size: i64,
+}
+
 pub async fn upload(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -236,4 +242,15 @@ pub async fn file_download(
         format!("attachment; filename={}", name).parse().unwrap(),
     );
     Ok((StatusCode::OK, headers, content))
+}
+
+pub async fn folder_size(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Query(IdQuery { id: folder_id }): Query<IdQuery>,
+) -> Result<(StatusCode, Json<FolderSizeResponse>), (StatusCode, Json<ErrorResponse>)> {
+    let size = folders_model::folder_size(&state.pg_pool, folder_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok((StatusCode::OK, Json(FolderSizeResponse { size })))
 }
