@@ -1,11 +1,15 @@
-<script lang="ts"></script>
+<script lang="ts">
+  export let small = false;
+
+  $: size = small ? 18 : 24;
+</script>
 
 <svg
   class="animate-spin dark:text-zinc-200"
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 24 24"
-  width="24"
-  height="24"
+  width={size}
+  height={size}
   fill="currentColor"
 >
   <path

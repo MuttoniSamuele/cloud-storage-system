@@ -54,6 +54,6 @@
     </div>
   </OverflowYAuto>
   <div class="my-8">
-    <StoragePreview usedSpace={$account !== null ? 5.3 : 0} totalSpace={15} />
+    <StoragePreview />
   </div>
 </aside>

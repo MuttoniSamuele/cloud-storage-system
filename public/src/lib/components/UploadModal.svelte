@@ -6,6 +6,8 @@
   import IconButton from "./IconButton.svelte";
   import { pathsHistory } from "../stores/pathsHistory";
   import Loader from "./Loader.svelte";
+  import { formatBytes } from "../logic/fileUtils";
+  import { fileChange } from "../stores/fileChange";
 
   let inputElem: HTMLInputElement | null = null;
   let selectedFile: File | null = null;
@@ -15,17 +17,6 @@
   // Set errorMessage to null every time selectedFile changes
   $: if (selectedFile || true) {
     errorMessage = null;
-  }
-
-  function formatBytes(bytes: number): string {
-    if (bytes === 0) return "0 Bytes";
-    const units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-    let i = 0;
-    while (bytes >= 1000 && i < units.length - 1) {
-      bytes /= 1000;
-      i++;
-    }
-    return bytes.toFixed(2) + " " + units[i];
   }
 
   async function handleUpload(): Promise<void> {
@@ -51,6 +42,7 @@
       isUploading = false;
     }
     modalState.set(ModalState.Closed);
+    fileChange.setFile(selectedFile.name);
     pathsHistory.refresh();
   }
 </script>

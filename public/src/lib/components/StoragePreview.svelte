@@ -1,21 +1,36 @@
 <script lang="ts">
-  import IconButton from "./IconButton.svelte";
+  import API from "../logic/api";
+  import { account } from "../stores/account";
+  import { fileChange } from "../stores/fileChange";
+  import StorageBar from "./StorageBar.svelte";
 
-  export let usedSpace: number;
-  export let totalSpace: number;
+  $: personalFolderId = $account?.personalFolderId ?? null;
+  $: trashFolderId = $account?.trashFolderId ?? null;
+
+  const totalSpace = 100_000_000;
+
+  async function getCloudSize(
+    personalFolderId: number,
+    trashFolderId: number,
+    // This paremeter is not used in the function, but it's necessary to
+    // trigger the reactivity of the function when the file changes.
+    _fileChange: string | null,
+  ): Promise<number> {
+    return (
+      (await API.getFolderSize(personalFolderId)) +
+      (await API.getFolderSize(trashFolderId))
+    );
+  }
 </script>
 
-<div class="w-full text-zinc-700 dark:text-zinc-300">
-  <div class="w-4/5 m-auto">
-    <div class="flex justify-between mb-2 px-2">
-      <span>{usedSpace} GB / {totalSpace} GB</span>
-      <IconButton icon="ri-information-line" small />
-    </div>
-    <div class="h-2 rounded-full bg-zinc-300 dark:bg-zinc-700">
-      <div
-        class="h-full rounded-full bg-indigo-600"
-        style="width: {(usedSpace * 100) / totalSpace}%;"
-      />
-    </div>
-  </div>
-</div>
+{#if personalFolderId !== null && trashFolderId !== null}
+  {#await getCloudSize(personalFolderId, trashFolderId, $fileChange.file)}
+    <StorageBar loading {totalSpace} />
+  {:then usedSpace}
+    <StorageBar {usedSpace} {totalSpace} />
+  {:catch}
+    <StorageBar unknown {totalSpace} />
+  {/await}
+{:else}
+  <StorageBar usedSpace={0} {totalSpace} />
+{/if}

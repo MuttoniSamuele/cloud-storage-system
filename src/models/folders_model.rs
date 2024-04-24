@@ -83,7 +83,7 @@ pub async fn folder_size(
             SELECT id, size
             FROM files
             WHERE fk_parent = $1 AND fk_owner = $2
-            UNION ALL
+            UNION
             SELECT f.id, f.size
             FROM files f
             JOIN folder_storage fs ON f.fk_parent = fs.id

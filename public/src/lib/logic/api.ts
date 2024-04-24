@@ -148,6 +148,14 @@ namespace API {
     document.body.removeChild(aElem);
     URL.revokeObjectURL(urlBlob);
   }
+
+  export async function getFolderSize(id: number): Promise<number> {
+    const url = new URL("/api/folder/size", window.location.origin);
+    url.searchParams.set("id", id.toString());
+    const res = await rawRequest("GET", url.href);
+    const { size }: { size: number } = await res.json();
+    return size;
+  }
 }
 
 export default API;

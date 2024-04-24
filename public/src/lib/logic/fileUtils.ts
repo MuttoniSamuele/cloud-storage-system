@@ -11,3 +11,14 @@ export function fileTypeToIcon(fileType: string | null): string {
     default: { return "ri-file-2-fill" }
   }
 }
+
+export function formatBytes(bytes: number, precision = 2): string {
+  if (bytes === 0) return "0 Bytes";
+  const units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  let i = 0;
+  while (bytes >= 1000 && i < units.length - 1) {
+    bytes /= 1000;
+    i++;
+  }
+  return bytes.toFixed(precision) + " " + units[i];
+}
