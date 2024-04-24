@@ -28,6 +28,10 @@ lazy_static! {
         .expect("MAX_UPLOAD_MB missing in .env")
         .parse()
         .expect("MAX_UPLOAD_MB must be a usize");
+    pub static ref MAX_STORAGE_MB: i64 = env::var("MAX_STORAGE_MB")
+        .expect("MAX_STORAGE_MB missing in .env")
+        .parse()
+        .expect("MAX_STORAGE_MB must be a i64");
 }
 
 #[tokio::main]

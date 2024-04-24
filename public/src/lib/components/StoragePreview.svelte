@@ -6,8 +6,7 @@
 
   $: personalFolderId = $account?.personalFolderId ?? null;
   $: trashFolderId = $account?.trashFolderId ?? null;
-
-  const totalSpace = 100_000_000;
+  $: totalSpace = ($account?.maxStorageMb ?? 0) * 1_000_000;
 
   async function getCloudSize(
     personalFolderId: number,
