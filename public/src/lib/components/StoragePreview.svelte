@@ -31,5 +31,5 @@
     <StorageBar unknown {totalSpace} />
   {/await}
 {:else}
-  <StorageBar usedSpace={0} {totalSpace} />
+  <StorageBar usedSpace={0} totalSpace={1} hideTotal />
 {/if}
