@@ -7,6 +7,7 @@
   import { account } from "../stores/account";
   import { ModalState, modalState } from "../stores/modalState";
   import API from "../logic/api";
+  import { fileMove } from "../stores/fileMove";
 </script>
 
 <header class="flex justify-between items-center w-full h-16 px-3">
@@ -26,7 +27,10 @@
     {:else}
       <ProfilePicture
         username={$account.username}
-        on:click={() => API.logout()}
+        on:click={() => {
+          fileMove.cancel();
+          API.logout();
+        }}
       />
     {/if}
   </div>

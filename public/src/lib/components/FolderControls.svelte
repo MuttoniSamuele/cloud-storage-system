@@ -1,12 +1,22 @@
 <script lang="ts">
   import { account } from "../stores/account";
-  import { ModalState, modalState } from "../stores/modalState";
+  import { fileMove } from "../stores/fileMove";
+  import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
   import Breadcrumb from "./Breadcrumb.svelte";
+  import EmptyTrashButton from "./EmptyTrashButton.svelte";
   import FilesLayoutToggle from "./FilesLayoutToggle.svelte";
+  import MoveControls from "./MoveControls.svelte";
   // import IconButton from "./IconButton.svelte";
   import Navigation from "./Navigation.svelte";
+  import NewFolderButton from "./NewFolderButton.svelte";
   import RefreshButton from "./RefreshButton.svelte";
-  import TextButton from "./TextButton.svelte";
+  import UploadButton from "./UploadButton.svelte";
+
+  $: currentPath = getCurrentPath($pathsHistory);
+  $: isTrash =
+    currentPath !== null &&
+    $account !== null &&
+    currentPath.rawPath[0].id === $account.trashFolderId;
 </script>
 
 <div class="flex m-4">
@@ -19,18 +29,13 @@
     <FilesLayoutToggle />
     <!-- TODO: Implement client-side filtering (by extension) -->
     <!-- <IconButton icon="ri-filter-line" margin /> -->
-    <!-- TODO: Replace these buttons with "Empty trash" when in Trash folder -->
-    <TextButton
-      icon="ri-upload-line"
-      text="Upload"
-      marginX
-      on:click={() => $account !== null && modalState.set(ModalState.Upload)}
-    />
-    <TextButton
-      icon="ri-folder-add-line"
-      text="New folder"
-      marginX
-      on:click={() => $account !== null && modalState.set(ModalState.NewFolder)}
-    />
+    {#if isTrash}
+      <EmptyTrashButton />
+    {:else if $fileMove !== null}
+      <MoveControls file={$fileMove} />
+    {:else}
+      <UploadButton />
+      <NewFolderButton />
+    {/if}
   </div>
 </div>

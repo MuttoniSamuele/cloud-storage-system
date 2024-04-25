@@ -9,7 +9,7 @@
   import ContextMenuItem from "./ContextMenuItem.svelte";
   import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
   import { account } from "../stores/account";
-  import User from "../logic/User";
+  import { fileMove } from "../stores/fileMove";
 
   export let x: number;
   export let y: number;
@@ -48,7 +48,11 @@
     {#if !isFolder}
       <ContextMenuItem icon="ri-file-copy-line" text="Duplicate" />
     {/if}
-    <ContextMenuItem icon="ri-folder-transfer-line" text="Move" />
+    <ContextMenuItem
+      icon="ri-folder-transfer-line"
+      text="Move"
+      on:click={() => fileMove.set(selectedFile)}
+    />
     <ContextMenuDivider />
   {/if}
 
