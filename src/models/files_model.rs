@@ -114,6 +114,26 @@ async fn read_file_content(file_id: i32) -> Result<Vec<u8>, InternalError> {
         .map_err(|_| InternalError(format!("Failed to read content from '{}'", file_id)))
 }
 
+pub async fn move_file(
+    pg_pool: &PgPool,
+    file_id: i32,
+    to_folder_id: i32,
+    owner_id: i32,
+) -> Result<(), InternalError> {
+    sqlx::query!(
+        "UPDATE files
+        SET fk_parent = $3
+        WHERE id = $1 AND fk_owner = $2 AND fk_owner = (SELECT fk_owner FROM folders WHERE id = $3);",
+        file_id,
+        owner_id,
+        to_folder_id
+    )
+    .execute(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to move the file".to_string()))?;
+    Ok(())
+}
+
 fn build_file_path(file_id: i32) -> PathBuf {
     let mut path = PathBuf::from(FILES_FOLDER);
     path.push(file_id.to_string());

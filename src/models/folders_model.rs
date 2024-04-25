@@ -100,6 +100,26 @@ pub async fn folder_size(
     Ok(size.unwrap_or(0))
 }
 
+pub async fn move_folder(
+    pg_pool: &PgPool,
+    folder_id: i32,
+    to_folder_id: i32,
+    owner_id: i32,
+) -> Result<(), InternalError> {
+    sqlx::query!(
+        "UPDATE folders
+        SET fk_parent = $3
+        WHERE id = $1 AND fk_owner = $2 AND fk_owner = (SELECT fk_owner FROM folders WHERE id = $3);",
+        folder_id,
+        owner_id,
+        to_folder_id
+    )
+    .execute(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to move the folder".to_string()))?;
+    Ok(())
+}
+
 async fn new_raw_folder(
     pg_pool: &PgPool,
     folder_name: &str,

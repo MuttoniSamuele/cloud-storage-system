@@ -76,6 +76,13 @@ pub struct FolderSizeResponse {
     size: i64,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MoveData {
+    id: i32,
+    folder_id: i32,
+}
+
 pub async fn upload(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -253,4 +260,26 @@ pub async fn folder_size(
         .await
         .map_err(|_| ErrorResponse::internal_err())?;
     Ok((StatusCode::OK, Json(FolderSizeResponse { size })))
+}
+
+pub async fn folder_move(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Json(data): Json<MoveData>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    folders_model::move_folder(&state.pg_pool, data.id, data.folder_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
+}
+
+pub async fn file_move(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Json(data): Json<MoveData>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    files_model::move_file(&state.pg_pool, data.id, data.folder_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
 }

@@ -121,7 +121,12 @@ namespace API {
   }
 
   export async function renameFile(id: number, newName: string, isFolder = false): Promise<void> {
-    await rawRequest("PATCH", `/api/${isFolder ? "folder" : "file"}/rename`, new Headers({ "content-type": "application/json" }), { id, newName });
+    await rawRequest(
+      "PATCH",
+      `/api/${isFolder ? "folder" : "file"}/rename`,
+      new Headers({ "content-type": "application/json" }),
+      { id, newName }
+    );
   }
 
   export async function getFileContent(id: number): Promise<[string | undefined, Blob]> {
@@ -155,6 +160,15 @@ namespace API {
     const res = await rawRequest("GET", url.href);
     const { size }: { size: number } = await res.json();
     return size;
+  }
+
+  export async function moveFile(id: number, folderId: number, isFolder = false): Promise<void> {
+    await rawRequest(
+      "PATCH",
+      `/api/${isFolder ? "folder" : "file"}/move`,
+      new Headers({ "content-type": "application/json" }),
+      { id, folderId }
+    );
   }
 }
 
