@@ -10,8 +10,8 @@ use axum::{
     Json, Router,
 };
 use cloud::{
-    file_delete, file_download, file_move, file_rename, folder_move, folder_new, folder_rename,
-    folder_size, upload, view,
+    file_delete, file_download, file_move, file_rename, folder_delete, folder_move, folder_new,
+    folder_rename, folder_size, upload, view,
 };
 use rand_chacha::ChaCha8Rng;
 use serde::Serialize;
@@ -68,6 +68,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
         .route("/folder/rename", patch(folder_rename))
         .route("/folder/size", get(folder_size))
         .route("/folder/move", patch(folder_move))
+        .route("/folder/delete", delete(folder_delete))
         .route("/file/download", get(file_download))
         .route("/file/rename", patch(file_rename))
         .route("/file/move", patch(file_move))

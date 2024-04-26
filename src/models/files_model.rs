@@ -133,7 +133,7 @@ pub async fn delete_file(
     Ok(())
 }
 
-async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), InternalError> {
+pub(super) async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), InternalError> {
     let path = build_file_path(file_id);
     let data = content.to_vec();
     let mut file = fs::File::create(path)
@@ -145,14 +145,14 @@ async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), Internal
     Ok(())
 }
 
-async fn read_file_content(file_id: i32) -> Result<Vec<u8>, InternalError> {
+pub(super) async fn read_file_content(file_id: i32) -> Result<Vec<u8>, InternalError> {
     let path = build_file_path(file_id);
     fs::read(path)
         .await
         .map_err(|_| InternalError(format!("Failed to read content from '{}'", file_id)))
 }
 
-async fn delete_file_content(file_id: i32) -> Result<(), InternalError> {
+pub(super) async fn delete_file_content(file_id: i32) -> Result<(), InternalError> {
     let path = build_file_path(file_id);
     fs::remove_file(path)
         .await

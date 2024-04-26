@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "WITH RECURSIVE folder_tree AS (\n            SELECT id, fk_parent\n            FROM folders\n            WHERE id = $1 AND fk_owner = $2\n            UNION\n            SELECT f.id, f.fk_parent\n            FROM folders f\n            JOIN folder_tree ft ON f.fk_parent = ft.id\n        )\n        DELETE FROM folders\n        WHERE id IN (SELECT id FROM folder_tree);",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "d62dfddf613522753ae9e517c07be4d9bd47a61df90eac54b97f0e0af3e594d7"
+}

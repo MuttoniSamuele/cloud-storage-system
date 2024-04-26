@@ -1,4 +1,4 @@
-use super::folder::Folder;
+use super::{files_model, folder::Folder};
 use crate::errors::InternalError;
 use sqlx::PgPool;
 
@@ -117,6 +117,57 @@ pub async fn move_folder(
     .execute(pg_pool)
     .await
     .map_err(|_| InternalError("Failed to move the folder".to_string()))?;
+    Ok(())
+}
+
+pub async fn delete_folder(
+    pg_pool: &PgPool,
+    folder_id: i32,
+    owner_id: i32,
+) -> Result<(), InternalError> {
+    // Delete the files from the database
+    let files_ids = sqlx::query!(
+        "WITH RECURSIVE folder_tree AS (
+            SELECT id, fk_parent
+            FROM folders
+            WHERE id = $1 AND fk_owner = $2
+            UNION
+            SELECT f.id, f.fk_parent
+            FROM folders f
+            JOIN folder_tree ft ON f.fk_parent = ft.id
+        )
+        DELETE FROM files
+        WHERE fk_parent IN (SELECT id FROM folder_tree)
+        RETURNING id;",
+        folder_id,
+        owner_id
+    )
+    .fetch_all(pg_pool)
+    .await
+    .map_err(|_| InternalError(format!("Failed to delete files in folder {}", folder_id)))?;
+    // Delete the files from the storage
+    for file_id in files_ids {
+        files_model::delete_file_content(file_id.id).await?;
+    }
+    // Delete the folders from the database
+    sqlx::query!(
+        "WITH RECURSIVE folder_tree AS (
+            SELECT id, fk_parent
+            FROM folders
+            WHERE id = $1 AND fk_owner = $2
+            UNION
+            SELECT f.id, f.fk_parent
+            FROM folders f
+            JOIN folder_tree ft ON f.fk_parent = ft.id
+        )
+        DELETE FROM folders
+        WHERE id IN (SELECT id FROM folder_tree);",
+        folder_id,
+        owner_id
+    )
+    .fetch_all(pg_pool)
+    .await
+    .map_err(|_| InternalError(format!("Failed to delete folders in folder {}", folder_id)))?;
     Ok(())
 }
 

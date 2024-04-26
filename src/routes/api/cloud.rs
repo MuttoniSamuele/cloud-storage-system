@@ -294,3 +294,14 @@ pub async fn file_delete(
         .map_err(|_| ErrorResponse::internal_err())?;
     Ok(StatusCode::OK)
 }
+
+pub async fn folder_delete(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Query(IdQuery { id: folder_id }): Query<IdQuery>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    folders_model::delete_folder(&state.pg_pool, folder_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
+}
