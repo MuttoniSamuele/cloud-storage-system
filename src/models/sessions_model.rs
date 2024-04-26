@@ -46,7 +46,6 @@ pub async fn get_session_user_id(
     }
     // Otherwise get the user id
     let user_id: i32 = conn
-        // TODO: I'm not sure if Expiry::EX are actually seconds lol
         .get_ex(session_id_str, Expiry::EX(*SESSION_TTL as usize))
         .await
         .map_err(|_| InternalError("Error while reading session".to_string()))?;

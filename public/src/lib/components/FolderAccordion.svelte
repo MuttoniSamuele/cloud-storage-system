@@ -10,7 +10,7 @@
   export let droppable = true;
   export let level = 0;
 
-  // TODO: Currently, the FolderTree doesn't update when the user uploads a folder
+  // TODO: Currently, the FolderTree doesn't update when the user creates or deletes a folder
 
   $: currentPath = getCurrentPath($pathsHistory);
   let collapsed = true;

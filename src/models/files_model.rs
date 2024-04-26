@@ -13,7 +13,7 @@ pub async fn new_file(
     parent_folder_id: i32,
     owner_id: i32,
 ) -> Result<File, InternalError> {
-    // TODO: Check file name
+    // TODO: Validate name
     let file_type = get_file_type(file_name);
     let file_size = content.len() as i32;
     let file = sqlx::query_as!(
