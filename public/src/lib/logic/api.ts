@@ -7,6 +7,7 @@ import CloudFolder from "./Folder";
 import { pathsHistory } from "../stores/pathsHistory";
 import type IUser from "./IUser";
 import User from "./User";
+import { ModalState, modalState } from "../stores/modalState";
 
 namespace API {
   type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -22,9 +23,15 @@ namespace API {
     message: string
   }
 
-  // TODO: Make it logout if the server responds with 401
-  async function rawRequest(method: HttpMethod, url: string, headers?: Headers, body?: object | FormData): Promise<Response> {
+  async function rawRequest(method: HttpMethod, url: string, headers?: Headers, body?: object | FormData, logoutOn401 = true): Promise<Response> {
     const res = await fetch(url, { method, headers, body: (body instanceof FormData ? body : JSON.stringify(body)) });
+    if (logoutOn401 && res.status === 401) {
+      // Unauthorized, logout
+      modalState.set(ModalState.Closed);
+      account.logout();
+      pathsHistory.clear();
+      throw new ApiError("Unauthorized");
+    }
     if (res.ok) {
       // Success
       return res;
@@ -46,19 +53,27 @@ namespace API {
       "POST",
       "/api/signup",
       new Headers({ "content-type": "application/json" }),
-      { username, email, password }
+      { username, email, password },
+      false
     );
     await loadSession();
   }
 
   export async function login(email: string, password: string): Promise<void> {
     // If the response is an error rawRequest raises ApiError
-    await rawRequest("POST", "/api/login", new Headers({ "content-type": "application/json" }), { email, password });
+    await rawRequest(
+      "POST",
+      "/api/login",
+      new Headers({ "content-type": "application/json" }),
+      { email, password },
+      false
+    );
     await loadSession();
   }
 
   export async function logout(): Promise<void> {
     await rawRequest("POST", "/api/logout");
+    modalState.set(ModalState.Closed);
     account.logout();
     pathsHistory.clear();
   }
@@ -70,7 +85,7 @@ namespace API {
   }
 
   export async function me(): Promise<User> {
-    const res = await rawRequest("GET", "/api/me");
+    const res = await rawRequest("GET", "/api/me", undefined, undefined, false);
     const user: IUser = await res.json();
     return new User(user.username, user.email, user.personalFolderId, user.trashFolderId, user.maxUploadMb, user.maxStorageMb);
   }
