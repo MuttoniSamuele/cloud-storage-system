@@ -8,6 +8,7 @@
   import Loader from "./Loader.svelte";
   import { formatBytes } from "../logic/fileUtils";
   import { fileChange } from "../stores/fileChange";
+  import { account } from "../stores/account";
 
   let inputElem: HTMLInputElement | null = null;
   let selectedFile: File | null = null;
@@ -36,7 +37,7 @@
         errorMessage = e.message;
         return;
       }
-      errorMessage = "The file can't be larger than 10 MB.";
+      errorMessage = `The file can't be larger than ${$account?.maxUploadMb} MB.`;
       throw e;
     } finally {
       isUploading = false;

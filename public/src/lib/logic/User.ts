@@ -6,6 +6,7 @@ export default class User implements IUser {
     public readonly email: string,
     public readonly personalFolderId: number,
     public readonly trashFolderId: number,
+    public readonly maxUploadMb: number,
     public readonly maxStorageMb: number
   ) { }
 }

@@ -72,7 +72,7 @@ namespace API {
   export async function me(): Promise<User> {
     const res = await rawRequest("GET", "/api/me");
     const user: IUser = await res.json();
-    return new User(user.username, user.email, user.personalFolderId, user.trashFolderId, user.maxStorageMb);
+    return new User(user.username, user.email, user.personalFolderId, user.trashFolderId, user.maxUploadMb, user.maxStorageMb);
   }
 
   export async function upload(file: File, parentFolderId: number): Promise<void> {

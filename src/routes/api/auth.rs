@@ -2,7 +2,7 @@ use super::{AppState, ErrorResponse};
 use crate::{
     errors::{LoginError, SignupError},
     models::{folders_model, sessions_model, users_model, RedisPool},
-    MAX_STORAGE_MB,
+    MAX_STORAGE_MB, MAX_UPLOAD_MB,
 };
 use axum::{
     body::Body,
@@ -38,6 +38,7 @@ struct MeResponse {
     email: String,
     personal_folder_id: i32,
     trash_folder_id: i32,
+    max_upload_mb: usize,
     max_storage_mb: i64,
 }
 
@@ -208,6 +209,7 @@ pub async fn me(
                         // This works as long as there are only 2 root folders
                         personal_folder_id: folders[0].get_id(),
                         trash_folder_id: folders[1].get_id(),
+                        max_upload_mb: *MAX_UPLOAD_MB,
                         max_storage_mb: *MAX_STORAGE_MB,
                     }),
                 )

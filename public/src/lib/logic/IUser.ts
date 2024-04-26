@@ -3,5 +3,6 @@ export default interface IUser {
   readonly email: string,
   readonly personalFolderId: number,
   readonly trashFolderId: number,
+  readonly maxUploadMb: number,
   readonly maxStorageMb: number,
 }
