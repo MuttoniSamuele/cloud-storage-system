@@ -79,17 +79,18 @@ pub async fn folder_size(
 ) -> Result<i64, InternalError> {
     // Recursive query to get the storage of the folder and all its children
     let size = sqlx::query!(
-        "WITH RECURSIVE folder_storage AS (
-            SELECT id, size
-            FROM files
-            WHERE fk_parent = $1 AND fk_owner = $2
+        "WITH RECURSIVE folder_tree AS (
+            SELECT id, fk_parent
+            FROM folders
+            WHERE id = $1 AND fk_owner = $2
             UNION
-            SELECT f.id, f.size
-            FROM files f
-            JOIN folder_storage fs ON f.fk_parent = fs.id
+            SELECT f.id, f.fk_parent
+            FROM folders f
+            JOIN folder_tree ft ON f.fk_parent = ft.id
         )
         SELECT SUM(size) as size
-        FROM folder_storage;",
+        FROM files
+        WHERE fk_parent IN (SELECT id FROM folder_tree);",
         folder_id,
         owner_id
     )

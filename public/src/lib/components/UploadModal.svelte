@@ -54,7 +54,7 @@
 >
   {#if selectedFile !== null}
     <div
-      class="relative flex px-3 py-2 mb-6 rounded-lg dark:bg-zinc-600"
+      class="relative flex px-3 py-2 mb-4 rounded-lg dark:bg-zinc-600"
       title={selectedFile.name}
     >
       <span
@@ -87,12 +87,12 @@
   />
 
   {#if errorMessage !== null}
-    <div class="text-red-500 mt-2">
+    <div class="text-red-500 mt-2 mb-4">
       {errorMessage}
     </div>
   {/if}
 
-  <div class="flex flex-col items-center w-full mt-1 mb-3">
+  <div class="flex flex-col items-center w-full mt-2 mb-3">
     {#if selectedFile === null}
       <TextButton text="Browse" wide on:click={() => inputElem?.click()} />
     {:else}
