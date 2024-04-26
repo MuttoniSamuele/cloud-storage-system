@@ -283,3 +283,14 @@ pub async fn file_move(
         .map_err(|_| ErrorResponse::internal_err())?;
     Ok(StatusCode::OK)
 }
+
+pub async fn file_delete(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Query(IdQuery { id: file_id }): Query<IdQuery>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    files_model::delete_file(&state.pg_pool, file_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
+}

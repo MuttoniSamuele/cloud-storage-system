@@ -6,12 +6,12 @@ use auth::{auth_middleware, login, logout, me, signup};
 use axum::{
     extract::DefaultBodyLimit,
     http::StatusCode,
-    routing::{get, patch, post},
+    routing::{delete, get, patch, post},
     Json, Router,
 };
 use cloud::{
-    file_download, file_move, file_rename, folder_move, folder_new, folder_rename, folder_size,
-    upload, view,
+    file_delete, file_download, file_move, file_rename, folder_move, folder_new, folder_rename,
+    folder_size, upload, view,
 };
 use rand_chacha::ChaCha8Rng;
 use serde::Serialize;
@@ -71,6 +71,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
         .route("/file/download", get(file_download))
         .route("/file/rename", patch(file_rename))
         .route("/file/move", patch(file_move))
+        .route("/file/delete", delete(file_delete))
         .layer(axum::middleware::from_fn(move |req, next| {
             auth_middleware(req, next, redis_pool.clone())
         }))

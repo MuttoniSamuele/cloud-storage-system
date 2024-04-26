@@ -95,6 +95,44 @@ pub async fn get_file(
         .map(|content| (name, content))
 }
 
+pub async fn move_file(
+    pg_pool: &PgPool,
+    file_id: i32,
+    to_folder_id: i32,
+    owner_id: i32,
+) -> Result<(), InternalError> {
+    sqlx::query!(
+        "UPDATE files
+        SET fk_parent = $3
+        WHERE id = $1 AND fk_owner = $2 AND fk_owner = (SELECT fk_owner FROM folders WHERE id = $3);",
+        file_id,
+        owner_id,
+        to_folder_id
+    )
+    .execute(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to move the file".to_string()))?;
+    Ok(())
+}
+
+pub async fn delete_file(
+    pg_pool: &PgPool,
+    file_id: i32,
+    owner_id: i32,
+) -> Result<(), InternalError> {
+    sqlx::query!(
+        "DELETE FROM files
+        WHERE id = $1 AND fk_owner = $2;",
+        file_id,
+        owner_id
+    )
+    .execute(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to delete the file".to_string()))?;
+    delete_file_content(file_id).await?;
+    Ok(())
+}
+
 async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), InternalError> {
     let path = build_file_path(file_id);
     let data = content.to_vec();
@@ -114,24 +152,11 @@ async fn read_file_content(file_id: i32) -> Result<Vec<u8>, InternalError> {
         .map_err(|_| InternalError(format!("Failed to read content from '{}'", file_id)))
 }
 
-pub async fn move_file(
-    pg_pool: &PgPool,
-    file_id: i32,
-    to_folder_id: i32,
-    owner_id: i32,
-) -> Result<(), InternalError> {
-    sqlx::query!(
-        "UPDATE files
-        SET fk_parent = $3
-        WHERE id = $1 AND fk_owner = $2 AND fk_owner = (SELECT fk_owner FROM folders WHERE id = $3);",
-        file_id,
-        owner_id,
-        to_folder_id
-    )
-    .execute(pg_pool)
-    .await
-    .map_err(|_| InternalError("Failed to move the file".to_string()))?;
-    Ok(())
+async fn delete_file_content(file_id: i32) -> Result<(), InternalError> {
+    let path = build_file_path(file_id);
+    fs::remove_file(path)
+        .await
+        .map_err(|_| InternalError(format!("Failed to delete content for file '{}'", file_id)))
 }
 
 fn build_file_path(file_id: i32) -> PathBuf {

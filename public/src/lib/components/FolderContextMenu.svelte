@@ -10,6 +10,7 @@
   import { getCurrentPath, pathsHistory } from "../stores/pathsHistory";
   import { account } from "../stores/account";
   import { fileMove } from "../stores/fileMove";
+  import { fileChange } from "../stores/fileChange";
 
   export let x: number;
   export let y: number;
@@ -76,7 +77,15 @@
         pathsHistory.refresh();
       }}
     />
-    <ContextMenuItem icon="ri-delete-bin-line" text="Delete" />
+    <ContextMenuItem
+      icon="ri-delete-bin-line"
+      text="Delete"
+      on:click={async () => {
+        await API.deleteFile(selectedFile.id, isFolder);
+        fileChange.setFile(selectedFile.name);
+        pathsHistory.refresh();
+      }}
+    />
   {:else}
     <ContextMenuItem
       icon="ri-delete-bin-line"

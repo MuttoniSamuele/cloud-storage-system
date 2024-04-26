@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM files\n        WHERE id = $1 AND fk_owner = $2;",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e669973c807e19cdc7aadcc3ae7d634863499ac0b14d123bcb7b8b338fbc6d31"
+}

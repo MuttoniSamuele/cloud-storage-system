@@ -170,6 +170,12 @@ namespace API {
       { id, folderId }
     );
   }
+
+  export async function deleteFile(id: number, isFolder = false): Promise<void> {
+    const url = new URL(`/api/${isFolder ? "folder" : "file"}/delete`, window.location.origin);
+    url.searchParams.set("id", id.toString());
+    await rawRequest("DELETE", url.href);
+  }
 }
 
 export default API;
