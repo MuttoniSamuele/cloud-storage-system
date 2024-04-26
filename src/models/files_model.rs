@@ -171,9 +171,9 @@ fn get_file_type(file_name: &str) -> Option<String> {
     let extension_str = extension.to_str()?.to_lowercase();
     match extension_str.as_str() {
         "txt" | "c" | "cpp" | "h" | "hpp" | "py" | "js" | "html" | "css" | "md" | "json"
-        | "xml" | "yaml" | "toml" | "rs" | "svelte" | "jsx" | "nim" | "go" => {
-            Some("Text".to_string())
-        }
+        | "xml" | "yaml" | "toml" | "rs" | "svelte" | "jsx" | "nim" | "go" | "java" | "php"
+        | "rb" | "lua" | "swift" | "kt" | "scala" | "pl" | "sh" | "bat" | "ps1" | "ts" | "asm"
+        | "config" | "yml" | "env" | "sql" | "gitignore" | "tsx" | "cs" => Some("Text".to_string()),
         "png" | "jpg" | "jpeg" | "gif" | "bmp" | "svg" | "ico" | "webp" | "tiff" | "tif"
         | "heif" | "heic" => Some("Image".to_string()),
         _ => None,
