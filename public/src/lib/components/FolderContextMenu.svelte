@@ -11,6 +11,7 @@
   import { account } from "../stores/account";
   import { fileMove } from "../stores/fileMove";
   import { fileChange } from "../stores/fileChange";
+  import App from "../../App.svelte";
 
   export let x: number;
   export let y: number;
@@ -91,6 +92,9 @@
       icon="ri-delete-bin-line"
       text="Move to Trash"
       on:click={async () => {
+        if (selectedFile.id === $fileMove?.id) {
+          fileMove.cancel();
+        }
         await API.moveFile(
           selectedFile.id,
           $account?.trashFolderId ?? 0,
