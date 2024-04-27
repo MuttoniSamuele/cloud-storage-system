@@ -20,11 +20,6 @@
     if (currentPath === null) {
       return;
     }
-    console.log(
-      file.name,
-      currentPath.rawPath[currentPath.rawPath.length - 1].name,
-      isFolder,
-    );
     await API.moveFile(
       file.id,
       currentPath.rawPath[currentPath.rawPath.length - 1].id,

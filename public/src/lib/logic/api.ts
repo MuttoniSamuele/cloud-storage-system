@@ -186,9 +186,10 @@ namespace API {
     );
   }
 
-  export async function deleteFile(id: number, isFolder = false): Promise<void> {
+  export async function deleteFile(id: number, isFolder = false, preserveParent = false): Promise<void> {
     const url = new URL(`/api/${isFolder ? "folder" : "file"}/delete`, window.location.origin);
     url.searchParams.set("id", id.toString());
+    url.searchParams.set("preserve-parent", preserveParent.toString());
     await rawRequest("DELETE", url.href);
   }
 }

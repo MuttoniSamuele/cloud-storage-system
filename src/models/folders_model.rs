@@ -125,6 +125,7 @@ pub async fn delete_folder(
     pg_pool: &PgPool,
     folder_id: i32,
     owner_id: i32,
+    preserve_parent: bool,
 ) -> Result<(), InternalError> {
     // Delete the files from the database
     let files_ids = sqlx::query!(
@@ -151,6 +152,8 @@ pub async fn delete_folder(
         files_model::delete_file_content(file_id.id).await?;
     }
     // Delete the folders from the database
+    // TODO: Check that the folder is not the root folder
+    let preserved_folder_id = if preserve_parent { folder_id } else { -1 };
     sqlx::query!(
         "WITH RECURSIVE folder_tree AS (
             SELECT id, fk_parent
@@ -162,9 +165,10 @@ pub async fn delete_folder(
             JOIN folder_tree ft ON f.fk_parent = ft.id
         )
         DELETE FROM folders
-        WHERE id IN (SELECT id FROM folder_tree);",
+        WHERE id IN (SELECT id FROM folder_tree) AND id <> $3;",
         folder_id,
-        owner_id
+        owner_id,
+        preserved_folder_id
     )
     .fetch_all(pg_pool)
     .await

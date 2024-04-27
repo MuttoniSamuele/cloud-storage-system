@@ -83,6 +83,13 @@ pub struct MoveData {
     folder_id: i32,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct DeleteQuery {
+    id: i32,
+    preserve_parent: Option<bool>,
+}
+
 pub async fn upload(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -298,10 +305,15 @@ pub async fn file_delete(
 pub async fn folder_delete(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
-    Query(IdQuery { id: folder_id }): Query<IdQuery>,
+    Query(query): Query<DeleteQuery>,
 ) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
-    folders_model::delete_folder(&state.pg_pool, folder_id, user_id)
-        .await
-        .map_err(|_| ErrorResponse::internal_err())?;
+    folders_model::delete_folder(
+        &state.pg_pool,
+        query.id,
+        user_id,
+        query.preserve_parent.unwrap_or(false),
+    )
+    .await
+    .map_err(|_| ErrorResponse::internal_err())?;
     Ok(StatusCode::OK)
 }
