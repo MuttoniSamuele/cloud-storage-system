@@ -6,6 +6,7 @@
   export let wide = false;
   export let isLink = false;
   export let disabled = false;
+  export let slot = false;
 </script>
 
 <button
@@ -20,4 +21,7 @@
 >
   <i class="{icon === null ? '' : icon} ri-lg" />
   {text}
+  {#if slot}
+    <slot />
+  {/if}
 </button>

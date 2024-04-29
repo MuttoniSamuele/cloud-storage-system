@@ -1,11 +1,12 @@
 <script lang="ts">
   export let small = false;
+  export let inline = false;
 
   $: size = small ? 18 : 24;
 </script>
 
 <svg
-  class="animate-spin dark:text-zinc-200"
+  class="animate-spin dark:text-zinc-200 {inline ? 'inline-block' : ''}"
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 24 24"
   width={size}

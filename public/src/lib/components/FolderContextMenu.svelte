@@ -75,6 +75,7 @@
           $account?.personalFolderId ?? 0,
           isFolder,
         );
+        fileChange.setFile(selectedFile.name);
         pathsHistory.refresh();
       }}
     />
