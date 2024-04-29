@@ -9,6 +9,7 @@ export enum ModalState {
   TextFile,
   ImageFile,
   UnsupportedFile,
+  Cloud,
   Closed
 }
 

@@ -3,6 +3,7 @@
   import ImageFileModal from "./ImageFileModal.svelte";
   import LoginModal from "./LoginModal.svelte";
   import NewFolderModal from "./NewFolderModal.svelte";
+  import CloudModal from "./CloudModal.svelte";
   import RenameModal from "./RenameModal.svelte";
   import SignupModal from "./SignupModal.svelte";
   import TextFileModal from "./TextFileModal.svelte";
@@ -26,4 +27,6 @@
   <ImageFileModal />
 {:else if $modalState === ModalState.UnsupportedFile}
   <UnsupportedFileModal />
+{:else if $modalState === ModalState.Cloud}
+  <CloudModal />
 {/if}
