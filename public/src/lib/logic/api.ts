@@ -8,6 +8,7 @@ import { pathsHistory } from "../stores/pathsHistory";
 import type IUser from "./IUser";
 import User from "./User";
 import { ModalState, modalState } from "../stores/modalState";
+import { fileMove } from "../stores/fileMove";
 
 namespace API {
   type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -76,6 +77,7 @@ namespace API {
     modalState.set(ModalState.Closed);
     account.logout();
     pathsHistory.clear();
+    fileMove.cancel();
   }
 
   export async function loadSession(): Promise<void> {
