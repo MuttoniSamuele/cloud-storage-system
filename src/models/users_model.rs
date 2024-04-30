@@ -13,7 +13,8 @@ pub async fn new_user(
     if !validate_username(username) {
         return Err(SignupError::InvalidUsername);
     }
-    if !EmailAddress::is_valid(email) {
+    let email = email.to_lowercase();
+    if !EmailAddress::is_valid(&email) {
         return Err(SignupError::InvalidEmail);
     }
     if !validate_password(password) {
@@ -66,6 +67,7 @@ pub async fn get_user_by_email(
     pg_pool: &PgPool,
     email: &str,
 ) -> Result<Option<User>, InternalError> {
+    let email = email.to_lowercase();
     sqlx::query_as!(
         User,
         "SELECT *
