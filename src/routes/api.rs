@@ -2,7 +2,7 @@ mod auth;
 mod cloud;
 
 use crate::{models::RedisPool, MAX_UPLOAD_MB};
-use auth::{auth_middleware, login, logout, me, signup};
+use auth::{auth_middleware, login, logout, me, me_delete, signup};
 use axum::{
     extract::DefaultBodyLimit,
     http::StatusCode,
@@ -62,6 +62,7 @@ pub fn api(pg_pool: PgPool, redis_pool: RedisPool, rng: ChaCha8Rng) -> Router {
     let protected_routes = Router::new()
         .route("/logout", post(logout))
         .route("/me", get(me))
+        .route("/me", delete(me_delete))
         .route("/upload", post(upload))
         .route("/view", get(view))
         .route("/folder/new", post(folder_new))

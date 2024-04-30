@@ -194,6 +194,11 @@ namespace API {
     url.searchParams.set("preserve-parent", preserveParent.toString());
     await rawRequest("DELETE", url.href);
   }
+
+  export async function deleteMe(): Promise<void> {
+    await rawRequest("DELETE", "/api/me");
+    await logout();
+  }
 }
 
 export default API;

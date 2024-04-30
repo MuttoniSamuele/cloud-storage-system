@@ -176,6 +176,21 @@ pub async fn delete_folder(
     Ok(())
 }
 
+pub(super) async fn delete_user_folders(
+    pg_pool: &PgPool,
+    owner_id: i32,
+) -> Result<(), InternalError> {
+    sqlx::query!(
+        "DELETE FROM folders
+        WHERE fk_owner = $1;",
+        owner_id
+    )
+    .execute(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to delete user folders".to_string()))?;
+    Ok(())
+}
+
 async fn new_raw_folder(
     pg_pool: &PgPool,
     folder_name: &str,

@@ -133,6 +133,25 @@ pub async fn delete_file(
     Ok(())
 }
 
+pub(super) async fn delete_user_files(
+    pg_pool: &PgPool,
+    owner_id: i32,
+) -> Result<(), InternalError> {
+    let files_ids = sqlx::query!(
+        "DELETE FROM files
+        WHERE fk_owner = $1
+        RETURNING id;",
+        owner_id
+    )
+    .fetch_all(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to delete user files".to_string()))?;
+    for file_id in files_ids {
+        delete_file_content(file_id.id).await?;
+    }
+    Ok(())
+}
+
 pub(super) async fn save_file_content(file_id: i32, content: &Bytes) -> Result<(), InternalError> {
     let path = build_file_path(file_id);
     let data = content.to_vec();

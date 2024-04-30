@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM folders\n        WHERE fk_owner = $1;",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "57a3084a94105ff8a25b1335dc4e8ae041743973a3aa38ac3ce71c87914b69f7"
+}

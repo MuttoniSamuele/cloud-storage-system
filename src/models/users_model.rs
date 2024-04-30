@@ -1,4 +1,4 @@
-use super::User;
+use super::{files_model, folders_model, User};
 use crate::errors::{InternalError, LoginError, SignupError};
 use bcrypt;
 use email_address::EmailAddress;
@@ -92,20 +92,19 @@ pub async fn verify_user(pg_pool: &PgPool, email: &str, password: &str) -> Resul
     }
 }
 
-// pub async fn delete_user(pg_pool: &PgPool, user_id: i32) -> Result<(), InternalError> {
-//     let res: Result<_, sqlx::Error> = sqlx::query!(
-//         "DELETE FROM users
-//         WHERE id = $1;",
-//         user_id,
-//     )
-//     .fetch_one(pg_pool)
-//     .await;
-//     if res.is_err() {
-//         Err(InternalError("Failed to delete user".to_string()))
-//     } else {
-//         Ok(())
-//     }
-// }
+pub async fn delete_user(pg_pool: &PgPool, user_id: i32) -> Result<(), InternalError> {
+    files_model::delete_user_files(pg_pool, user_id).await?;
+    folders_model::delete_user_folders(pg_pool, user_id).await?;
+    sqlx::query!(
+        "DELETE FROM users
+        WHERE id = $1;",
+        user_id,
+    )
+    .execute(pg_pool)
+    .await
+    .map_err(|_| InternalError("Error while deleting user".to_string()))?;
+    Ok(())
+}
 
 fn validate_username(username: &str) -> bool {
     username.len() >= 3

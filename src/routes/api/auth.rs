@@ -215,12 +215,22 @@ pub async fn me(
                 )
                     .into_response()
             } else {
-                // This should never happen
-                StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                // The user has a session, but the user doesn't exist
+                StatusCode::UNAUTHORIZED.into_response()
             }
         }
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
+}
+
+pub async fn me_delete(
+    Extension((session_id, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    users_model::delete_user(&state.pg_pool, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(login_response(session_id))
 }
 
 fn signup_response(session_id: u128) -> impl IntoResponse {

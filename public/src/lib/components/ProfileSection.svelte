@@ -37,7 +37,11 @@
           on:click={async () => await API.logout()}
         />
       </div>
-      <TextButton text="Delete account" dangerous on:click={() => {}} />
+      <TextButton
+        text="Delete account"
+        dangerous
+        on:click={async () => await API.deleteMe()}
+      />
     </div>
   {/if}
 </CloudSection>
