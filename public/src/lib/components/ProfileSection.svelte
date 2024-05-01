@@ -1,6 +1,7 @@
 <script lang="ts">
   import API from "../logic/api";
   import { account } from "../stores/account";
+  import { ModalState, modalState } from "../stores/modalState";
   import CloudSection from "./CloudSection.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
   import TextButton from "./TextButton.svelte";
@@ -40,7 +41,7 @@
       <TextButton
         text="Delete account"
         dangerous
-        on:click={async () => await API.deleteMe()}
+        on:click={() => modalState.set(ModalState.Confirmation)}
       />
     </div>
   {/if}

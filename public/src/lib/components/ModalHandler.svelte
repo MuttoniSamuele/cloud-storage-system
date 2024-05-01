@@ -9,6 +9,7 @@
   import TextFileModal from "./TextFileModal.svelte";
   import UnsupportedFileModal from "./UnsupportedFileModal.svelte";
   import UploadModal from "./UploadModal.svelte";
+  import ConfirmationModal from "./ConfirmationModal.svelte";
 </script>
 
 {#if $modalState === ModalState.Login}
@@ -29,4 +30,6 @@
   <UnsupportedFileModal />
 {:else if $modalState === ModalState.Cloud}
   <CloudModal />
+{:else if $modalState === ModalState.Confirmation}
+  <ConfirmationModal />
 {/if}
