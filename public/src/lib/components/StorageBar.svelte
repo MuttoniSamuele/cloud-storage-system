@@ -33,7 +33,7 @@
         on:click={() => modalState.set(ModalState.Cloud)}
       />
     </div>
-    <div class="h-2 rounded-full bg-zinc-300 dark:bg-zinc-700">
+    <div class="h-2 rounded-full overflow-hidden bg-zinc-300 dark:bg-zinc-700">
       <div
         class="h-full rounded-full bg-indigo-600"
         style="width: {(usedSpace === null ? 0 : usedSpace * 100) /

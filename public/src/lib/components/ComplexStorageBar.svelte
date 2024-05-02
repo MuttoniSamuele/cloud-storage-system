@@ -13,7 +13,7 @@
   <span class="text-sm">/ {formatBytes(totalSpace)}</span>
 </div>
 
-<div class="flex w-full h-3 mb-4 rounded-full bg-zinc-500">
+<div class="flex w-full h-3 mb-4 rounded-full overflow-hidden bg-zinc-500">
   {#each usedSpaces as [name, space], i}
     <div
       class="h-full {COLORS[i % COLORS.length]}
