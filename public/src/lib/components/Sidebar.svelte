@@ -18,7 +18,7 @@
             ? null
             : new Path({
                 id: $account.personalFolderId,
-                name: "MyCloud",
+                name: "My Cloud",
               })}
           droppable
         />

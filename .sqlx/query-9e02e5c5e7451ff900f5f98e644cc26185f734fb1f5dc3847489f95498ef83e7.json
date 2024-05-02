@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT SUM(size) as size\n        FROM files\n        WHERE fk_parent IN (SELECT folder_id FROM get_folder_tree($1, $2))\n        AND file_type = $3;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "size",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "9e02e5c5e7451ff900f5f98e644cc26185f734fb1f5dc3847489f95498ef83e7"
+}

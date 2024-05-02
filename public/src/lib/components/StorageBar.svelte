@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatBytes } from "../logic/fileUtils";
+  import { ModalState, modalState } from "../stores/modalState";
   import IconButton from "./IconButton.svelte";
   import Loader from "./Loader.svelte";
 
@@ -26,7 +27,11 @@
           <span>{formatBytes(totalSpace, 1)}</span>
         {/if}
       </div>
-      <IconButton icon="ri-information-line" small />
+      <IconButton
+        icon="ri-information-line"
+        small
+        on:click={() => modalState.set(ModalState.Cloud)}
+      />
     </div>
     <div class="h-2 rounded-full bg-zinc-300 dark:bg-zinc-700">
       <div

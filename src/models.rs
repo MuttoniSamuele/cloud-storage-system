@@ -21,16 +21,11 @@ pub const FILES_FOLDER: &str = "files_data";
 
 pub async fn init_postgres(url: &str, max_connections: u32) -> PgPool {
     // Create a connection pool
-    let pool = PgPoolOptions::new()
+    PgPoolOptions::new()
         .max_connections(max_connections)
         .connect(url)
         .await
-        .expect(&format!("Failed to connect to {url}"));
-    // Load the database schema
-    load_schema(&pool)
-        .await
-        .expect("Failed to load database schema");
-    pool
+        .expect(&format!("Failed to connect to {url}"))
 }
 
 pub async fn init_redis(url: &str) -> RedisPool {
@@ -45,17 +40,4 @@ pub async fn init_files_folder() {
     fs::create_dir_all(FILES_FOLDER)
         .await
         .expect(&format!("Failed to create '{}' folder", FILES_FOLDER));
-}
-
-async fn load_schema(pg_pool: &PgPool) -> Result<(), sqlx::Error> {
-    sqlx::query_file!("./schema/users.sql")
-        .execute(pg_pool)
-        .await?;
-    sqlx::query_file!("./schema/folders.sql")
-        .execute(pg_pool)
-        .await?;
-    sqlx::query_file!("./schema/files.sql")
-        .execute(pg_pool)
-        .await?;
-    Ok(())
 }

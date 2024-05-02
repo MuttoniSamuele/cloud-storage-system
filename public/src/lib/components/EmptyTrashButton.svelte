@@ -9,7 +9,7 @@
 
   async function getTrashSize(
     trashFolderId: number,
-    // This paremeter is not used in the function, but it's necessary to
+    // This parameter is not used in the function, but it's necessary to
     // trigger the reactivity of the function when the file changes.
     _fileChange: string | null,
   ): Promise<number> {
@@ -19,7 +19,7 @@
 
 {#if $account !== null}
   <TextButton
-    icon="ri-upload-line"
+    icon="ri-delete-bin-line"
     text="Empty trash"
     marginX
     slot

@@ -76,23 +76,49 @@ pub async fn folder_size(
     pg_pool: &PgPool,
     folder_id: i32,
     owner_id: i32,
+    filter: Option<&str>,
+) -> Result<i64, InternalError> {
+    match filter {
+        Some(f) => folder_size_filter(pg_pool, folder_id, owner_id, f).await,
+        None => folder_size_no_filter(pg_pool, folder_id, owner_id).await,
+    }
+}
+
+async fn folder_size_no_filter(
+    pg_pool: &PgPool,
+    folder_id: i32,
+    owner_id: i32,
 ) -> Result<i64, InternalError> {
     // Recursive query to get the storage of the folder and all its children
     let size = sqlx::query!(
-        "WITH RECURSIVE folder_tree AS (
-            SELECT id, fk_parent
-            FROM folders
-            WHERE id = $1 AND fk_owner = $2
-            UNION
-            SELECT f.id, f.fk_parent
-            FROM folders f
-            JOIN folder_tree ft ON f.fk_parent = ft.id
-        )
-        SELECT SUM(size) as size
+        "SELECT SUM(size) as size
         FROM files
-        WHERE fk_parent IN (SELECT id FROM folder_tree);",
+        WHERE fk_parent IN (SELECT folder_id FROM get_folder_tree($1, $2));",
         folder_id,
         owner_id
+    )
+    .fetch_one(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to get the storage of the folder".to_string()))?
+    .size;
+    Ok(size.unwrap_or(0))
+}
+
+async fn folder_size_filter(
+    pg_pool: &PgPool,
+    folder_id: i32,
+    owner_id: i32,
+    filter: &str,
+) -> Result<i64, InternalError> {
+    // Recursive query to get the storage of the folder and all its children
+    let size = sqlx::query!(
+        "SELECT SUM(size) as size
+        FROM files
+        WHERE fk_parent IN (SELECT folder_id FROM get_folder_tree($1, $2))
+        AND file_type = $3;",
+        folder_id,
+        owner_id,
+        filter
     )
     .fetch_one(pg_pool)
     .await
@@ -129,17 +155,8 @@ pub async fn delete_folder(
 ) -> Result<(), InternalError> {
     // Delete the files from the database
     let files_ids = sqlx::query!(
-        "WITH RECURSIVE folder_tree AS (
-            SELECT id, fk_parent
-            FROM folders
-            WHERE id = $1 AND fk_owner = $2
-            UNION
-            SELECT f.id, f.fk_parent
-            FROM folders f
-            JOIN folder_tree ft ON f.fk_parent = ft.id
-        )
-        DELETE FROM files
-        WHERE fk_parent IN (SELECT id FROM folder_tree)
+        "DELETE FROM files
+        WHERE fk_parent IN (SELECT folder_id FROM get_folder_tree($1, $2))
         RETURNING id;",
         folder_id,
         owner_id
@@ -155,17 +172,8 @@ pub async fn delete_folder(
     // TODO: Check that the folder is not the root folder
     let preserved_folder_id = if preserve_parent { folder_id } else { -1 };
     sqlx::query!(
-        "WITH RECURSIVE folder_tree AS (
-            SELECT id, fk_parent
-            FROM folders
-            WHERE id = $1 AND fk_owner = $2
-            UNION
-            SELECT f.id, f.fk_parent
-            FROM folders f
-            JOIN folder_tree ft ON f.fk_parent = ft.id
-        )
-        DELETE FROM folders
-        WHERE id IN (SELECT id FROM folder_tree) AND id <> $3;",
+        "DELETE FROM folders
+        WHERE id IN (SELECT folder_id FROM get_folder_tree($1, $2)) AND id <> $3;",
         folder_id,
         owner_id,
         preserved_folder_id

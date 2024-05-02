@@ -90,6 +90,13 @@ pub struct DeleteQuery {
     preserve_parent: Option<bool>,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct IdFilterQuery {
+    id: i32,
+    filter: Option<String>,
+}
+
 pub async fn upload(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -261,11 +268,12 @@ pub async fn file_download(
 pub async fn folder_size(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
-    Query(IdQuery { id: folder_id }): Query<IdQuery>,
+    Query(query): Query<IdFilterQuery>,
 ) -> Result<(StatusCode, Json<FolderSizeResponse>), (StatusCode, Json<ErrorResponse>)> {
-    let size = folders_model::folder_size(&state.pg_pool, folder_id, user_id)
-        .await
-        .map_err(|_| ErrorResponse::internal_err())?;
+    let size =
+        folders_model::folder_size(&state.pg_pool, query.id, user_id, query.filter.as_deref())
+            .await
+            .map_err(|_| ErrorResponse::internal_err())?;
     Ok((StatusCode::OK, Json(FolderSizeResponse { size })))
 }
 

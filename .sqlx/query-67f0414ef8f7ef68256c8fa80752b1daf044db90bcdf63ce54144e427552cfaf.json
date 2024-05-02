@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM folders\n        WHERE id IN (SELECT folder_id FROM get_folder_tree($1, $2)) AND id <> $3;",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "67f0414ef8f7ef68256c8fa80752b1daf044db90bcdf63ce54144e427552cfaf"
+}
