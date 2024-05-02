@@ -109,7 +109,7 @@ pub async fn delete_user(pg_pool: &PgPool, user_id: i32) -> Result<(), InternalE
 }
 
 fn validate_username(username: &str) -> bool {
-    username.len() >= 3
+    username.len() >= 4
         && username.len() <= 20
         && username
             .chars()

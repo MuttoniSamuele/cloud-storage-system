@@ -123,7 +123,7 @@ pub async fn signup(
             .into_response(),
             SignupError::InvalidUsername => ErrorResponse::response(
                 StatusCode::BAD_REQUEST,
-                "The username must be from 8 to 20 characters long and
+                "The username must be from 4 to 20 characters long and
                 should only contain letters, numbers, '-' and '_'.",
             )
             .into_response(),
