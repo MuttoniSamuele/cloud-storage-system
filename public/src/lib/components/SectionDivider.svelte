@@ -1,1 +1,1 @@
-<div class="w-full h-[0.15rem] my-6 rounded dark:bg-zinc-500"></div>
+<div class="w-full h-1 my-6 rounded dark:bg-zinc-600"></div>
