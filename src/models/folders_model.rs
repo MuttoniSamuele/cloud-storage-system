@@ -1,10 +1,15 @@
-use super::{files_model, folder::Folder};
-use crate::errors::InternalError;
+use super::{
+    files_model::{self, validate_name},
+    folder::Folder,
+};
+use crate::errors::{FileError, InternalError};
 use sqlx::PgPool;
 
 pub async fn init_root_folders(pg_pool: &PgPool, owner_id: i32) -> Result<(), InternalError> {
     for f in ["My Cloud", "Trash"] {
-        new_raw_folder(pg_pool, f, None, owner_id).await?;
+        new_raw_folder(pg_pool, f, None, owner_id)
+            .await
+            .map_err(|_| InternalError("Something went wrong.".to_string()))?;
     }
     Ok(())
 }
@@ -14,7 +19,7 @@ pub async fn new_folder(
     folder_name: &str,
     parent_folder_id: i32,
     owner_id: i32,
-) -> Result<Folder, InternalError> {
+) -> Result<Folder, FileError> {
     new_raw_folder(pg_pool, folder_name, Some(parent_folder_id), owner_id).await
 }
 
@@ -56,8 +61,10 @@ pub async fn rename_folder(
     file_id: i32,
     owner_id: i32,
     new_name: &str,
-) -> Result<(), InternalError> {
-    // TODO: Validate name
+) -> Result<(), FileError> {
+    if !validate_name(new_name) {
+        return Err(FileError::NameError);
+    }
     sqlx::query!(
         "UPDATE folders
         SET name = $3
@@ -68,7 +75,7 @@ pub async fn rename_folder(
     )
     .fetch_all(pg_pool)
     .await
-    .map_err(|_| InternalError("Failed to rename the folder".to_string()))?;
+    .map_err(|_| FileError::InternalError)?;
     Ok(())
 }
 
@@ -204,8 +211,10 @@ async fn new_raw_folder(
     folder_name: &str,
     parent_folder_id: Option<i32>,
     owner_id: i32,
-) -> Result<Folder, InternalError> {
-    // TODO: Validate name
+) -> Result<Folder, FileError> {
+    if !validate_name(folder_name) {
+        return Err(FileError::NameError);
+    }
     let folder = sqlx::query_as!(
         Folder,
         "INSERT INTO folders (name, last_modified, starred, fk_owner, fk_parent)
@@ -218,6 +227,6 @@ async fn new_raw_folder(
     )
     .fetch_one(pg_pool)
     .await
-    .map_err(|_| InternalError("Failed to add folder to database".to_string()))?;
+    .map_err(|_| FileError::InternalError)?;
     Ok(folder)
 }

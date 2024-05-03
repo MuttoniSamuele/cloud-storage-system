@@ -1,5 +1,6 @@
 use super::{auth::AuthState, AppState, ErrorResponse};
 use crate::{
+    errors::FileError,
     models::{files_model, folders_model},
     MAX_STORAGE_MB, MAX_UPLOAD_MB,
 };
@@ -163,7 +164,13 @@ pub async fn upload(
     .await;
     match res {
         Ok(_) => Ok(StatusCode::CREATED),
-        Err(_) => Err(ErrorResponse::internal_err()),
+        Err(e) => match e {
+            FileError::NameError => Err(ErrorResponse::response(
+                StatusCode::BAD_REQUEST,
+                "Invalid file name.",
+            )),
+            FileError::InternalError => Err(ErrorResponse::internal_err()),
+        },
     }
 }
 
@@ -231,7 +238,12 @@ pub async fn folder_new(
 ) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
     folders_model::new_folder(&state.pg_pool, &data.name, data.parent_id, user_id)
         .await
-        .map_err(|_| ErrorResponse::internal_err())?;
+        .map_err(|e| match e {
+            FileError::NameError => {
+                ErrorResponse::response(StatusCode::BAD_REQUEST, "Invalid folder name.")
+            }
+            FileError::InternalError => ErrorResponse::internal_err(),
+        })?;
     Ok(StatusCode::CREATED)
 }
 
@@ -242,7 +254,12 @@ pub async fn folder_rename(
 ) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
     folders_model::rename_folder(&state.pg_pool, data.id, user_id, &data.new_name)
         .await
-        .map_err(|_| ErrorResponse::internal_err())?;
+        .map_err(|e| match e {
+            FileError::NameError => {
+                ErrorResponse::response(StatusCode::BAD_REQUEST, "Invalid folder name.")
+            }
+            FileError::InternalError => ErrorResponse::internal_err(),
+        })?;
     Ok(StatusCode::OK)
 }
 
@@ -253,7 +270,12 @@ pub async fn file_rename(
 ) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
     files_model::rename_file(&state.pg_pool, data.id, user_id, &data.new_name)
         .await
-        .map_err(|_| ErrorResponse::internal_err())?;
+        .map_err(|e| match e {
+            FileError::NameError => {
+                ErrorResponse::response(StatusCode::BAD_REQUEST, "Invalid file name.")
+            }
+            FileError::InternalError => ErrorResponse::internal_err(),
+        })?;
     Ok(StatusCode::OK)
 }
 

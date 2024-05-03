@@ -45,6 +45,23 @@ impl Display for LoginError {
 impl Error for LoginError {}
 
 #[derive(Debug)]
+pub enum FileError {
+    NameError,
+    InternalError,
+}
+
+impl Display for FileError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            FileError::NameError => f.write_str("Invalid file name"),
+            FileError::InternalError => f.write_str("Internal error"),
+        }
+    }
+}
+
+impl Error for FileError {}
+
+#[derive(Debug)]
 pub struct InternalError(pub String);
 
 impl Display for InternalError {

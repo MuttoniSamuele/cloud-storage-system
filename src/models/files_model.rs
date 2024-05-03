@@ -1,6 +1,6 @@
 use super::file::File;
 use super::FILES_FOLDER;
-use crate::errors::InternalError;
+use crate::errors::{FileError, InternalError};
 use axum::body::Bytes;
 use sqlx::PgPool;
 use std::path::{Path, PathBuf};
@@ -12,8 +12,10 @@ pub async fn new_file(
     content: &Bytes,
     parent_folder_id: i32,
     owner_id: i32,
-) -> Result<File, InternalError> {
-    // TODO: Validate name
+) -> Result<File, FileError> {
+    if !validate_name(file_name) {
+        return Err(FileError::NameError);
+    }
     let file_type = get_file_type(file_name);
     let file_size = content.len() as i32;
     let file = sqlx::query_as!(
@@ -30,8 +32,10 @@ pub async fn new_file(
     )
     .fetch_one(pg_pool)
     .await
-    .map_err(|_| InternalError("Failed to add file to database".to_string()))?;
-    save_file_content(file.id, content).await?;
+    .map_err(|_| FileError::InternalError)?;
+    save_file_content(file.id, content)
+        .await
+        .map_err(|_| FileError::InternalError)?;
     Ok(file)
 }
 
@@ -58,8 +62,10 @@ pub async fn rename_file(
     file_id: i32,
     owner_id: i32,
     new_name: &str,
-) -> Result<(), InternalError> {
-    // TODO: Validate name
+) -> Result<(), FileError> {
+    if !validate_name(new_name) {
+        return Err(FileError::NameError);
+    }
     sqlx::query!(
         "UPDATE files
         SET name = $3
@@ -70,7 +76,7 @@ pub async fn rename_file(
     )
     .fetch_all(pg_pool)
     .await
-    .map_err(|_| InternalError("Failed to rename the file".to_string()))?;
+    .map_err(|_| FileError::InternalError)?;
     Ok(())
 }
 
@@ -217,6 +223,11 @@ pub(super) async fn delete_file_content(file_id: i32) -> Result<(), InternalErro
     fs::remove_file(path)
         .await
         .map_err(|_| InternalError(format!("Failed to delete content for file '{}'", file_id)))
+}
+
+pub(super) fn validate_name(mut name: &str) -> bool {
+    name = name.trim();
+    name.len() >= 1 && name.len() <= 255
 }
 
 fn build_file_path(file_id: i32) -> PathBuf {
