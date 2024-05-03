@@ -27,6 +27,7 @@
       await API.deleteFile($account.trashFolderId, true, true);
       fileChange.setFile("");
       pathsHistory.refresh();
+      // TODO: Fix bug where if you are in a folder in the trash and empty the trash you stay in a deleted folder
     }}
   >
     {#await getTrashSize($account.trashFolderId, $fileChange.file)}

@@ -143,7 +143,8 @@ pub async fn move_folder(
     sqlx::query!(
         "UPDATE folders
         SET fk_parent = $3
-        WHERE id = $1 AND fk_owner = $2 AND fk_owner = (SELECT fk_owner FROM folders WHERE id = $3);",
+        WHERE id = $1 AND fk_owner = $2 AND fk_owner = (SELECT fk_owner FROM folders WHERE id = $3)
+        AND $3 NOT IN (SELECT folder_id FROM get_folder_tree($1, $2));",
         folder_id,
         owner_id,
         to_folder_id

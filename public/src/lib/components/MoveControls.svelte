@@ -10,6 +10,18 @@
 
   $: isFolder = file instanceof Folder;
   $: currentPath = getCurrentPath($pathsHistory);
+
+  $: if (currentPath === null) {
+    // If the current path is null, you can't move the file
+    fileMove.cancel();
+  } else if (file instanceof Folder) {
+    // If the file is a folder, you can't move it to a subfolder of itself
+    currentPath.rawPath.forEach((path) => {
+      if (path.id === file.id) {
+        fileMove.cancel();
+      }
+    });
+  }
 </script>
 
 <TextButton

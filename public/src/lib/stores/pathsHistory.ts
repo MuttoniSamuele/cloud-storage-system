@@ -3,6 +3,7 @@ import type Path from "../logic/Path";
 
 type PathHistory = { paths: (Path | null)[], index: number };
 
+// TODO: Fix bug where if you move/delete a folder, the path history is not updated
 function initPathsHistory() {
   // The history of paths is stored as a combination of an array of Path and
   // the index of the current path in said array.

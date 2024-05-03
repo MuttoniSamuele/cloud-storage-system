@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE folders\n        SET fk_parent = $3\n        WHERE id = $1 AND fk_owner = $2 AND fk_owner = (SELECT fk_owner FROM folders WHERE id = $3)\n        AND $3 NOT IN (SELECT folder_id FROM get_folder_tree($1, $2));",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "eccbeb65e4fb68bb51e201fa0821105b5eabc7fcab2b05a89b4e24cb9f64294f"
+}
