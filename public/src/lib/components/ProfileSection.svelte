@@ -3,6 +3,7 @@
   import { account } from "../stores/account";
   import { ModalState, modalState } from "../stores/modalState";
   import CloudSection from "./CloudSection.svelte";
+  import LabelledText from "./LabelledText.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
   import TextButton from "./TextButton.svelte";
 </script>
@@ -10,21 +11,10 @@
 <CloudSection title="Profile">
   {#if $account}
     <div class="flex items-center">
-      <div class="dark:text-zinc-400 text-sm">
-        <div class="w-full my-1 flex items-end">
-          <span class="w-20">Username</span>
-          <span class="dark:text-zinc-100 text-base">
-            {$account.username}
-          </span>
-        </div>
-        <div class="w-full my-1 flex items-end">
-          <span class="w-20">Email</span>
-          <span class="dark:text-zinc-100 text-base">
-            {$account.email}
-          </span>
-        </div>
+      <div>
+        <LabelledText label="Username" text={$account.username} />
+        <LabelledText label="Email" text={$account.email} />
       </div>
-
       <div class="ml-auto">
         <ProfilePicture username={$account.username} big />
       </div>

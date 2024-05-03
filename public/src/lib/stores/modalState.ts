@@ -11,6 +11,7 @@ export enum ModalState {
   UnsupportedFile,
   Cloud,
   Confirmation,
+  Properties,
   Closed
 }
 

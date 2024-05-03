@@ -21,3 +21,16 @@ export function formatBytes(bytes: number, precision = 2): string {
   }
   return parseFloat(bytes.toFixed(precision)).toString() + " " + units[i];
 }
+
+// TODO: Fix wrong timezone
+export function formatLastModified(lastModified: string): string {
+  return new Intl.DateTimeFormat(navigator.language, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  }).format(new Date(lastModified));
+}
+

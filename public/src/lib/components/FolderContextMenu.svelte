@@ -115,5 +115,9 @@
   {/if}
   <ContextMenuDivider />
 
-  <ContextMenuItem icon="ri-article-line" text="Properties" />
+  <ContextMenuItem
+    icon="ri-article-line"
+    text="Properties"
+    on:click={() => modalState.set(ModalState.Properties)}
+  />
 </ContextMenu>
