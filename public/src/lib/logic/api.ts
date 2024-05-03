@@ -202,6 +202,15 @@ namespace API {
     await rawRequest("DELETE", "/api/me");
     await logout();
   }
+
+  export async function duplicateFile(id: number): Promise<void> {
+    await rawRequest(
+      "POST",
+      "/api/file/duplicate",
+      new Headers({ "content-type": "application/json" }),
+      { id }
+    );
+  }
 }
 
 export default API;

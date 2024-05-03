@@ -133,6 +133,29 @@ pub async fn delete_file(
     Ok(())
 }
 
+pub async fn duplicate_file(
+    pg_pool: &PgPool,
+    file_id: i32,
+    owner_id: i32,
+) -> Result<File, InternalError> {
+    let file = sqlx::query_as!(
+        File,
+        "INSERT INTO files (name, file_type, size, last_modified, starred, fk_owner, fk_parent)
+        SELECT name, file_type, size, CURRENT_TIMESTAMP, starred, fk_owner, fk_parent
+        FROM files
+        WHERE id = $1 AND fk_owner = $2
+        RETURNING *;",
+        file_id,
+        owner_id
+    )
+    .fetch_one(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to duplicate the file".to_string()))?;
+    let content = read_file_content(file_id).await?;
+    save_file_content(file.id, &Bytes::from(content)).await?;
+    Ok(file)
+}
+
 pub(super) async fn delete_user_files(
     pg_pool: &PgPool,
     owner_id: i32,

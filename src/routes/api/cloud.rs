@@ -97,6 +97,12 @@ pub struct IdFilterQuery {
     filter: Option<String>,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IdData {
+    id: i32,
+}
+
 pub async fn upload(
     Extension((_, user_id)): Extension<AuthState>,
     State(state): State<AppState>,
@@ -323,5 +329,16 @@ pub async fn folder_delete(
     )
     .await
     .map_err(|_| ErrorResponse::internal_err())?;
+    Ok(StatusCode::OK)
+}
+
+pub async fn file_duplicate(
+    Extension((_, user_id)): Extension<AuthState>,
+    State(state): State<AppState>,
+    Json(IdData { id: file_id }): Json<IdData>,
+) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    files_model::duplicate_file(&state.pg_pool, file_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
     Ok(StatusCode::OK)
 }

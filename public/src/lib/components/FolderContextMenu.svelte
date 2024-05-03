@@ -48,7 +48,15 @@
       on:click={() => modalState.set(ModalState.Rename)}
     />
     {#if !isFolder}
-      <ContextMenuItem icon="ri-file-copy-line" text="Duplicate" />
+      <ContextMenuItem
+        icon="ri-file-copy-line"
+        text="Duplicate"
+        on:click={async () => {
+          await API.duplicateFile(selectedFile.id);
+          fileChange.setFile(selectedFile.name);
+          pathsHistory.refresh();
+        }}
+      />
     {/if}
     <ContextMenuItem
       icon="ri-folder-transfer-line"
