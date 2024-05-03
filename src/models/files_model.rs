@@ -156,6 +156,24 @@ pub async fn duplicate_file(
     Ok(file)
 }
 
+pub async fn get_file_by_id(
+    pg_pool: &PgPool,
+    file_id: i32,
+    owner_id: i32,
+) -> Result<File, InternalError> {
+    sqlx::query_as!(
+        File,
+        "SELECT *
+        FROM files
+        WHERE id = $1 AND fk_owner = $2;",
+        file_id,
+        owner_id
+    )
+    .fetch_one(pg_pool)
+    .await
+    .map_err(|_| InternalError("Failed to get the file".to_string()))
+}
+
 pub(super) async fn delete_user_files(
     pg_pool: &PgPool,
     owner_id: i32,

@@ -1,7 +1,7 @@
 use super::{auth::AuthState, AppState, ErrorResponse};
 use crate::{
     models::{files_model, folders_model},
-    MAX_UPLOAD_MB,
+    MAX_STORAGE_MB, MAX_UPLOAD_MB,
 };
 use axum::{
     body::Bytes,
@@ -11,6 +11,7 @@ use axum::{
     Extension, Json,
 };
 use serde::{Deserialize, Serialize};
+use sqlx::PgPool;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -149,6 +150,8 @@ pub async fn upload(
             &format!("The file can't be larger than {} MB.", *MAX_UPLOAD_MB),
         ));
     }
+    // Check if the user has enough space to upload the file
+    check_size(&state.pg_pool, user_id, content.len() as i64).await?;
     // Add the file to the databases
     let res = files_model::new_file(
         &state.pg_pool,
@@ -169,7 +172,6 @@ pub async fn view(
     State(state): State<AppState>,
     Query(params): Query<ViewQuery>,
 ) -> Result<(StatusCode, Json<ViewResponse>), (StatusCode, Json<ErrorResponse>)> {
-    // TODO: Check max storage for user
     // Fetch the folders from the database first
     let raw_folders = folders_model::get_folders(&state.pg_pool, params.parent_folder_id, user_id)
         .await
@@ -337,8 +339,39 @@ pub async fn file_duplicate(
     State(state): State<AppState>,
     Json(IdData { id: file_id }): Json<IdData>,
 ) -> Result<StatusCode, (StatusCode, Json<ErrorResponse>)> {
+    let file = files_model::get_file_by_id(&state.pg_pool, file_id, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    check_size(&state.pg_pool, user_id, i64::from(file.get_size())).await?;
     files_model::duplicate_file(&state.pg_pool, file_id, user_id)
         .await
         .map_err(|_| ErrorResponse::internal_err())?;
     Ok(StatusCode::OK)
+}
+
+async fn check_size(
+    pg_pool: &PgPool,
+    user_id: i32,
+    file_size: i64,
+) -> Result<(), (StatusCode, Json<ErrorResponse>)> {
+    let folders = folders_model::get_root_folders(pg_pool, user_id)
+        .await
+        .map_err(|_| ErrorResponse::internal_err())?;
+    let mut used_storage = 0;
+    for f in folders {
+        used_storage += folders_model::folder_size(pg_pool, f.get_id(), user_id, None)
+            .await
+            .map_err(|_| ErrorResponse::internal_err())?;
+    }
+    let space_left = (*MAX_STORAGE_MB * 1_000_000) - used_storage;
+    if space_left < file_size {
+        return Err(ErrorResponse::response(
+            StatusCode::PAYLOAD_TOO_LARGE,
+            &format!(
+                "Not enough space available. {} MB left.",
+                space_left / 1_000_000
+            ),
+        ));
+    }
+    Ok(())
 }
